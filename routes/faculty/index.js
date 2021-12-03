@@ -5,6 +5,9 @@ const facultyController = require('../../controllers/faculty');
 const Cookies = require('cookies');
 
 router.use('/attendance', require('./attendance'));
+router.use('/assignment', require('./assignment'));
+router.use('/test', require('./test'));
+router.use('/notes', require('./notes'));
 
 router.post('/login', async (req, res) => {
   const data = Object.assign({}, req.body);
@@ -45,6 +48,19 @@ router.get('/basicDetails', async (req, res) => {
     res.status(400).send({ error });
   }
   console.log(req.token_data);
-})
+});
+
+router.get('/classes', async (req, res) => {
+  try {
+    const uni_id = req.token_data.data.user_id;
+    const data = await facultyController.getClasses(uni_id);
+
+    // console.log(data);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
 
 module.exports = router;

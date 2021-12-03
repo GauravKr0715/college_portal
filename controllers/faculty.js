@@ -126,11 +126,12 @@ const validateUser = async (details) => {
   }
 };
 
-const getClasses = async (uni_id) => {
+const getClassesForAttendance = async (uni_id) => {
   try {
     const faculty_details = await faculty_repo.fetchOneCertainFields("time_table classes -_id", { uni_id });
 
-    let day_idx = days_map[moment().subtract(3, 'days').format("dddd")];
+    // let day_idx = days_map[moment().subtract(3, 'days').format("dddd")];
+    let day_idx = days_map[moment().format("dddd")];
     let todays_time_table = faculty_details.time_table[day_idx];
     // console.log(todays_time_table);
     let final_data = [];
@@ -144,7 +145,8 @@ const getClasses = async (uni_id) => {
         let student_list = await student_repo.fetchAllByCondition({
           section: c.section
         });
-        let todays_date = moment().subtract(3, 'days').format('DD-MM-yyyy');
+        // let todays_date = moment().subtract(3, 'days').format('DD-MM-yyyy');
+        let todays_date = moment().format('DD-MM-yyyy');
         let present_students = await attendance_repo.fetchOneAndConditions(
           { date: todays_date, class_id: c.class_id });
         // console.log(present_students);
@@ -167,6 +169,20 @@ const getClasses = async (uni_id) => {
     logger.error(error);
     throw error;
   }
+};
+
+const getClasses = async (uni_id) => {
+  try {
+    const data = await faculty_repo.fetchOneCertainFields("classes", { uni_id });
+    return {
+      success: true,
+      message: 'Classes retrieved successfully',
+      data
+    };
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -174,5 +190,6 @@ module.exports = {
   getBasicDetails,
   updateSlot,
   validateUser,
-  getClasses
+  getClasses,
+  getClassesForAttendance
 }

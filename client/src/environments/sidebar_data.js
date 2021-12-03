@@ -20,6 +20,10 @@ export const faculty_sidebar_data = [
     icon: 'task',
     link: '/assignments'
   }, {
+    text: 'Tests',
+    icon: 'access_time',
+    link: '/tests'
+  }, {
     text: 'Notes',
     icon: 'note',
     link: '/notes'

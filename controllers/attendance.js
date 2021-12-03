@@ -4,7 +4,8 @@ const moment = require('moment');
 
 const addAttendance = async (details) => {
   try {
-    const todays_date = moment().subtract(3, 'days').format('DD-MM-yyyy');
+    // const todays_date = moment().subtract(3, 'days').format('DD-MM-yyyy');
+    const todays_date = moment().format('DD-MM-yyyy');
     const existing_record = await attendance_repo.fetchOneAndConditions(
       { date: todays_date, class_id: details.class_id }
     );

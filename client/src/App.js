@@ -8,6 +8,9 @@ import FacultyLogin from './components/login/F_Login';
 import FacultyHome from './components/Faculty/Home';
 import FacultyFeed from './components/Faculty/Feed';
 import FacultyAttendance from './components/Faculty/Attendance';
+import FacultyAssignment from './components/Faculty/Assignment';
+import FacultyTest from './components/Faculty/Test';
+import FacultyNotes from './components/Faculty/Notes';
 import AdminLogin from './components/login/A_Login';
 import Assignments from "./components/Students/Assignments/Assignments"
 import Myattendence from "./components/Students/Myattendence/Myattendence"
@@ -65,6 +68,18 @@ function App() {
                 <Route path={`${url}/attendance`} exact >
                   {/* <Authorization /> */}
                   <FacultyAttendance />
+                </Route>
+                <Route path={`${url}/assignments`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyAssignment />
+                </Route>
+                <Route path={`${url}/tests`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyTest />
+                </Route>
+                <Route path={`${url}/notes`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyNotes />
                 </Route>
               </>
             )}>
