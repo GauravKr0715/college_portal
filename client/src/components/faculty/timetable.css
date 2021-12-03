@@ -1,0 +1,9 @@
+.MuiTableCell-root{
+    font-weight: bold !important;
+    text-align: center !important;
+}
+.MuiTableCell-head{
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    font-family: sans-serif !important;
+}

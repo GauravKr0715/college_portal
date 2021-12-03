@@ -1,0 +1,56 @@
+/* .MuiBox-root {
+  height: 100vh;
+} */
+
+.MuiPaper-root {
+  background-color: #263238 !important;
+}
+
+.att-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 85vh;
+  /* justify-content: center; */
+  align-items: center;
+  /* margin-left: auto; */
+  /* margin: auto; */
+  width: auto;
+}
+
+.options-container {
+  min-width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.options-container .selector {
+  width: 40%;
+}
+
+.options-container .updator {
+  width: 40%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.options-container .updator button {
+  font-size: 15px;
+  font-weight: bold;
+  height: 100%;
+}
+
+.list-container {
+  /* background-color: #fff; */
+  padding: 16px;
+  min-width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.no-class {
+  font-weight: bolder;
+  font-size: 20px;
+}

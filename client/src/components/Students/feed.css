@@ -1,0 +1,130 @@
+.MuiListItem-padding {
+  padding: 16px !important;
+}
+
+.MuiPaper-root {
+  background-color: #263238 !important;
+}
+
+.MuiAppBar-root {
+  background-color: #263238 !important;
+}
+
+.MuiList-root {
+  height: 100%;
+  background-color: #263238;
+  color: #fff !important;
+  font-weight: bold;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.MuiListItem-root {
+  color: #fff !important;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.MuiListItem-root:hover {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.MuiTypography-root {
+  font-weight: bold !important;
+}
+
+.material-icons {
+  color: rgba(255, 255, 255, 1);
+}
+
+.MuiBox-root {
+  position: relative;
+}
+
+.floating-container {
+  position: absolute;
+  top: 0px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  width: fit-content;
+  height: 150px;
+  z-index: 1000;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border: 2px solid #000;
+  background-color: #263238;
+}
+
+.floating-container .inner-container {
+  margin: 5px;
+  padding: 2px;
+  border-radius: 20px;
+  height: 100%;
+  color: #000;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.floating-container .inner-container .slot {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0.25rem -1rem;
+  padding: 10px 25px;
+  border: 1px solid;
+  border-radius: 12px;
+  background-color: #f1f4f5;
+}
+
+.floating-container .inner-container .slot:hover {
+  background-color: #c7ccce;
+}
+
+.floating-container .inner-container .slot .slot_time {
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+.floating-container .inner-container .slot .slot_sub {
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.floating-container .inner-container .slot .slot_sec {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.lunch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0.25rem -1rem;
+  padding: 10px 25px;
+  border: 1px solid;
+  border-radius: 12px;
+  background-color: #c7ccce !important;
+  color: rgb(0, 0, 0);
+}
+
+.slot-drawer .drawer-key {
+  font-size: 13px;
+  color: #ccc4c4;
+}
+
+.slot-drawer .drawer-key .drawer-value {
+  font-size: 15px;
+  display: inline;
+  color: #fff;
+}

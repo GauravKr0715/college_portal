@@ -18,6 +18,14 @@ module.exports = {
     }
   },
 
+  fetchOneCertainFields: async (field_string, condition) => {
+    try {
+      return await Student.findOne(condition).select(field_string);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   fetchOneOrConditions: async (condition) => {
     try {
       return await Student.find({
