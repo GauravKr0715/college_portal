@@ -16,4 +16,12 @@ module.exports = {
       throw error;
     }
   },
+
+  fetchAllByCondition: async (condition) => {
+    try {
+      return await Attendance.find(condition);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

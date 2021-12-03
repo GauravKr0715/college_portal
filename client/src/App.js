@@ -9,6 +9,9 @@ import FacultyLogin from './components/Login/F_Login';
 import FacultyHome from './components/Faculty/Home';
 import FacultyFeed from './components/Faculty/Feed';
 import FacultyAttendance from './components/Faculty/Attendance';
+import FacultyAssignment from './components/Faculty/Assignment';
+import FacultyTest from './components/Faculty/Test';
+import FacultyNotes from './components/Faculty/Notes';
 import StudentHome from './components/Students/Home';
 import StudentFeed from './components/Students/Feed';
 import StudentAttendance from './components/Students/Attendance';
@@ -67,6 +70,18 @@ function App() {
                   {/* <Authorization /> */}
                   <FacultyAttendance />
                 </Route>
+                <Route path={`${url}/assignments`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyAssignment />
+                </Route>
+                <Route path={`${url}/tests`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyTest />
+                </Route>
+                <Route path={`${url}/notes`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyNotes />
+                </Route>
                 <Route path={`${url}/time-table`} exact >
                   {/* <Authorization /> */}
                   <FacultyTT />
@@ -80,48 +95,48 @@ function App() {
           </Route>
 
           <Route path="/student"
-          render={({ match: { url } }) => (
-            <>
-              <Route path={`${url}/login`} exact >
-                {/* <Authorization /> */}
-                <StudentLogin />
-              </Route>
-              <Route path={`${url}/`} exact >
-                {/* <Authorization /> */}
-                <StudentHome />
-              </Route>
-              <Route path={`${url}/feed`} exact >
-                {/* <Authorization /> */}
-                <StudentFeed />
-              </Route>
-              <Route path={`${url}/attendance`} exact >
-                {/* <Authorization /> */}
-                <StudentAttendance />
-              </Route>
-              <Route path={`${url}/time-table`} exact >
+            render={({ match: { url } }) => (
+              <>
+                <Route path={`${url}/login`} exact >
+                  {/* <Authorization /> */}
+                  <StudentLogin />
+                </Route>
+                <Route path={`${url}/`} exact >
+                  {/* <Authorization /> */}
+                  <StudentHome />
+                </Route>
+                <Route path={`${url}/feed`} exact >
+                  {/* <Authorization /> */}
+                  <StudentFeed />
+                </Route>
+                <Route path={`${url}/attendance`} exact >
+                  {/* <Authorization /> */}
+                  <StudentAttendance />
+                </Route>
+                <Route path={`${url}/time-table`} exact >
                   {/* <Authorization /> */}
                   <StudentTT />
                 </Route>
                 <Route path={`${url}/profile`} exact >
-                {/* <Authorization /> */}
-                <StudentProfile />
-              </Route>
-            </>
-          )}>
-        </Route>
+                  {/* <Authorization /> */}
+                  <StudentProfile />
+                </Route>
+              </>
+            )}>
+          </Route>
 
           <Route path="/SLandingpage" exact component={Landingpage} />
           <Route path="/StudentLogin" component={StudentLogin} />
           <Route path="/faculty/login" component={FacultyLogin} />
           <Route path="/faculty/" component={FacultyHome} />
           <Route path="/student/" component={StudentHome} />
-         
+
           <Route path="/SectionCreate" component={SectionCreate} />
           <Route path="/SectionTable" component={SectionTable} />
           <Route path="/SectionFinal" exact component={SectionFinal} />
           <Route path="/SubjectPage" exact component={SubjectPage} />
           <Route path="/AdminLandPage" exact component={AdminLandPage} />
-         
+
           <Route path="/FacultyTT" exact component={FacultyTT} />
 
 

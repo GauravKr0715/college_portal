@@ -4,7 +4,7 @@ const logger = require('../../helpers/logger');
 const StudentController = require('../../controllers/student');
 const Cookies = require('cookies');
 
-//router.use('/attendance', require('./attendance'));
+router.use('/attendance', require('./attendance'));
 
 router.post('/login', async (req, res) => {
   const data = Object.assign({}, req.body);
