@@ -164,6 +164,18 @@ function Attendance() {
       setLoading(true);
       const { data } = await getAttendanceReport();
       setReport(data.data);
+      if (data.data.length > 0) {
+        setSelectLabel(`${data.data[0].subject_name} [${data.data[0].faculty_name}]`);
+        setSelectedClass(data.data[0]);
+        setPiechartData([
+          { title: "Attended", value: data.data[0].classes_taken, color: "#16ce2f" },
+          {
+            title: "Absent",
+            value: data.data[0].total_classes - data.data[0].classes_taken,
+            color: "#ec3a3a",
+          },
+        ]);
+      }
       console.log(data.data);
     } catch (error) {
       console.log(error);

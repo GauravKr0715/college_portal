@@ -19,91 +19,57 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import LoadingOverlay from "react-loading-overlay";
 import Box from "@mui/material/Box";
-import "./new_assignment.css";
+import "../Faculty/new_assignment.css";
 import {
-  getClasses,
-  uploadNewAssignmentWithoutAttach,
-  uploadNewAssignmentWithAttach,
-} from "../../services/faculty";
+  uploadNewAssignmentSubmissionWithoutAttach,
+  uploadNewAssignmentSubmissionWithAttach,
+} from "../../services/student";
 
 function NewAssignmentDialog(props) {
-  const getClassesForFaculty = async () => {
-    try {
-      props.activateLoading();
-      const { data } = await getClasses();
-      setClasses(data.data.classes);
-    } catch (error) {
-      props.deactivateLoading();
-    }
-    props.deactivateLoading();
-  };
 
   useEffect(() => {
-    getClassesForFaculty();
+    // alert(props.uid);
   }, []);
 
-  const saveAssignment = async () => {
+  const saveAssignmentSubmission = async () => {
     try {
       setSubmitLoading(true);
       // props.activateLoading();
       setError(null);
-      if (class_id === null || title === null || title === "") {
-        setError("Please fill all mandatory fields first");
+      if (((response === '' || response === null) && (files === '' || files === null || files.length <= 0))) {
+        setError("Please fill atleast one field first");
       } else {
         if (document.getElementById("attachments").files.length) {
           var formData = new FormData();
           for (const key of Object.keys(files)) {
             formData.append("attachments", files[key]);
           }
-          formData.append("title", title);
-          formData.append("class_id", class_id);
-          formData.append("section", section);
-          formData.append("subject", subject);
-          if (description !== "" && description !== null) {
-            formData.append("description", description);
+          if (response !== "" && response !== null) {
+            formData.append("response", response);
           }
-          if (due_date !== "" && due_date !== null) {
-            formData.append("due_date", due_date);
-          }
-          console.log(formData);
-          const { data } = await uploadNewAssignmentWithAttach(formData);
+          formData.append("assignment_id", props.uid);
+          const { data } = await uploadNewAssignmentSubmissionWithAttach(formData);
           console.log(data);
           setFiles(null);
-          setClassValue("");
-          setDueDate(null);
-          setDescription("");
-          setSubject(null);
-          setSection(null);
-          setClassID(null);
-          setTitle("");
+          setResponse("");
           props.openSnackBar(data.message);
+          props.onClose();
         } else {
           let details = {};
-          details.title = title;
-          details.class_id = class_id;
-          details.section = section;
-          details.subject = subject;
-          if (description !== "" && description !== null) {
-            details.description = description;
+          if (response !== "" && response !== null) {
+            details.response = response;
           }
-          if (due_date !== "" && due_date !== null) {
-            details.due_date = due_date;
-          }
+          details.assignment_id = props.uid;
           console.log(details);
-          const { data } = await uploadNewAssignmentWithoutAttach(details);
+          const { data } = await uploadNewAssignmentSubmissionWithoutAttach(details);
           console.log(data);
           setFiles(null);
-          setClassValue("");
-          setDueDate(null);
-          setDescription("");
-          setSubject(null);
-          setSection(null);
-          setClassID(null);
-          setTitle("");
+          setResponse("");
           props.openSnackBar(data.message);
+          props.onClose();
         }
       }
-      props.onClose();
+      setFiles(null);
     } catch (error) {
       console.log(error);
       props.openSnackBar('Some Error Occurred. Try Again.');
@@ -112,6 +78,7 @@ function NewAssignmentDialog(props) {
       // openSnackBar("Some error occured");
       // setLoading(false);
     }
+    setFiles(null);
     // setFiles(null);
     // setClassValue("");
     // setDueDate(null);
@@ -127,37 +94,10 @@ function NewAssignmentDialog(props) {
 
   const [error, setError] = useState(null);
 
-  const [classes, setClasses] = useState([
-    {
-      class_id: "F901",
-      subject_name: "Subject 1",
-      section: "F9",
-    },
-    {
-      class_id: "F902",
-      subject_name: "Subject 2",
-      section: "F9",
-    },
-  ]);
-  const [title, setTitle] = useState("");
-  const [class_id, setClassID] = useState(null);
-  const [section, setSection] = useState(null);
-  const [subject, setSubject] = useState(null);
-  const [description, setDescription] = useState("");
-  const [due_date, setDueDate] = useState(null);
+  const [response, setResponse] = useState("");
   const [files, setFiles] = useState(null);
-  const [classValue, setClassValue] = useState("");
-  console.log(due_date);
 
   const [submitLoading, setSubmitLoading] = useState(false);
-
-  const handleClassChange = (e) => {
-    setClassValue(e.target.value);
-    let selected_class = classes[e.target.value.split(":")[1]];
-    setClassID(selected_class.class_id);
-    setSection(selected_class.section);
-    setSubject(selected_class.subject_name);
-  };
 
   return (
 
@@ -180,7 +120,7 @@ function NewAssignmentDialog(props) {
           }}
           id="responsive-dialog-title"
         >
-          {"Add a New Assignment"}
+          {"Add a New Response"}
         </DialogTitle>
         <DialogContent
           sx={{
@@ -217,86 +157,17 @@ function NewAssignmentDialog(props) {
                 <br />
               </>
             )}
-            <Box
-              component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                m: "auto",
-                width: "fit-content",
-                minWidth: "100%",
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
-                sx={{
-                  margin: "15px",
-                  flex: "1",
-                }}
-                id="class"
-                select
-                label="*Select Class"
-                value={classValue}
-                onChange={(e) => {
-                  handleClassChange(e);
-                }}
-              >
-                {classes.map((option, idx) => (
-                  <MenuItem
-                    key={option.class_id}
-                    value={`${option.subject_name} [${option.section}]:${idx}`}
-                  >
-                    {`${option.subject_name} [${option.section}]`}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
-                  sx={{
-                    margin: "15px",
-                    backgroundColor: "#fff !important",
-                    flex: "1",
-                  }}
-                  label="Select Due Date (optional)"
-                  value={due_date}
-                  onChange={setDueDate}
-                  renderInput={(params) => (
-                    <TextField
-                      sx={{
-                        backgroundColor: "#fff !important",
-                        margin: "15px",
-                      }}
-                      {...params}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Box>
             <TextField
               sx={{
                 margin: "15px",
               }}
-              id="title"
-              value={title}
-              onChange={(e) => {
-                setTitle(e.target.value);
-              }}
-              label="*Title"
-              variant="outlined"
-            />
-            <TextField
-              sx={{
-                margin: "15px",
-              }}
-              id="desc"
-              label="Description"
+              id="response"
+              label="Response"
               multiline
               maxRows={4}
-              value={description}
+              value={response}
               onChange={(e) => {
-                setDescription(e.target.value);
+                setResponse(e.target.value);
               }}
               variant="outlined"
             />
@@ -371,7 +242,7 @@ function NewAssignmentDialog(props) {
           <Button autoFocus onClick={props.onClose}>
             Cancel
           </Button>
-          <Button disabled={submitLoading} variant="contained" onClick={saveAssignment} autoFocus>
+          <Button disabled={submitLoading} variant="contained" onClick={saveAssignmentSubmission} autoFocus>
             Add Assignment
           </Button>
         </DialogActions>

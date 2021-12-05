@@ -5,6 +5,7 @@ const StudentController = require('../../controllers/student');
 const Cookies = require('cookies');
 
 router.use('/attendance', require('./attendance'));
+router.use('/assignment', require('./assignment'));
 
 router.post('/login', async (req, res) => {
   const data = Object.assign({}, req.body);
