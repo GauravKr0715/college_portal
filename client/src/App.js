@@ -17,6 +17,10 @@ import StudentFeed from './components/Students/Feed';
 import StudentAttendance from './components/Students/Attendance';
 import StudentAssignment from './components/Students/Assignment';
 import StudentAssignmentProfile from './components/Students/AssignmentProfile';
+import StudentTest from './components/Students/Test';
+import StudentTestProfile from './components/Students/TestProfile';
+import StudentNotes from './components/Students/Notes';
+import StudentNotesProfile from './components/Students/NotesProfile';
 
 import SectionCreate from './components/Admin/Section/SectionCreate';
 import SectionTable from './components/Admin/Section/SectionTable';
@@ -122,6 +126,22 @@ function App() {
                 <Route path={`${url}/assignments/:id`} exact >
                   {/* <Authorization /> */}
                   <StudentAssignmentProfile />
+                </Route>
+                <Route path={`${url}/tests`} exact >
+                  {/* <Authorization /> */}
+                  <StudentTest />
+                </Route>
+                <Route path={`${url}/tests/:id`} exact >
+                  {/* <Authorization /> */}
+                  <StudentTestProfile />
+                </Route>
+                <Route path={`${url}/notes`} exact >
+                  {/* <Authorization /> */}
+                  <StudentNotes />
+                </Route>
+                <Route path={`${url}/notes/:id`} exact >
+                  {/* <Authorization /> */}
+                  <StudentNotesProfile />
                 </Route>
                 <Route path={`${url}/time-table`} exact >
                   {/* <Authorization /> */}

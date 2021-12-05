@@ -88,11 +88,11 @@
 }
 
 .student-ass-profile-main-container {
-  max-width: 50vw;
+  max-width: 60vw;
   margin: auto;
   padding: 1%;
   min-width: 70%;
-  min-height: 85vh;
+  min-height: fit-content;
   display: flex;
   flex-direction: column;
   background-color: #fff;
@@ -102,8 +102,8 @@
 
 .student-ass-profile-main-container .student-pro-ass-top-container {
   padding: 1%;
-  display: flex;
-  justify-content: space-between;
+  /* display: flex;
+  justify-content: space-between; */
   flex-wrap: wrap;
   border-bottom: 1px solid grey;
 }
@@ -124,7 +124,7 @@
   .details-tab {
   padding: 1% 5px;
   color: grey;
-  font-size: 15px;
+  /* font-size: 15px; */
 }
 
 .student-ass-profile-main-container
@@ -140,7 +140,7 @@
 }
 
 .ass-head-head {
-  font-size: 20px !important;
+  font-size: 18px !important;
 }
 
 .stu-pro-cell-status {
@@ -154,8 +154,8 @@
 
 .student-ass-profile-main-container .stu-ass-pro-bottom-container {
   padding: 1%;
-  display: flex;
-  justify-content: flex-start;
+  /* display: flex;
+  justify-content: flex-start; */
   flex-wrap: wrap;
 }
 
@@ -216,11 +216,69 @@
   width: fit-content;
   max-width: 500px;
 }
+.student-ass-profile-main-container
+  .stu-ass-pro-top-container
+  .stu-ass-details-container
+  .details-tab
+  .files-outer-tab {
+  margin: 1%;
+}
+
+.student-ass-profile-main-container
+  .student-pro-ass-top-container
+  .stu-ass-details-container
+  .details-tab
+  .files-outer-tab
+  .file-tab {
+  margin: 1%;
+}
+
+.student-ass-profile-main-container
+  .stu-ass-pro-top-container
+  .stu-ass-details-container
+  .details-tab
+  .files-outer-tab
+  .file-tab
+  button {
+  width: fit-content;
+  max-width: 500px;
+}
+
+.no-class {
+  text-align: center;
+}
 
 .submission-btn {
-  margin: 10px;
+  margin: 10px auto;
+  width: fit-content;
 }
 
 .submission-btn button {
   width: 100%;
+}
+
+.stu-top-right-container {
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.stu-top-right-container .stu-ass-details-container {
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.response-header {
+  font-weight: bold;
+  font-size: 21px;
+  text-align: center;
+}
+
+.mega-head {
+  font-size: 21px !important;
 }

@@ -290,79 +290,87 @@ function AssignmentProfile(props) {
             </List>
             <Divider />
           </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, minHeight: "100vh" }}>
             <DrawerHeader />
             <div className="student-ass-profile-main-container">
               {assignment && (
                 <div className="student-pro-ass-top-container">
-                  <div className="stu-ass-details-container">
-                    <div className="details-tab">
-                      Title:{" "}
-                      <div className="details-bold ass-head-head">
-                        {assignment.title}
-                      </div>
-                    </div>
-                    <div className="details-tab ">
-                      Created At:{" "}
-                      <div className="details-bold ass-head-head ">
-                        {moment(assignment.createdAt * 1000).format("llll")}
-                      </div>
-                    </div>
-                    <div className="details-tab ">
-                      Subject:{" "}
-                      <div className="details-bold ass-head-head ">
-                        {assignment.subject}
-                      </div>
-                    </div>
-                    <div className="details-tab ">
-                      Assigned By:{" "}
-                      <div className="details-bold ass-head-head ">
-                        {assignment.faculty_name}
-                      </div>
-                    </div>
-                    {assignment.due_date && (
-                      <div className="details-tab ">
-                        Due By:{" "}
-                        <div className="details-bold ass-head-head ">
-                          {moment(assignment.due_date * 1000).format("llll")}
+                  <div className="stu-top-left-container">
+                    <div className="stu-ass-details-container">
+                      <div className="details-tab">
+                        <div className="details-bold ass-head-head mega-head">
+                          {assignment.title}
                         </div>
                       </div>
-                    )}
-                    {result && (
-                      <div className="details-tab ">
-                        Status:{" "}
-                        <div className="details-bold ass-head-head ">
-                          <div
-                            className={`stu-pro-cell-status ${result.status_class}`}
-                          >
-                            {`${result.completion_status}${result.time_status}`}
+                      {assignment.description && (
+                        <div className="details-tab ">
+                          Description:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {assignment.description}
                           </div>
                         </div>
+                      )}
+                      <div className="details-tab ">
+                        {assignment.subject}
+                        {" • "}
+                        {assignment.faculty_name}
                       </div>
-                    )}
+                      {result && (
+                        <div className="details-tab ">
+                          Status:{" "}
+                          <div className="details-bold ass-head-head ">
+                            <div
+                              className={`stu-pro-cell-status ${result.status_class}`}
+                            >
+                              {`${result.completion_status}${result.time_status}`}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <div className="details-tab ">
+                        Created At:{" "}
+                        <div className="details-bold ass-head-head ">
+                          {moment(assignment.createdAt * 1000).format("llll")}
+                        </div>
+                      </div>
+                      {assignment.due_date && (
+                        <div className="details-tab ">
+                          Due By:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {moment(assignment.due_date * 1000).format("llll")}
+                          </div>
+                        </div>
+                      )}
+                      {assignment.files && (
+                        <div className="details-tab ">
+                          <div className="files-outer-tab">
+                            {assignment.files.map((file, idx) => (
+                              <div className="file-tab">
+                                <a
+                                  href={`http://localhost:5000/assignments/${file}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <Button variant="contained">{`Attachment #${
+                                    idx + 1
+                                  }`}</Button>
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
               <div className="stu-ass-pro-bottom-container">
                 {submission ? (
                   <div className="stu-ass-details-container">
-                    <div className="details-tab ">
-                      Submission Date:{" "}
-                      <div className="details-bold ass-head-head ">
-                        {moment(submission.createdAt * 1000).format("llll")}
-                      </div>
-                    </div>
-                    <div className="details-tab ">
-                      Last Edit Date:{" "}
-                      <div className="details-bold ass-head-head ">
-                        {moment(submission.last_edit_date * 1000).format(
-                          "llll"
-                        )}
-                      </div>
-                    </div>
+                    <div className="response-header">Your Response</div>
                     {submission.response && (
                       <div className="details-tab ">
-                        Your response:{" "}
+                        Response:{" "}
                         <div className="details-bold ass-head-head ">
                           {submission.response}
                         </div>
@@ -387,6 +395,20 @@ function AssignmentProfile(props) {
                         </div>
                       </div>
                     )}
+                    <div className="details-tab ">
+                      Submission Date:{" "}
+                      <div className="details-bold ass-head-head ">
+                        {moment(submission.createdAt * 1000).format("llll")}
+                      </div>
+                    </div>
+                    <div className="details-tab ">
+                      Last Edit Date:{" "}
+                      <div className="details-bold ass-head-head ">
+                        {moment(submission.last_edit_date * 1000).format(
+                          "llll"
+                        )}
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <div className="no-class">

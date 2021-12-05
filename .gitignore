@@ -1,6 +1,7 @@
 /assignments
 /assignment_submissions
 /tests
+/test_submissions
 /notes
 /node_modules
 .env
@@ -9,3 +10,4 @@ logfile.log
 combined.log
 error.log
 *.json
+*.log

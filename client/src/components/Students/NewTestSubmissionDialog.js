@@ -21,17 +21,17 @@ import LoadingOverlay from "react-loading-overlay";
 import Box from "@mui/material/Box";
 import "../Faculty/new_assignment.css";
 import {
-  uploadNewAssignmentSubmissionWithoutAttach,
-  uploadNewAssignmentSubmissionWithAttach,
+  uploadNewTestSubmissionWithoutAttach,
+  uploadNewTestSubmissionWithAttach,
 } from "../../services/student";
 
-function NewAssignmentDialog(props) {
+function NewTestDialog(props) {
 
   useEffect(() => {
     // alert(props.uid);
   }, []);
 
-  const saveAssignmentSubmission = async () => {
+  const saveTestSubmission = async () => {
     try {
       setSubmitLoading(true);
       // props.activateLoading();
@@ -47,8 +47,8 @@ function NewAssignmentDialog(props) {
           if (response !== "" && response !== null) {
             formData.append("response", response);
           }
-          formData.append("assignment_id", props.uid);
-          const { data } = await uploadNewAssignmentSubmissionWithAttach(formData);
+          formData.append("test_id", props.uid);
+          const { data } = await uploadNewTestSubmissionWithAttach(formData);
           console.log(data);
           setFiles(null);
           setResponse("");
@@ -59,9 +59,9 @@ function NewAssignmentDialog(props) {
           if (response !== "" && response !== null) {
             details.response = response;
           }
-          details.assignment_id = props.uid;
+          details.test_id = props.uid;
           console.log(details);
-          const { data } = await uploadNewAssignmentSubmissionWithoutAttach(details);
+          const { data } = await uploadNewTestSubmissionWithoutAttach(details);
           console.log(data);
           setFiles(null);
           setResponse("");
@@ -242,7 +242,7 @@ function NewAssignmentDialog(props) {
           <Button autoFocus onClick={props.onClose}>
             Cancel
           </Button>
-          <Button disabled={submitLoading} variant="contained" onClick={saveAssignmentSubmission} autoFocus>
+          <Button disabled={submitLoading} variant="contained" onClick={saveTestSubmission} autoFocus>
             Add Response
           </Button>
         </DialogActions>
@@ -251,4 +251,4 @@ function NewAssignmentDialog(props) {
   );
 }
 
-export default NewAssignmentDialog;
+export default NewTestDialog;

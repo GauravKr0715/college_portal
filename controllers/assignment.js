@@ -12,7 +12,7 @@ const getAllByFaculty = async (faculty_id) => {
     let fac_data = await faculty_repo.fetchOneCertainFields("full_name classes", { uni_id: faculty_id });
     delete (fac_data._id);
     let final_result = {
-      assignment_data: data,
+      assignment_data: data.sort((a, b) => b.createdAt - a.createdAt),
       faculty_data: fac_data
     }
     return {
@@ -64,6 +64,7 @@ const getAllForStudent = async (roll_no) => {
       final_obj.class_id = assignment.class_id;
       final_obj.subject = assignment.subject;
       final_obj.faculty_name = assignment.faculty_name;
+      final_obj.createdAt = assignment.createdAt;
       final_obj.due_date = assignment.due_date;
       final_obj.completion_status = '';
       final_obj.time_status = '';
@@ -99,6 +100,7 @@ const getAllForStudent = async (roll_no) => {
       final_result.push(final_obj);
     });
     await Promise.all(inter_array);
+    final_result.sort((a, b) => b.createdAt - a.createdAt);
     // console.log(final_result);
     return {
       success: true,

@@ -6,10 +6,6 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -25,13 +21,11 @@ import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
-import "./attendance.css";
-// import moment from "moment";
-import { getAttendanceReport } from "../../services/student";
+import "./student-assignment.css";
 import { Link, useRouteMatch } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
-import Paper from "@mui/material/Paper";
-import { PieChart } from "react-minimal-pie-chart";
+import moment from "moment";
+import { getNotesDetails } from "../../services/student";
 
 const drawerWidth = 240;
 
@@ -55,10 +49,6 @@ const closedMixin = (theme) => ({
     width: `calc(${theme.spacing(9)} + 1px)`,
   },
 });
-
-const StyledLoader = styled(LoadingOverlay)(({ theme }) => ({
-  height: "inherit",
-}));
 
 const SnackBarButton = styled(Button)(({ theme }) => ({
   fontWeight: "bold",
@@ -109,9 +99,10 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Attendance() {
-  let { url, path } = useRouteMatch();
+function NotesProfile(props) {
+  let { url } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
+  const id = url.split("/")[3];
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -129,89 +120,30 @@ function Attendance() {
     setOpen(false);
   };
   const menuId = "primary-search-account-menu";
-
-  const [report, setReport] = useState([
-    {
-      class_id: "F903",
-      subject_name: "IT Subject 7_4",
-      faculty_name: "Faculty 4",
-      total_classes: 0,
-      classes_taken: 0,
-      percentage: 0,
-    },
-    {
-      class_id: "F902",
-      subject_name: "IT Subject 7_2",
-      faculty_name: "Faculty 1",
-      total_classes: 2,
-      classes_taken: 1,
-      percentage: 50,
-    },
-    {
-      class_id: "F901",
-      subject_name: "CS Subject 7_1",
-      faculty_name: "Faculty 6",
-      total_classes: 3,
-      classes_taken: 2,
-      percentage: 66.66666666666666,
-    },
-  ]);
-
   const [loading, setLoading] = useState(false);
 
-  const attendanceReport = async () => {
+  const [notes, setnotes] = useState(null);
+
+  const [snackbar, setSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("notes Message");
+
+  const notesDetails = async () => {
     try {
       setLoading(true);
-      const { data } = await getAttendanceReport();
-      setReport(data.data);
-      if (data.data.length > 0) {
-        // setSelectLabel(`${data.data[0].subject_name} [${data.data[0].faculty_name}]`);
-        setSelectedClass(data.data[0]);
-        setPiechartData([
-          { title: "Attended", value: data.data[0].classes_taken, color: "#16ce2f" },
-          {
-            title: "Absent",
-            value: data.data[0].total_classes - data.data[0].classes_taken,
-            color: "#ec3a3a",
-          },
-        ]);
-      }
-      console.log(data.data);
+      const { data } = await getNotesDetails(id);
+      setnotes(data.notes_data);
+      console.log(data);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
       setLoading(false);
     }
-
     setLoading(false);
   };
 
   useEffect(() => {
-    attendanceReport();
+    notesDetails();
   }, []);
-
-  const [select_label, setSelectLabel] = useState("");
-  const [selected_class, setSelectedClass] = useState("");
-  const [selected_class_idx, setSelectedClassIdx] = useState(-1);
-  const [snackbar, setSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
-  const [piechartData, setPiechartData] = useState([]);
-
-  const handleChange = (event) => {
-    // setSelectedClass(event.target.value.split(":")[0]);
-    setSelectLabel(event.target.value);
-    let cla = report.filter((c) => c.class_id === event.target.value)[0];
-    setSelectedClass(cla);
-    setPiechartData([
-      { title: "Attended", value: cla.classes_taken, color: "#16ce2f" },
-      {
-        title: "Absent",
-        value: cla.total_classes - cla.classes_taken,
-        color: "#ec3a3a",
-      },
-    ]);
-    // setSelectedClassIdx(event.target.value.split(":")[1]);
-  };
 
   const openSnackBar = (msg) => {
     setSnackbarMessage(msg);
@@ -226,7 +158,7 @@ function Attendance() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Attendance Report..."
+        text="Loading notes Sheet..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -244,9 +176,6 @@ function Attendance() {
               >
                 <MenuIcon />
               </IconButton>
-              {/* <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
-            </Typography> */}
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <IconButton
@@ -312,116 +241,56 @@ function Attendance() {
             </List>
             <Divider />
           </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, minHeight: "100vh" }}>
             <DrawerHeader />
-            <div className="att-container">
-              <div className="student-options-container">
-                {report.length > 0 && (
-                  <FormControl style={{ minWidth: "30%" }}>
-                    <InputLabel id="class_select_label">
-                      Select Class
-                    </InputLabel>
-                    <Select
-                      labelId="class_select_label"
-                      id="class_select"
-                      value={select_label}
-                      label="Select Class"
-                      onChange={handleChange}
-                      style={{ minWidth: "50%" }}
-                    >
-                      {report.map((rep) => (
-                        <MenuItem
-                          value={rep.class_id}
-                        >{`${rep.subject_name} [${rep.faculty_name}]`}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-                {/* {classes.length > 0 && (
-                  <FormControl fullWidth>
-                    <InputLabel id="class_select_label">
-                      Select Class
-                    </InputLabel>
-                    <Select
-                      labelId="class_select_label"
-                      id="class_select"
-                      value={select_label}
-                      label="Select Class"
-                      onChange={handleChange}
-                    >
-                      {classes.map((c, idx) => (
-                        <MenuItem
-                          value={c.class_id + ":" + idx}
-                        >{`${c.subject_name} [${c.section}]`}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )} */}
-              </div>
-              {selected_class && (
-                <div className="report-container">
-                  <div className="report-text">
-                    <div className="text-container">
-                      <div className="normal">Subject Name: </div>
-                      <div className="header">
-                        {selected_class.subject_name}
-                      </div>
-                    </div>
-                    <div className="text-container">
-                      <div className="normal">Faculty Name: </div>
-                      <div className="header">
-                        {selected_class.faculty_name}
-                      </div>
-                    </div>
-                    <div className="text-container">
-                      <div className="normal">Classes Attended: </div>
-                      <div className="header">
-                        {selected_class.classes_taken}
-                      </div>
-                    </div>
-                    <div className="text-container">
-                      <div className="normal">Total Classes Conducted: </div>
-                      <div className="header">
-                        {selected_class.total_classes}
-                      </div>
-                    </div>
-                    <div className="text-container">
-                      <div className="normal">Percentage: </div>
-                      <div className="header">
-                        {selected_class.percentage.toFixed(2)}%
-                      </div>
-                    </div>
-                  </div>
-                  <div className="report-graph">
-                    <div className="text-container">
-                      <b>Attended:</b>
-                      <div className="color-box present"></div>
-                    </div>
-                    <div className="text-container">
-                      <b>Absent:</b>
-                      <div className="color-box absent"></div>
-                    </div>
-                    {selected_class.total_classes > 0 ? (
-                      selected_class.percentage > 0 ? (
-                        <div className="chart">
-                          <PieChart
-                            label={({ dataEntry }) => `${Math.round(dataEntry.percentage)} %`}
-                            data={piechartData}
-                          />
-                        </div>
-                      ) : (
-                        <div className="chart">
-                          <PieChart data={piechartData} />
-                        </div>
-                      )
-                    ) : (
-                      <div className="no-text-container">
-                        {" "}
-                        <div className="header">
-                          Insufficient data for visual representation
+            <div className="student-ass-profile-main-container">
+              {notes && (
+                <div className="student-pro-ass-top-container">
+                  <div className="stu-top-left-container">
+                    <div className="stu-ass-details-container">
+                      <div className="details-tab">
+                        <div className="details-bold ass-head-head mega-head">
+                          {notes.title}
                         </div>
                       </div>
-                    )}
+                      {notes.description && (
+                        <div className="details-tab ">
+                          Description:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {notes.description}
+                          </div>
+                        </div>
+                      )}
+                      <div className="details-tab ">
+                        {notes.subject}
+                        {" • "}
+                        {notes.faculty_name}
+                      </div>
+                      <div className="details-tab ">
+                        Created At:{" "}
+                        <div className="details-bold ass-head-head ">
+                          {moment(notes.createdAt * 1000).format("llll")}
+                        </div>
+                      </div>
+                      {notes.files && (
+                        <div className="details-tab ">
+                          <div className="files-outer-tab">
+                            {notes.files.map((file, idx) => (
+                              <div className="file-tab">
+                                <a
+                                  href={`http://localhost:5000/notes/${file}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <Button variant="contained">{`Attachment #${idx + 1
+                                    }`}</Button>
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -446,4 +315,4 @@ function Attendance() {
   );
 }
 
-export default Attendance;
+export default NotesProfile;

@@ -6,16 +6,16 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
@@ -25,13 +25,19 @@ import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
-import "./attendance.css";
-// import moment from "moment";
-import { getAttendanceReport } from "../../services/student";
+import "./student-assignment.css";
 import { Link, useRouteMatch } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Checkbox from "@mui/material/Checkbox";
+import moment from "moment";
 import Paper from "@mui/material/Paper";
-import { PieChart } from "react-minimal-pie-chart";
+import { getTestSheet } from "../../services/student";
 
 const drawerWidth = 240;
 
@@ -109,7 +115,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Attendance() {
+function Test() {
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
@@ -129,88 +135,101 @@ function Attendance() {
     setOpen(false);
   };
   const menuId = "primary-search-account-menu";
-
-  const [report, setReport] = useState([
-    {
-      class_id: "F903",
-      subject_name: "IT Subject 7_4",
-      faculty_name: "Faculty 4",
-      total_classes: 0,
-      classes_taken: 0,
-      percentage: 0,
-    },
-    {
-      class_id: "F902",
-      subject_name: "IT Subject 7_2",
-      faculty_name: "Faculty 1",
-      total_classes: 2,
-      classes_taken: 1,
-      percentage: 50,
-    },
-    {
-      class_id: "F901",
-      subject_name: "CS Subject 7_1",
-      faculty_name: "Faculty 6",
-      total_classes: 3,
-      classes_taken: 2,
-      percentage: 66.66666666666666,
-    },
-  ]);
-
   const [loading, setLoading] = useState(false);
 
-  const attendanceReport = async () => {
+  const [classes, setClasses] = useState([
+    {
+      class_id: "123",
+      subject_name: "Subject 1",
+      faculty_name: "Faculty 1",
+    },
+    {
+      class_id: "456",
+      subject_name: "Subject 2",
+      faculty_name: "Faculty 2",
+    },
+    {
+      class_id: "789",
+      subject_name: "Subject 3",
+      faculty_name: "Faculty 3",
+    },
+  ]);
+  const [allTests, setAllTests] = useState([]);
+  const [filteredTests, setFilteredTests] = useState([]);
+  const [select_label, setSelectLabel] = useState("All");
+
+  const [status_filter, setStatusFilter] = useState("All");
+  const [subject_filter, setSubjectFIlter] = useState("All");
+
+  const [snackbar, setSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
+
+  const filterBasedOnStatus = (new_status) => {
+    let new_filtered_tests = [];
+    if (subject_filter === "All") {
+      new_filtered_tests = allTests;
+    } else {
+      new_filtered_tests = allTests.filter(
+        (test) => test.class_id === subject_filter
+      );
+    }
+    if (new_status === "All") {
+      setFilteredTests(new_filtered_tests);
+    } else {
+      setFilteredTests(
+        new_filtered_tests.filter(
+          (test) => test.completion_status === new_status
+        )
+      );
+    }
+    setStatusFilter(new_status);
+  };
+
+  const isActive = (status) => {
+    return status_filter === status ? "stu-tab-active" : "";
+  };
+
+  const testSheet = async () => {
     try {
       setLoading(true);
-      const { data } = await getAttendanceReport();
-      setReport(data.data);
-      if (data.data.length > 0) {
-        // setSelectLabel(`${data.data[0].subject_name} [${data.data[0].faculty_name}]`);
-        setSelectedClass(data.data[0]);
-        setPiechartData([
-          { title: "Attended", value: data.data[0].classes_taken, color: "#16ce2f" },
-          {
-            title: "Absent",
-            value: data.data[0].total_classes - data.data[0].classes_taken,
-            color: "#ec3a3a",
-          },
-        ]);
-      }
-      console.log(data.data);
+      const { data } = await getTestSheet();
+      console.log(data);
+      setAllTests(data.data);
+      setFilteredTests(data.data);
+      setClasses(data.classes);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
       setLoading(false);
     }
-
     setLoading(false);
   };
 
   useEffect(() => {
-    attendanceReport();
+    testSheet();
   }, []);
 
-  const [select_label, setSelectLabel] = useState("");
-  const [selected_class, setSelectedClass] = useState("");
-  const [selected_class_idx, setSelectedClassIdx] = useState(-1);
-  const [snackbar, setSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
-  const [piechartData, setPiechartData] = useState([]);
-
   const handleChange = (event) => {
-    // setSelectedClass(event.target.value.split(":")[0]);
+    let new_filtered_tests = [];
+    if (status_filter === "All") {
+      new_filtered_tests = allTests;
+    } else {
+      new_filtered_tests = allTests.filter(
+        (test) => test.completion_status === status_filter
+      );
+    }
+    if (event.target.value === "All") {
+      setFilteredTests(new_filtered_tests);
+    } else {
+      setFilteredTests(
+        new_filtered_tests.filter(
+          (test) => test.class_id === event.target.value
+        )
+      );
+    }
+    setSubjectFIlter(event.target.value);
+    console.log(filteredTests);
     setSelectLabel(event.target.value);
-    let cla = report.filter((c) => c.class_id === event.target.value)[0];
-    setSelectedClass(cla);
-    setPiechartData([
-      { title: "Attended", value: cla.classes_taken, color: "#16ce2f" },
-      {
-        title: "Absent",
-        value: cla.total_classes - cla.classes_taken,
-        color: "#ec3a3a",
-      },
-    ]);
-    // setSelectedClassIdx(event.target.value.split(":")[1]);
   };
 
   const openSnackBar = (msg) => {
@@ -226,7 +245,7 @@ function Attendance() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Attendance Report..."
+        text="Loading Test Sheet..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -244,9 +263,6 @@ function Attendance() {
               >
                 <MenuIcon />
               </IconButton>
-              {/* <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
-            </Typography> */}
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
                 <IconButton
@@ -314,30 +330,32 @@ function Attendance() {
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <DrawerHeader />
-            <div className="att-container">
-              <div className="student-options-container">
-                {report.length > 0 && (
-                  <FormControl style={{ minWidth: "30%" }}>
-                    <InputLabel id="class_select_label">
-                      Select Class
-                    </InputLabel>
-                    <Select
-                      labelId="class_select_label"
-                      id="class_select"
-                      value={select_label}
-                      label="Select Class"
-                      onChange={handleChange}
-                      style={{ minWidth: "50%" }}
-                    >
-                      {report.map((rep) => (
-                        <MenuItem
-                          value={rep.class_id}
-                        >{`${rep.subject_name} [${rep.faculty_name}]`}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-                {/* {classes.length > 0 && (
+            <div className="student-ass-main-container">
+              <div className="student-ass-top-container">
+                <ul className="stu-nav-container">
+                  <li
+                    // className={"stu-tabs "}
+                    className={`stu-tabs ${isActive("All")}`}
+                    onClick={() => filterBasedOnStatus("All")}
+                  >
+                    All
+                  </li>
+                  <li
+                    // className={"stu-tabs "}
+                    className={`stu-tabs ${isActive("Pending")}`}
+                    onClick={() => filterBasedOnStatus("Pending")}
+                  >
+                    Pending
+                  </li>
+                  <li
+                    // className={"stu-tabs "}
+                    className={`stu-tabs ${isActive("Completed")}`}
+                    onClick={() => filterBasedOnStatus("Completed")}
+                  >
+                    Completed
+                  </li>
+                </ul>
+                <div className="stu-first-container-button">
                   <FormControl fullWidth>
                     <InputLabel id="class_select_label">
                       Select Class
@@ -349,82 +367,106 @@ function Attendance() {
                       label="Select Class"
                       onChange={handleChange}
                     >
+                      <MenuItem value={"All"}>All Classes</MenuItem>
                       {classes.map((c, idx) => (
                         <MenuItem
-                          value={c.class_id + ":" + idx}
-                        >{`${c.subject_name} [${c.section}]`}</MenuItem>
+                          value={c.class_id}
+                        >{`${c.subject_name} [${c.faculty_name}]`}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
-                )} */}
-              </div>
-              {selected_class && (
-                <div className="report-container">
-                  <div className="report-text">
-                    <div className="text-container">
-                      <div className="normal">Subject Name: </div>
-                      <div className="header">
-                        {selected_class.subject_name}
-                      </div>
-                    </div>
-                    <div className="text-container">
-                      <div className="normal">Faculty Name: </div>
-                      <div className="header">
-                        {selected_class.faculty_name}
-                      </div>
-                    </div>
-                    <div className="text-container">
-                      <div className="normal">Classes Attended: </div>
-                      <div className="header">
-                        {selected_class.classes_taken}
-                      </div>
-                    </div>
-                    <div className="text-container">
-                      <div className="normal">Total Classes Conducted: </div>
-                      <div className="header">
-                        {selected_class.total_classes}
-                      </div>
-                    </div>
-                    <div className="text-container">
-                      <div className="normal">Percentage: </div>
-                      <div className="header">
-                        {selected_class.percentage.toFixed(2)}%
-                      </div>
-                    </div>
-                  </div>
-                  <div className="report-graph">
-                    <div className="text-container">
-                      <b>Attended:</b>
-                      <div className="color-box present"></div>
-                    </div>
-                    <div className="text-container">
-                      <b>Absent:</b>
-                      <div className="color-box absent"></div>
-                    </div>
-                    {selected_class.total_classes > 0 ? (
-                      selected_class.percentage > 0 ? (
-                        <div className="chart">
-                          <PieChart
-                            label={({ dataEntry }) => `${Math.round(dataEntry.percentage)} %`}
-                            data={piechartData}
-                          />
-                        </div>
-                      ) : (
-                        <div className="chart">
-                          <PieChart data={piechartData} />
-                        </div>
-                      )
-                    ) : (
-                      <div className="no-text-container">
-                        {" "}
-                        <div className="header">
-                          Insufficient data for visual representation
-                        </div>
-                      </div>
-                    )}
-                  </div>
                 </div>
-              )}
+              </div>
+              <div className="stu-ass-bottom-container">
+                {filteredTests.length > 0 ? (
+                  <TableContainer
+                    sx={{
+                      backgroundColor: "#fff !important",
+                    }}
+                    component={Paper}
+                  >
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Title
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Subject
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Faculty Name
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Status
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Due Date
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filteredTests.map((test) => (
+                          <TableRow key={test.uid}>
+                            <TableCell component="th" scope="row">
+                              <Link
+                                to={`${curr_url}/tests/${test.uid}`}
+                              >
+                                <div className={"clickable-title"}>
+                                  {test.title}
+                                </div>
+                              </Link>
+                            </TableCell>
+                            <TableCell>{test.subject}</TableCell>
+                            <TableCell>{test.faculty_name}</TableCell>
+                            <TableCell>
+                              <div
+                                className={`stu-cell-status ${test.status_class}`}
+                              >
+                                {`${test.completion_status}${test.time_status}`}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {test.due_date
+                                ? moment(test.due_date * 1000).format(
+                                  "llll"
+                                )
+                                : "--NA--"}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <div className="no-class">No Tests to show... </div>
+                )}
+              </div>
             </div>
           </Box>
         </Box>
@@ -446,4 +488,4 @@ function Attendance() {
   );
 }
 
-export default Attendance;
+export default Test;
