@@ -1,8 +1,5 @@
 import React , {useState,useEffect} from 'react'
-
-import Dynamics from '../Subject/Dynamics';
-import "../Section/SectionCreate.css"
-
+import "./studentnew.css"
 import Container from '@mui/material/Container';
 import FileSaver from 'file-saver';
 import { styled, useTheme } from "@mui/material/styles";
@@ -161,7 +158,31 @@ function Studentnew() {
   const [loading, setLoading] = useState(false);
   const [submitLoad, setSubmitLoad] = useState(false);
 
-  
+  /* const postAttendance = async (details) => {
+    try {
+      setLoading(true);
+      setSubmitLoad(true);
+      const { data } = await postAttendanceSheet(details);
+      console.log(data);
+      openSnackBar(data.message);
+    } catch (error) {
+      console.log(error);
+      openSnackBar("Some error occured");
+      setLoading(false);
+      setSubmitLoad(false);
+    }
+
+    setLoading(false);
+    setSubmitLoad(false);
+  };
+
+ */
+    const saveFile = () => {
+FileSaver.saveAs(
+  process.env.PUBLIC_URL + "/resources/sample2.csv",
+  "csv-file-format.csv"
+);
+}
   return (
     <>
       <LoadingOverlay
@@ -191,7 +212,13 @@ function Studentnew() {
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
   
-    
+              <CssBaseline />
+ 
+              <Stack spacing={2} direction="row">
+      
+      <Button variant="outlined"  style={{backgroundColor:"white", fontWeight:"bold"}} onClick={saveFile} className="filebtn">Get CSV File format</Button>
+      
+    </Stack>
             
               </Box>
             </Toolbar>
@@ -228,65 +255,22 @@ function Studentnew() {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          
-          <div className="options">
-
-            
-          <div className="twoss">
-              <label htmlFor="semester">Semester:  </label>
-              <select>  
-                 <option value = "Ist sem"> Ist Semester
-                   </option>  
-                 <option value = "IInd sem"> IInd Semester   
-                   </option>  
-                 <option value = "IIIrd sem"> IIIrd Semester
-                   </option>  
-                 <option value = "IVth sem"> IVth Semester                         </option>  
-                   <option value = "IVth sem"> Vth Semester 
-                   </option>  
-                   <option value = "IVth sem"> VIth Semester
-                   </option>  
-                   <option value = "IVth sem"> VIIth Semester
-                   </option>  
-                   <option value = "IVth sem"> VIIIth Semester  
-                   </option>  
-              </select>  
-          </div>
-
-
-
-          <div className="fourss">
-          <label htmlFor="Department">Department: </label>
-          <select>  
-                 <option value = "CSE"> CSE
-                   </option>  
-                 <option value = "IT">  IT
-                   </option>  
-                 <option value = "ECE"> ECE
-                   </option>  
-                 <option value = "EEE"> EEE  
-                   </option>  
-                   <option value = "MECH"> MECH 
-                   </option>
-                   <option value = "CIVIL"> CIVIL
-                   </option>
-                   <option value = "BBA"> BBA 
-                   </option>
-                   <option value = "MBA"> MBA  
-                   </option>
-              </select>
-          </div>
-          </div>
-
-          <div className="dyn">
-            
-              <Dynamics/>
-                      
-          </div>
-
-          <div style={{marginLeft:'34rem', marginTop:'10rem'}} ><Button variant="contained" color="success" sx={{fontWeight:'bold',width:'5rem',height:'3rem'}}>Save</Button></div>
-
-
+          <div className="start">
+      <CssBaseline />
+      <Container maxWidth="sm">
+        <Box sx={{ bgcolor: 'white', height: '80vh',marginTop:"6rem" }} >
+                 <div className="newflex">
+                 <Button variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem',fontWeight:'bold'}} >New ➕</Button><br></br>
+                 <p style={{fontSize:'1.6rem', fontWeight:"bold"}}>OR</p><br />
+                 <Button variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem', fontWeight:'bold' }} /* onclick={{()=>{return <>
+                    <input id="csvFileInput" type="file" accept=".csv"/>
+                    </>
+                }} */>Bulk Import</Button>
+                   
+                 </div>
+        </Box>
+      </Container>
+      </div>
      </Box>
         </Box>
         <Snackbar
@@ -308,6 +292,3 @@ function Studentnew() {
 }
 
 export default Studentnew
-
-
-

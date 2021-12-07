@@ -11,7 +11,7 @@
 }
 
 .option{
-    margin-left: 25rem;
+    margin-left: 16rem;
     display: flex;
     flex-direction: row;
     margin-bottom: 4.7rem;
@@ -56,9 +56,9 @@ label{
 }
 
 .add{
-    padding: 0.4rem;
+    padding: 0.4rem 0.8rem 0.4rem 0.8rem;
     border-radius: 3px;
-    background-color: rgb(0, 41, 32);
+    background-color: rgb(16, 165, 133);
     color: white;
     font-weight: bold;
 }
@@ -76,9 +76,9 @@ label{
    width: 5%;
    text-align: center;
    padding: 0.8rem;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 1.2rem;
-    background-color: rgba(0, 68, 20, 0.911);
+    background-color: rgba(10, 167, 57, 0.911);
     color: white;
     font-weight: bold;
 }
@@ -94,7 +94,7 @@ label{
 
 .dyn{
     background-color: white;
-    margin-left: 24rem;
+    margin-left: 14rem;
     width: 60%;
     box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
     border: 1px solid #e4eaec;
@@ -102,7 +102,8 @@ label{
 }
 .dyns{
     background-color: white;
-    margin-left: 24rem;
+    margin-left: 13rem;
+    margin-top: 6rem;
     width: 70%;
     box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
     border: 1px solid #e4eaec;
@@ -114,7 +115,7 @@ label{
 }
 
 .options{
-    margin-left: 30rem;
+    margin-left: 19rem;
     display: flex;
     flex-direction: row;
     margin-bottom: 4.7rem;
@@ -178,9 +179,9 @@ label{
 .frame-1{
 
     background-color: white;
-    margin-top: 2rem;
-    margin-left: 18rem;
-    width: 45%;
+    margin-top: 7rem;
+    margin-left: 10rem;
+    width: 47%;
     height: 80vh;
     box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
     border: 1px solid #e4eaec;
@@ -188,7 +189,7 @@ label{
 }
 .check{
     margin-top: 1rem;
-    margin-left: 6rem;
+    margin-left: 4rem;
     padding: 1rem;
 }
 .check input{
@@ -237,7 +238,7 @@ label{
 }
 .frame-2{
     background-color: white;
-    margin-top: 2rem;
+    margin-top: 7rem;
     margin-left: 4rem;
     width: 25%;
     height: 80vh;
@@ -276,6 +277,7 @@ label{
     padding: 0.3rem 0.3rem 0.3rem 0.3rem;
     border-radius: 6px;
     justify-items: right;
+    margin-top: 5rem;
 }
 .f .div{
     display:"flex";
@@ -284,6 +286,6 @@ label{
 }
 .frames{
     position: absolute;
-    top: 1%;
+    top: 3%;
     left: 20%;
 }

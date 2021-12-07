@@ -43,8 +43,9 @@ body {
 .nav .img {
   width: 10vh;
   height: 10vh;
-  margin-top: 4rem;
-  margin-left: 2rem;
+ 
+ position: absolute;
+ left: 22%;
   border-radius: 5px;
 }
 .nav p {

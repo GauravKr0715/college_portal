@@ -3,25 +3,33 @@ import React from 'react'
 import "./App.css"
 // import ReactDOM from 'react-dom'
 import Slide from "./components/Slide"
-import Landingpage from "./components/Students/Landingpage/Landingpage"
+
 import StudentLogin from './components/Login/S_Login';
 import FacultyLogin from './components/Login/F_Login';
+
+
 import FacultyHome from './components/Faculty/Home';
 import FacultyFeed from './components/Faculty/Feed';
 import FacultyAttendance from './components/Faculty/Attendance';
+import FacultyTT from "./components/Faculty/timetable"
+import FacultyProfile from "./components/Faculty/profile"
+
 import StudentHome from './components/Students/Home';
 import StudentFeed from './components/Students/Feed';
 import StudentAttendance from './components/Students/Attendance';
+import StudentTT from "./components/Students/Timetable"
+import StudentProfile from "./components/Students/profile"
 
 import SectionCreate from './components/Admin/Section/SectionCreate';
 import SectionTable from './components/Admin/Section/SectionTable';
 import SectionFinal from "./components/Admin/Section/SectionFinal";
 import AdminLandPage from "./components/Admin/AdminLandPage";
 import SubjectPage from './components/Admin/Subject/Subject';
-import FacultyTT from "./components/Faculty/timetable"
-import StudentTT from "./components/Students/Timetable"
-import FacultyProfile from "./components/Faculty/profile"
-import StudentProfile from "./components/Students/profile"
+import StudentAdminNew from "./components/Admin/Student/studentnew"
+
+
+
+
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 
 /* import { library } from "@fontawesome/fontawesome-svg-core";
@@ -110,22 +118,41 @@ function App() {
           )}>
         </Route>
 
-          <Route path="/SLandingpage" exact component={Landingpage} />
+        <Route path="/admin"
+        render={({ match: { url } }) => (
+          <>
+            <Route path={`${url}/SectionCreate`} exact >
+              {/* <Authorization /> */}
+              <SectionCreate />
+            </Route>
+            <Route path={`${url}/SectionTable`} exact >
+              {/* <Authorization /> */}
+              <SectionTable />
+            </Route>
+            <Route path={`${url}/SectionFinal`} exact >
+              {/* <Authorization /> */}
+              <SectionFinal />
+            </Route>
+            <Route path={`${url}/SubjectPage`} exact >
+              {/* <Authorization /> */}
+              <SubjectPage />
+            </Route>
+            <Route path={`${url}/studentnew`} exact >
+                {/* <Authorization /> */}
+                <StudentAdminNew />
+              </Route>
+              <Route path={`${url}/AdminLandPage`} exact >
+              {/* <Authorization /> */}
+              <AdminLandPage />
+            </Route>
+          </>
+        )}>
+      </Route>
+
+          
           <Route path="/StudentLogin" component={StudentLogin} />
           <Route path="/faculty/login" component={FacultyLogin} />
-          <Route path="/faculty/" component={FacultyHome} />
-          <Route path="/student/" component={StudentHome} />
-         
-          <Route path="/SectionCreate" component={SectionCreate} />
-          <Route path="/SectionTable" component={SectionTable} />
-          <Route path="/SectionFinal" exact component={SectionFinal} />
-          <Route path="/SubjectPage" exact component={SubjectPage} />
-          <Route path="/AdminLandPage" exact component={AdminLandPage} />
-         
-          <Route path="/FacultyTT" exact component={FacultyTT} />
-
-
-
+          
         </Switch>
       </Router>
 

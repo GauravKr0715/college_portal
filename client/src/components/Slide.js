@@ -66,13 +66,13 @@ function Slide() {
                                 Admin
                             </h3>
                         </Link>
-                    </div>
+                    </div> 
 
 
                 </div>
                 <p className="head">College Portal</p>
                 <img src={logo} alt="" className="log" />
-                <p className="nam">Dr. Akhilesh Das Gupta Institute Of Technolgy and Technology</p>
+                <p className="nam">Dr. Akhilesh Das Gupta Institute Of Technolgy and Management</p>
             </div>
         </div>
     );

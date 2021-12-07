@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
-import "./timetable.css"
+import React, { useState, useEffect,useHistory } from "react";
+import "./profile.css"
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import Container from '@mui/material/Container';
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -45,25 +46,6 @@ import Checkbox from "@mui/material/Checkbox";
 import LoadingOverlay from "react-loading-overlay";
 
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
-
-function createData(name, calories, fat, carbs, protein,six,seven ,eight) {
-  return { name, calories, fat, carbs, protein ,six,seven, eight};
-}
-
-const rows = [
-  createData('Monday', "ADBA","ACN","","ST","CNS","GROUP B CNS","GROUP A ST"),
-  createData('Tuesday', "","","","","","",""),
-  createData('Wednesday', "","","","","","",""),
-  createData('Thursday', "","","","","","",""),
-  createData('Friday', "","","","","","",""),
-  createData('Saturday', "","","","","","",""),
-
-];
 
 
 const drawerWidth = 240;
@@ -143,6 +125,8 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function Attendance() {
+ 
+  
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
@@ -357,6 +341,30 @@ function Attendance() {
   const closeSnackBar = () => {
     setSnackbar(false);
   };
+
+  const[profileValue,setProfileValue]=useState([
+    {"Name":"Unique Id:",
+      "Value":"adgitm02703"
+    },
+    {"Name":"Name:",
+      "Value":"Faculty 6"
+    },
+    {"Name":"Email ID:",
+      "Value":"faculty6@gmail.com"
+    },
+    {"Name":"Contact No:",
+      "Value":"9818556669"
+    },
+    {"Name":"Department:",
+      "Value":"027"
+    },
+    {"Name":"Year of Joining:",
+      "Value":"2004"
+    },
+   ])
+
+/*  */
+
   return (
     <>
       <LoadingOverlay
@@ -450,7 +458,47 @@ function Attendance() {
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <DrawerHeader />
-                           
+            <CssBaseline />
+            <Container maxWidth="sm">
+               <Box sx={{ bgcolor: 'white', height: '90vh' ,marginTop:6}} />
+               <div className="desp">             
+               <table className="table">
+               
+              {  profileValue.map((name)=>(
+               /*  <div className="cont">
+                 <label htmlFor="">{name.Name}&nbsp;&nbsp;</label>
+                 <div className="sugar1"><p>{name.Value}</p></div>
+                 </div> */
+                 <tr className="cont">
+                 <td><label htmlFor="" >{name.Name}&nbsp;&nbsp;</label></td>
+                 <td><div className="sugar1"><p>{name.Value}</p></div></td>
+                 </tr>
+              )
+                 )}
+                
+                 </table>
+                      
+            
+               </div>
+               
+            </Container>
+            <img
+            src={"https://th.bing.com/th/id/OIP.0777WTk6jNF_2SEh632a4QHaIM?pid=ImgDet&rs=1"}
+            id="pro"
+            className="img"
+            accept="image/*"
+        />
+        <input
+                        type="file"
+                        className="file"
+                        id="input"
+                        accept="image/*"
+                        
+                    />
+ 
+      
+              
+            
             </Box>
         </Box>
         <Snackbar

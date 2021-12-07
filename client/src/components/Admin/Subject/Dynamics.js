@@ -60,7 +60,7 @@ function Dynamic() {
               {inputList.length !== 1 && <button
                 className="mr10"
                 onClick={() => handleRemoveClick(i)}>Remove</button>}
-              {inputList.length - 1 === i && <button className="add" onClick={handleAddClick}>Add</button>}
+              {inputList.length - 1 === i && <button className="add" onClick={handleAddClick}>ADD</button>}
             </div>
           </div>
         );

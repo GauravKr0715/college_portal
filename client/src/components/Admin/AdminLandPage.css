@@ -2,7 +2,7 @@
 
 width: 50rem; 
 height: 70vh;
-margin-left: 22rem;
+margin-left: 14rem;
 margin-top: 4rem;
 background-color: #FFFFFF;
 box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
@@ -18,7 +18,7 @@ padding-top: 0.5rem;
   height: 85px;
  position: absolute;
  top: 3%;
- left: 10%;
+ left: 5%;
 }
 
 .logout p {
@@ -68,6 +68,10 @@ margin-bottom: 2rem;
   color: #fff;
   text-decoration: none;
    
+}
+
+.sec{
+  margin-top: 3rem !important;
 }
 
 

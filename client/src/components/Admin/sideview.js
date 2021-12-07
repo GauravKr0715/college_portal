@@ -20,7 +20,7 @@ function Sideview() {
             <div className="Opt1">
             <ul style={{listStyleType:"none"}}>
                <Link to="/SubjectPage"  style={{textDecoration:"none",color:"beige"}}> <li><div className="icon"> <i class="fas fa-book"></i></div>&nbsp;  Subjects</li></Link>
-               <Link  to="/StudentC" style={{textDecoration:"none",color:"beige"}} > <li><div className="icon"><i className="far fa-id-badge"></i></div> &nbsp; Student Creation</li></Link>
+               <Link  to="/studentnew" style={{textDecoration:"none",color:"beige"}} > <li><div className="icon"><i className="far fa-id-badge"></i></div> &nbsp; Student Creation</li></Link>
                <Link to="/TeacherC" style={{textDecoration:"none",color:"beige"}}> <li><div className="icon"><i class="fas fa-chalkboard-teacher"></i></div>&nbsp;  Teacher Creation</li></Link>
                
                          
