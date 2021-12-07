@@ -6,10 +6,6 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -25,20 +21,11 @@ import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
-import "./attendance.css";
-import moment from "moment";
-import { getAssignmentSheet } from "../../services/faculty";
+import "./student-assignment.css";
 import { Link, useRouteMatch } from "react-router-dom";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Checkbox from "@mui/material/Checkbox";
 import LoadingOverlay from "react-loading-overlay";
-import Paper from "@mui/material/Paper";
-import NewAssignmentDialog from "./NewAssignmentDialog";
+import moment from "moment";
+import { getNotesDetails } from "../../services/student";
 
 const drawerWidth = 240;
 
@@ -62,10 +49,6 @@ const closedMixin = (theme) => ({
     width: `calc(${theme.spacing(9)} + 1px)`,
   },
 });
-
-const StyledLoader = styled(LoadingOverlay)(({ theme }) => ({
-  height: "inherit",
-}));
 
 const SnackBarButton = styled(Button)(({ theme }) => ({
   fontWeight: "bold",
@@ -116,10 +99,10 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Assignment() {
-  let { url, path } = useRouteMatch();
+function NotesProfile(props) {
+  let { url } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
-
+  const id = url.split("/")[3];
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -138,59 +121,28 @@ function Assignment() {
   };
   const menuId = "primary-search-account-menu";
   const [loading, setLoading] = useState(false);
-  const [submitLoad, setSubmitLoad] = useState(false);
 
-  const [select_label, setSelectLabel] = useState("");
-  // const [selected_class, setSelectedClass] = useState("");
-  // const [selected_class_idx, setSelectedClassIdx] = useState(-1);
-
-  const handleChange = (event) => {
-    setFilteredAssignments(allAssignments.filter(assignment => assignment.class_id === event.target.value));
-    console.log(filteredAssignments);
-    setSelectLabel(event.target.value);
-  };
+  const [notes, setnotes] = useState(null);
 
   const [snackbar, setSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
+  const [snackbarMessage, setSnackbarMessage] = useState("notes Message");
 
-  const [allAssignments, setAllAssignments] = useState([]);
-  const [filteredAssignments, setFilteredAssignments] = useState([]);
-  const [classes, setClasses] = useState([]);
-
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-
-  const onDialogClose = () => {
-    setDialogOpen(false);
-    assignmentSheet();
-  }
-
-  const activateLoading = () => {
-    setLoading(true);
-  }
-
-  const deactivateLoading = () => {
-    setLoading(false);
-  }
-
-  const assignmentSheet = async () => {
+  const notesDetails = async () => {
     try {
       setLoading(true);
-      const { data } = await getAssignmentSheet();
-      setAllAssignments(data.final_result.assignment_data);
-      setFilteredAssignments(data.final_result.assignment_data);
-      setClasses(data.final_result.faculty_data.classes);
+      const { data } = await getNotesDetails(id);
+      setnotes(data.notes_data);
       console.log(data);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
       setLoading(false);
     }
-
     setLoading(false);
   };
 
   useEffect(() => {
-    assignmentSheet();
+    notesDetails();
   }, []);
 
   const openSnackBar = (msg) => {
@@ -206,7 +158,7 @@ function Assignment() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Assignment Sheet..."
+        text="Loading notes Sheet..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -289,122 +241,59 @@ function Assignment() {
             </List>
             <Divider />
           </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, minHeight: "100vh" }}>
             <DrawerHeader />
-            <div className="att-container">
-              <div className="options-container">
-                <div className="selector">
-                  {classes.length > 0 && (
-                    <FormControl fullWidth>
-                      <InputLabel id="class_select_label">
-                        Select Class
-                      </InputLabel>
-                      <Select
-                        labelId="class_select_label"
-                        id="class_select"
-                        value={select_label}
-                        label="Select Class"
-                        onChange={handleChange}
-                      >
-                        {classes.map((c, idx) => (
-                          <MenuItem
-                            value={c.class_id}
-                          >{`${c.subject_name} [${c.section}]`}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
+            <div className="student-ass-profile-main-container">
+              {notes && (
+                <div className="student-pro-ass-top-container">
+                  <div className="stu-top-left-container">
+                    <div className="stu-ass-details-container">
+                      <div className="details-tab">
+                        <div className="details-bold ass-head-head mega-head">
+                          {notes.title}
+                        </div>
+                      </div>
+                      {notes.description && (
+                        <div className="details-tab ">
+                          Description:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {notes.description}
+                          </div>
+                        </div>
+                      )}
+                      <div className="details-tab ">
+                        {notes.subject}
+                        {" • "}
+                        {notes.faculty_name}
+                      </div>
+                      <div className="details-tab ">
+                        Created At:{" "}
+                        <div className="details-bold ass-head-head ">
+                          {moment(notes.createdAt * 1000).format("llll")}
+                        </div>
+                      </div>
+                      {notes.files && (
+                        <div className="details-tab ">
+                          <div className="files-outer-tab">
+                            {notes.files.map((file, idx) => (
+                              <div className="file-tab">
+                                <a
+                                  href={`http://localhost:5000/notes/${file}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <Button variant="contained">{`Attachment #${idx + 1
+                                    }`}</Button>
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="updator">
-                  <StyledLoader
-                    active={submitLoad}
-                    classNamePrefix="MyLoader_"
-                    spinner
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={() => {
-                        setDialogOpen(true);
-                      }}
-                      height="auto"
-                    >
-                      <span class="material-icons">add</span> New Assignment
-                    </Button>
-                  </StyledLoader>
-                </div>
-              </div>
-              <div className="list-container">
-                {filteredAssignments.length > 0 ? (
-                  <TableContainer
-                    sx={{
-                      backgroundColor: "#fff !important",
-                    }}
-                    component={Paper}
-                  >
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Title
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Section
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Subject
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Created At
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Due Date
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filteredAssignments.map((assignment) => (
-                          <TableRow key={assignment.uid}>
-                            <TableCell component="th" scope="row">
-                              {assignment.title}
-                            </TableCell>
-                            <TableCell>{assignment.section}</TableCell>
-                            <TableCell>{assignment.subject}</TableCell>
-                            <TableCell>{moment(assignment.createdAt * 1000).format('llll')}</TableCell>
-                            <TableCell>{assignment.due_date ? moment(assignment.due_date * 1000).format('llll') : '--NA--'}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                ) : (
-                  <div className="no-class">No Assignments to show... </div>
-                )}
-              </div>
+              )}
             </div>
           </Box>
         </Box>
@@ -421,16 +310,9 @@ function Assignment() {
             </React.Fragment>
           }
         />
-        <NewAssignmentDialog
-          open={dialogOpen}
-          onClose={onDialogClose}
-          activateLoading={activateLoading}
-          deactivateLoading={deactivateLoading}
-          openSnackBar={openSnackBar}
-        />
       </LoadingOverlay>
     </>
   );
 }
 
-export default Assignment;
+export default NotesProfile;

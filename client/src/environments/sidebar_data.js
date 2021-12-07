@@ -16,7 +16,7 @@ export const faculty_sidebar_data = [
     icon: 'table_view',
     link: '/time-table'
   }, {
-    text: 'Assignment & Tests',
+    text: 'Assignments',
     icon: 'task',
     link: '/assignments'
   }, {

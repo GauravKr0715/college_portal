@@ -690,10 +690,10 @@ function Feed() {
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
-          <Typography paragraph style={{textAlign:"center" ,marginTop:150, fontSize:90}}>         
+          <Typography paragraph style={{ textAlign: "center", marginTop: 150, fontSize: 90 }}>
 
-                 Student Section
-           </Typography>
+            Student Section
+          </Typography>
           <Typography paragraph>
 
           </Typography>
@@ -739,7 +739,7 @@ function Feed() {
             <ListItem>
               <div className="slot-drawer">
                 <div className="drawer-key">
-                Faculty Name:&nbsp;&nbsp;&nbsp;
+                  Faculty Name:&nbsp;&nbsp;&nbsp;
                   <div className="drawer-value">{selectedSlot.faculty_name}</div>
                 </div>
               </div>

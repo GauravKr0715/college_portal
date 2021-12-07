@@ -14,11 +14,21 @@ import FacultyAttendance from './components/Faculty/Attendance';
 import FacultyTT from "./components/Faculty/timetable"
 import FacultyProfile from "./components/Faculty/profile"
 
+
+import StudentProfile from "./components/Students/profile"
+import FacultyAssignment from './components/Faculty/Assignment';
+import FacultyTest from './components/Faculty/Test';
+import FacultyNotes from './components/Faculty/Notes';
 import StudentHome from './components/Students/Home';
 import StudentFeed from './components/Students/Feed';
 import StudentAttendance from './components/Students/Attendance';
+import StudentAssignment from './components/Students/Assignment';
+import StudentAssignmentProfile from './components/Students/AssignmentProfile';
+import StudentTest from './components/Students/Test';
+import StudentTestProfile from './components/Students/TestProfile';
+import StudentNotes from './components/Students/Notes';
+import StudentNotesProfile from './components/Students/NotesProfile';
 import StudentTT from "./components/Students/Timetable"
-import StudentProfile from "./components/Students/profile"
 
 import SectionCreate from './components/Admin/Section/SectionCreate';
 import SectionTable from './components/Admin/Section/SectionTable';
@@ -75,6 +85,18 @@ function App() {
                   {/* <Authorization /> */}
                   <FacultyAttendance />
                 </Route>
+                <Route path={`${url}/assignments`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyAssignment />
+                </Route>
+                <Route path={`${url}/tests`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyTest />
+                </Route>
+                <Route path={`${url}/notes`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyNotes />
+                </Route>
                 <Route path={`${url}/time-table`} exact >
                   {/* <Authorization /> */}
                   <FacultyTT />
@@ -88,35 +110,59 @@ function App() {
           </Route>
 
           <Route path="/student"
-          render={({ match: { url } }) => (
-            <>
-              <Route path={`${url}/login`} exact >
-                {/* <Authorization /> */}
-                <StudentLogin />
-              </Route>
-              <Route path={`${url}/`} exact >
-                {/* <Authorization /> */}
-                <StudentHome />
-              </Route>
-              <Route path={`${url}/feed`} exact >
-                {/* <Authorization /> */}
-                <StudentFeed />
-              </Route>
-              <Route path={`${url}/attendance`} exact >
-                {/* <Authorization /> */}
-                <StudentAttendance />
-              </Route>
-              <Route path={`${url}/time-table`} exact >
+            render={({ match: { url } }) => (
+              <>
+                <Route path={`${url}/login`} exact >
+                  {/* <Authorization /> */}
+                  <StudentLogin />
+                </Route>
+                <Route path={`${url}/`} exact >
+                  {/* <Authorization /> */}
+                  <StudentHome />
+                </Route>
+                <Route path={`${url}/feed`} exact >
+                  {/* <Authorization /> */}
+                  <StudentFeed />
+                </Route>
+                <Route path={`${url}/attendance`} exact >
+                  {/* <Authorization /> */}
+                  <StudentAttendance />
+                </Route>
+                <Route path={`${url}/assignments`} exact >
+                  {/* <Authorization /> */}
+                  <StudentAssignment />
+                </Route>
+                <Route path={`${url}/assignments/:id`} exact >
+                  {/* <Authorization /> */}
+                  <StudentAssignmentProfile />
+                </Route>
+                <Route path={`${url}/tests`} exact >
+                  {/* <Authorization /> */}
+                  <StudentTest />
+                </Route>
+                <Route path={`${url}/tests/:id`} exact >
+                  {/* <Authorization /> */}
+                  <StudentTestProfile />
+                </Route>
+                <Route path={`${url}/notes`} exact >
+                  {/* <Authorization /> */}
+                  <StudentNotes />
+                </Route>
+                <Route path={`${url}/notes/:id`} exact >
+                  {/* <Authorization /> */}
+                  <StudentNotesProfile />
+                </Route>
+                <Route path={`${url}/time-table`} exact >
                   {/* <Authorization /> */}
                   <StudentTT />
                 </Route>
                 <Route path={`${url}/profile`} exact >
-                {/* <Authorization /> */}
-                <StudentProfile />
-              </Route>
-            </>
-          )}>
-        </Route>
+                  {/* <Authorization /> */}
+                  <StudentProfile />
+                </Route>
+              </>
+            )}>
+          </Route>
 
         <Route path="/admin"
         render={({ match: { url } }) => (
@@ -153,6 +199,19 @@ function App() {
           <Route path="/StudentLogin" component={StudentLogin} />
           <Route path="/faculty/login" component={FacultyLogin} />
           
+          <Route path="/faculty/" component={FacultyHome} />
+          <Route path="/student/" component={StudentHome} />
+
+          <Route path="/SectionCreate" component={SectionCreate} />
+          <Route path="/SectionTable" component={SectionTable} />
+          <Route path="/SectionFinal" exact component={SectionFinal} />
+          <Route path="/SubjectPage" exact component={SubjectPage} />
+          <Route path="/AdminLandPage" exact component={AdminLandPage} />
+
+          <Route path="/FacultyTT" exact component={FacultyTT} />
+
+
+
         </Switch>
       </Router>
 

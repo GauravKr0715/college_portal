@@ -16,5 +16,21 @@ module.exports = {
     } catch (error) {
       throw error;
     }
+  },
+
+  getAllWithCertainFields: async (field_string, condition) => {
+    try {
+      return await Test.find(condition).select(field_string);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getOneCertainFields: async (field_string, condition) => {
+    try {
+      return await Test.findOne(condition).select(field_string);
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -10,9 +10,25 @@ module.exports = {
     }
   },
 
-  getAll: async (field_string, condition) => {
+  getAll: async (condition) => {
+    try {
+      return await Assignment.find(condition);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getAllWithCertainFields: async (field_string, condition) => {
     try {
       return await Assignment.find(condition).select(field_string);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getOneCertainFields: async (field_string, condition) => {
+    try {
+      return await Assignment.findOne(condition).select(field_string);
     } catch (error) {
       throw error;
     }

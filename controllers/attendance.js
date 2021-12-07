@@ -1,4 +1,6 @@
 const attendance_repo = require('../models/attendance_repo');
+const section_repo = require('../models/section_repo');
+const student_repo = require('../models/student_repo');
 const logger = require('../helpers/logger');
 const moment = require('moment');
 
@@ -46,8 +48,53 @@ const addAttendance = async (details) => {
       message: 'Some error occured'
     }
   }
+};
+
+const getReportForStudent = async (roll_no) => {
+  try {
+    const student_data = await student_repo.fetchOneCertainFields("section full_name", { roll_no });
+    const section_data = await section_repo.fetchCertainFieldsByCondition("classes", { name: student_data.section });
+    let result_array = [];
+    let inter_array = section_data.classes.map(async c => {
+      let class_id = c.class_id;
+      let curr_attendances = await attendance_repo.fetchAllByCondition({ class_id });
+      let curr_result = {};
+      curr_result.class_id = class_id;
+      curr_result.subject_name = c.subject_name;
+      curr_result.faculty_name = c.faculty_name;
+      curr_result.total_classes = curr_attendances.length;
+      curr_result.classes_taken = 0;
+      curr_result.percentage = 0;
+      curr_attendances.forEach(record => {
+        if (record.present_students.some(r_no => r_no === roll_no)) {
+          curr_result.classes_taken += 1;
+        }
+      });
+      if (curr_result.total_classes !== 0) {
+        curr_result.percentage = (curr_result.classes_taken / curr_result.total_classes) * 100;
+      }
+      console.log(curr_result);
+      result_array.push(curr_result);
+    });
+
+    await Promise.all(inter_array);
+    console.log(result_array);
+    return {
+      success: true,
+      message: 'Attendance Report fetched successfully',
+      data: result_array
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
 }
 
 module.exports = {
-  addAttendance
+  addAttendance,
+  getReportForStudent
 }

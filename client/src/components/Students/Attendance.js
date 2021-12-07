@@ -27,20 +27,11 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
 import "./attendance.css";
 // import moment from "moment";
-import {
-  getAttendanceSheet,
-  postAttendanceSheet,
-} from "../../services/faculty";
+import { getAttendanceReport } from "../../services/student";
 import { Link, useRouteMatch } from "react-router-dom";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Checkbox from "@mui/material/Checkbox";
 import LoadingOverlay from "react-loading-overlay";
 import Paper from "@mui/material/Paper";
+import { PieChart } from "react-minimal-pie-chart";
 
 const drawerWidth = 240;
 
@@ -139,90 +130,53 @@ function Attendance() {
   };
   const menuId = "primary-search-account-menu";
 
-  const [classes, setClasses] = useState([
+  const [report, setReport] = useState([
     {
-      class_id: "F901",
-      subject_name: "Subject 1",
-      section: "F9",
-      all_students: [
-        {
-          roll_no: "101",
-          name: "Gaurav Kumar",
-          is_present: false,
-        },
-        {
-          roll_no: "102",
-          name: "R. Akshaya",
-          is_present: false,
-        },
-        {
-          roll_no: "103",
-          name: "Akshay Jain",
-          is_present: false,
-        },
-        {
-          roll_no: "104",
-          name: "Pooja",
-          is_present: false,
-        },
-      ],
+      class_id: "F903",
+      subject_name: "IT Subject 7_4",
+      faculty_name: "Faculty 4",
+      total_classes: 0,
+      classes_taken: 0,
+      percentage: 0,
     },
     {
       class_id: "F902",
-      subject_name: "Subject 2",
-      section: "F9",
-      all_students: [
-        {
-          roll_no: "101",
-          name: "Gaurav Kumar",
-          is_present: false,
-        },
-        {
-          roll_no: "102",
-          name: "R. Akshaya",
-          is_present: false,
-        },
-        {
-          roll_no: "103",
-          name: "Akshay Jain",
-          is_present: false,
-        },
-        {
-          roll_no: "104",
-          name: "Pooja",
-          is_present: false,
-        },
-      ],
+      subject_name: "IT Subject 7_2",
+      faculty_name: "Faculty 1",
+      total_classes: 2,
+      classes_taken: 1,
+      percentage: 50,
+    },
+    {
+      class_id: "F901",
+      subject_name: "CS Subject 7_1",
+      faculty_name: "Faculty 6",
+      total_classes: 3,
+      classes_taken: 2,
+      percentage: 66.66666666666666,
     },
   ]);
 
   const [loading, setLoading] = useState(false);
-  const [submitLoad, setSubmitLoad] = useState(false);
 
-  const postAttendance = async (details) => {
+  const attendanceReport = async () => {
     try {
       setLoading(true);
-      setSubmitLoad(true);
-      const { data } = await postAttendanceSheet(details);
-      console.log(data);
-      openSnackBar(data.message);
-    } catch (error) {
-      console.log(error);
-      openSnackBar("Some error occured");
-      setLoading(false);
-      setSubmitLoad(false);
-    }
-
-    setLoading(false);
-    setSubmitLoad(false);
-  };
-
-  const attendanceSheet = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getAttendanceSheet();
-      setClasses(data);
-      console.log(data);
+      const { data } = await getAttendanceReport();
+      setReport(data.data);
+      if (data.data.length > 0) {
+        // setSelectLabel(`${data.data[0].subject_name} [${data.data[0].faculty_name}]`);
+        setSelectedClass(data.data[0]);
+        setPiechartData([
+          { title: "Attended", value: data.data[0].classes_taken, color: "#16ce2f" },
+          {
+            title: "Absent",
+            value: data.data[0].total_classes - data.data[0].classes_taken,
+            color: "#ec3a3a",
+          },
+        ]);
+      }
+      console.log(data.data);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
@@ -233,96 +187,30 @@ function Attendance() {
   };
 
   useEffect(() => {
-    attendanceSheet();
+    attendanceReport();
   }, []);
-
-  useEffect(() => {}, [classes]);
-
-  const [check, setCheck] = useState(false);
-
-  const handleStudentAllCheck = (e) => {
-    const state = e.target.checked;
-    alert(state);
-    setCheck(state);
-    setClasses((c) => {
-      return c.map((cl, idx) => {
-        if (idx !== selected_class_idx) {
-          return cl;
-        } else {
-          return {
-            ...cl,
-            all_students: cl.all_students.map((student) => {
-              return {
-                ...student,
-                is_present: state,
-              };
-            }),
-          };
-        }
-      });
-    });
-  };
-
-  const handleStudentIndCheck = (event, r_no) => {
-    const state = event.target.checked;
-    let idx = classes[selected_class_idx].all_students.findIndex(
-      (student) => student.roll_no === r_no
-    );
-    let new_array = classes[selected_class_idx].all_students;
-    new_array[idx] = { ...new_array[idx], is_present: state };
-
-    setClasses((c) => {
-      return c.map((cl, idx) => {
-        if (idx !== selected_class_idx) {
-          return cl;
-        } else {
-          return {
-            class_id: cl.class_id,
-            subject_name: cl.subject_name,
-            section: cl.section,
-            all_students: new_array,
-          };
-        }
-      });
-    });
-    // classes[selected_class_idx].all_students = new_array;
-
-    // classes[selected_class_idx].all_students = classes[
-    //   selected_class_idx
-    // ].all_students.map((student) => {
-    //   if (student.roll_no === r_no) {
-    //     return {
-    //       ...student,
-    //       is_present: state,
-    //     };
-    //   } else {
-    //     return student;
-    //   }
-    // });
-    // if (state) {
-    //   // added to list
-    //   classes[selected_class_idx].present_students.push(r_no);
-    // } else {
-    //   // removed from list
-    //   classes[selected_class_idx].present_students = classes[
-    //     selected_class_idx
-    //   ].present_students.filter((student) => student.roll_no !== r_no);
-    // }
-
-    // setClasses(classes);
-    console.log(classes[selected_class_idx]);
-  };
 
   const [select_label, setSelectLabel] = useState("");
   const [selected_class, setSelectedClass] = useState("");
   const [selected_class_idx, setSelectedClassIdx] = useState(-1);
   const [snackbar, setSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
+  const [piechartData, setPiechartData] = useState([]);
 
   const handleChange = (event) => {
-    setSelectedClass(event.target.value.split(":")[0]);
+    // setSelectedClass(event.target.value.split(":")[0]);
     setSelectLabel(event.target.value);
-    setSelectedClassIdx(event.target.value.split(":")[1]);
+    let cla = report.filter((c) => c.class_id === event.target.value)[0];
+    setSelectedClass(cla);
+    setPiechartData([
+      { title: "Attended", value: cla.classes_taken, color: "#16ce2f" },
+      {
+        title: "Absent",
+        value: cla.total_classes - cla.classes_taken,
+        color: "#ec3a3a",
+      },
+    ]);
+    // setSelectedClassIdx(event.target.value.split(":")[1]);
   };
 
   const openSnackBar = (msg) => {
@@ -338,7 +226,7 @@ function Attendance() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Attendance Sheet..."
+        text="Loading Attendance Report..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -427,137 +315,116 @@ function Attendance() {
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <DrawerHeader />
             <div className="att-container">
-              <div className="options-container">
-                <div className="selector">
-                  {classes.length > 0 && (
-                    <FormControl fullWidth>
-                      <InputLabel id="class_select_label">
-                        Select Class
-                      </InputLabel>
-                      <Select
-                        labelId="class_select_label"
-                        id="class_select"
-                        value={select_label}
-                        label="Select Class"
-                        onChange={handleChange}
-                      >
-                        {classes.map((c, idx) => (
-                          <MenuItem
-                            value={c.class_id + ":" + idx}
-                          >{`${c.subject_name} [${c.section}]`}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                </div>
-                <div className="updator">
-                  <StyledLoader
-                    active={submitLoad}
-                    classNamePrefix="MyLoader_"
-                    spinner
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={() => {
-                        postAttendance(classes[selected_class_idx]);
-                      }}
-                      height="auto"
+              <div className="student-options-container">
+                {report.length > 0 && (
+                  <FormControl style={{ minWidth: "30%" }}>
+                    <InputLabel id="class_select_label">
+                      Select Class
+                    </InputLabel>
+                    <Select
+                      labelId="class_select_label"
+                      id="class_select"
+                      value={select_label}
+                      label="Select Class"
+                      onChange={handleChange}
+                      style={{ minWidth: "50%" }}
                     >
-                      Update Attendance
-                    </Button>
-                  </StyledLoader>
-                </div>
-              </div>
-              <div className="list-container">
-                {classes.length > 0 ? (
-                  selected_class ? (
-                    <TableContainer
-                      sx={{
-                        backgroundColor: "#fff !important",
-                      }}
-                      component={Paper}
-                    >
-                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold !important",
-                                fontSize: "1rem !important",
-                              }}
-                            >
-                              <Checkbox
-                                color="primary"
-                                onChange={(e) => {
-                                  handleStudentAllCheck(e);
-                                }}
-                                checked={check}
-                              />
-                              Student Roll No (click to select all students)
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold !important",
-                                fontSize: "1rem !important",
-                              }}
-                            >
-                              Student Name
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {classes
-                            .filter((c) => c.class_id === selected_class)[0]
-                            .all_students.map((student) => (
-                              <TableRow key={student.roll_no}>
-                                <TableCell component="th" scope="row">
-                                  <Checkbox
-                                    color="primary"
-                                    onChange={(e) => {
-                                      handleStudentIndCheck(e, student.roll_no);
-                                    }}
-                                    checked={student.is_present}
-                                  />
-                                  {student.roll_no}
-                                </TableCell>
-                                <TableCell>{student.name}</TableCell>
-                              </TableRow>
-                            ))}
-                          {/* <TableRow
-                          key="somekey"
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            <Checkbox color="primary" checked={false} />
-                            GK
-                          </TableCell>
-                        </TableRow> */}
-                          {/* {rows.map((row) => (
-                        <TableRow
-                          key={row.name}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {row.name}
-                          </TableCell>
-                          <TableCell align="right">{row.calories}</TableCell>
-                          <TableCell align="right">{row.fat}</TableCell>
-                          <TableCell align="right">{row.carbs}</TableCell>
-                          <TableCell align="right">{row.protein}</TableCell>
-                        </TableRow>
-                      ))} */}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  ) : (
-                    <div className="no-class">Select a class first</div>
-                  )
-                ) : (
-                  <div className="no-class">No classes available today</div>
+                      {report.map((rep) => (
+                        <MenuItem
+                          value={rep.class_id}
+                        >{`${rep.subject_name} [${rep.faculty_name}]`}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 )}
+                {/* {classes.length > 0 && (
+                  <FormControl fullWidth>
+                    <InputLabel id="class_select_label">
+                      Select Class
+                    </InputLabel>
+                    <Select
+                      labelId="class_select_label"
+                      id="class_select"
+                      value={select_label}
+                      label="Select Class"
+                      onChange={handleChange}
+                    >
+                      {classes.map((c, idx) => (
+                        <MenuItem
+                          value={c.class_id + ":" + idx}
+                        >{`${c.subject_name} [${c.section}]`}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )} */}
               </div>
+              {selected_class && (
+                <div className="report-container">
+                  <div className="report-text">
+                    <div className="text-container">
+                      <div className="normal">Subject Name: </div>
+                      <div className="header">
+                        {selected_class.subject_name}
+                      </div>
+                    </div>
+                    <div className="text-container">
+                      <div className="normal">Faculty Name: </div>
+                      <div className="header">
+                        {selected_class.faculty_name}
+                      </div>
+                    </div>
+                    <div className="text-container">
+                      <div className="normal">Classes Attended: </div>
+                      <div className="header">
+                        {selected_class.classes_taken}
+                      </div>
+                    </div>
+                    <div className="text-container">
+                      <div className="normal">Total Classes Conducted: </div>
+                      <div className="header">
+                        {selected_class.total_classes}
+                      </div>
+                    </div>
+                    <div className="text-container">
+                      <div className="normal">Percentage: </div>
+                      <div className="header">
+                        {selected_class.percentage.toFixed(2)}%
+                      </div>
+                    </div>
+                  </div>
+                  <div className="report-graph">
+                    <div className="text-container">
+                      <b>Attended:</b>
+                      <div className="color-box present"></div>
+                    </div>
+                    <div className="text-container">
+                      <b>Absent:</b>
+                      <div className="color-box absent"></div>
+                    </div>
+                    {selected_class.total_classes > 0 ? (
+                      selected_class.percentage > 0 ? (
+                        <div className="chart">
+                          <PieChart
+                            label={({ dataEntry }) => `${Math.round(dataEntry.percentage)} %`}
+                            data={piechartData}
+                          />
+                        </div>
+                      ) : (
+                        <div className="chart">
+                          <PieChart data={piechartData} />
+                        </div>
+                      )
+                    ) : (
+                      <div className="no-text-container">
+                        {" "}
+                        <div className="header">
+                          Insufficient data for visual representation
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </Box>
         </Box>

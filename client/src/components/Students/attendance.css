@@ -17,40 +17,86 @@
   width: auto;
 }
 
-.options-container {
+.student-options-container {
   min-width: 90%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: flex-start;
   margin-bottom: 30px;
 }
 
-.options-container .selector {
-  width: 40%;
-}
-
-.options-container .updator {
-  width: 40%;
+.report-container {
+  border: 2px solid #000;
+  padding: 4%;
+  border-radius: 10px;
+  min-height: 40vh;
+  background-color: #fff;
   display: flex;
-  justify-content: flex-end;
-}
-
-.options-container .updator button {
-  font-size: 15px;
-  font-weight: bold;
-  height: 100%;
-}
-
-.list-container {
-  /* background-color: #fff; */
-  padding: 16px;
-  min-width: 90%;
-  display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
+  min-width: 60%;
 }
 
-.no-class {
+.report-container .report-text {
+  flex: 1;
+  display: flex;
+  min-height: inherit;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-right: 1px solid #000;
+}
+
+.report-container .report-graph .text-container {
+  margin: 15px auto;
+  width: 50%;
+}
+
+.report-container .report-graph .chart {
+  margin: 15px auto;
+  width: 50%;
+}
+
+.report-container .report-text .text-container {
+  margin: 12px;
+}
+
+.report-container .report-text .text-container .header {
+  font-size: 21px;
   font-weight: bolder;
-  font-size: 20px;
+  display: inline;
+}
+
+.no-text-container .header {
+  padding-left: 20%;
+  font-size: 15px;
+  font-weight: bolder;
+  display: inline;
+}
+
+.color-box {
+  margin-left: 5%;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border: 0.5px solid #000;
+}
+
+.present {
+  background-color: #16ce2f;
+}
+
+.absent {
+  background-color: #ec3a3a;
+}
+
+.report-container .report-text .text-container .normal {
+  font-size: 17px;
+  display: inline;
+}
+
+.report-container .report-graph {
+  flex: 1;
 }

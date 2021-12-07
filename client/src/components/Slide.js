@@ -39,7 +39,7 @@ function Slide() {
                             src={icon1}
                             alt=" "
                         />
-                        <Link to="/StudentLogin" className="a">
+                        <Link to="/student/" className="a">
                             <h3>Student</h3>
                         </Link>
                     </div>

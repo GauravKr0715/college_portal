@@ -84,6 +84,7 @@ a:hover {
   border: 1px solid;
   border-radius: 12px;
   background-color: #f1f4f5;
+  max-width: max-content;
 }
 
 .floating-container .inner-container .slot:hover {

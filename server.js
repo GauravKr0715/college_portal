@@ -26,6 +26,12 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
+console.log(__dirname);
+app.use('/assignments', express.static(__dirname + '/assignments'));
+app.use('/assignment_submissions', express.static(__dirname + '/assignment_submissions'));
+app.use('/notes', express.static(__dirname + '/notes'));
+app.use('/tests', express.static(__dirname + '/tests'));
+app.use('/test_submissions', express.static(__dirname + '/test_submissions'));
 
 // feeding local middlewares
 app.use('/api/v1', routes);

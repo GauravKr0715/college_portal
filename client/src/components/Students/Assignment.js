@@ -6,16 +6,16 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
@@ -25,10 +25,9 @@ import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
-import "./attendance.css";
-import moment from "moment";
-import { getAssignmentSheet } from "../../services/faculty";
+import "./student-assignment.css";
 import { Link, useRouteMatch } from "react-router-dom";
+import LoadingOverlay from "react-loading-overlay";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -36,9 +35,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
-import LoadingOverlay from "react-loading-overlay";
+import moment from "moment";
 import Paper from "@mui/material/Paper";
-import NewAssignmentDialog from "./NewAssignmentDialog";
+import { getAssignmentSheet } from "../../services/student";
 
 const drawerWidth = 240;
 
@@ -120,7 +119,6 @@ function Assignment() {
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
-
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -138,60 +136,106 @@ function Assignment() {
   };
   const menuId = "primary-search-account-menu";
   const [loading, setLoading] = useState(false);
-  const [submitLoad, setSubmitLoad] = useState(false);
 
-  const [select_label, setSelectLabel] = useState("");
-  // const [selected_class, setSelectedClass] = useState("");
-  // const [selected_class_idx, setSelectedClassIdx] = useState(-1);
+  const [classes, setClasses] = useState([
+    {
+      class_id: "123",
+      subject_name: "Subject 1",
+      faculty_name: "Faculty 1",
+    },
+    {
+      class_id: "456",
+      subject_name: "Subject 2",
+      faculty_name: "Faculty 2",
+    },
+    {
+      class_id: "789",
+      subject_name: "Subject 3",
+      faculty_name: "Faculty 3",
+    },
+  ]);
+  const [allAssignments, setAllAssignments] = useState([]);
+  const [filteredAssignments, setFilteredAssignments] = useState([]);
+  const [select_label, setSelectLabel] = useState("All");
 
-  const handleChange = (event) => {
-    setFilteredAssignments(allAssignments.filter(assignment => assignment.class_id === event.target.value));
-    console.log(filteredAssignments);
-    setSelectLabel(event.target.value);
-  };
+  const [status_filter, setStatusFilter] = useState("All");
+  const [subject_filter, setSubjectFIlter] = useState("All");
 
   const [snackbar, setSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
-  const [allAssignments, setAllAssignments] = useState([]);
-  const [filteredAssignments, setFilteredAssignments] = useState([]);
-  const [classes, setClasses] = useState([]);
+  const filterBasedOnStatus = (new_status) => {
+    let new_filtered_assignments = [];
+    if (subject_filter === "All") {
+      new_filtered_assignments = allAssignments;
+    } else {
+      new_filtered_assignments = allAssignments.filter(
+        (assignment) => assignment.class_id === subject_filter
+      );
+    }
+    if (new_status === "All") {
+      setFilteredAssignments(new_filtered_assignments);
+    } else {
+      setFilteredAssignments(
+        new_filtered_assignments.filter(
+          (assignment) => assignment.completion_status === new_status
+        )
+      );
+    }
+    setStatusFilter(new_status);
+  };
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-
-  const onDialogClose = () => {
-    setDialogOpen(false);
-    assignmentSheet();
-  }
-
-  const activateLoading = () => {
-    setLoading(true);
-  }
-
-  const deactivateLoading = () => {
-    setLoading(false);
-  }
+  const isActive = (status) => {
+    return status_filter === status ? "stu-tab-active" : "";
+  };
 
   const assignmentSheet = async () => {
     try {
       setLoading(true);
       const { data } = await getAssignmentSheet();
-      setAllAssignments(data.final_result.assignment_data);
-      setFilteredAssignments(data.final_result.assignment_data);
-      setClasses(data.final_result.faculty_data.classes);
       console.log(data);
+      setAllAssignments(data.data);
+      setFilteredAssignments(data.data);
+      setClasses(data.classes);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
       setLoading(false);
     }
-
     setLoading(false);
   };
 
   useEffect(() => {
     assignmentSheet();
   }, []);
+
+  const handleChange = (event) => {
+    let new_filtered_assignments = [];
+    if (status_filter === "All") {
+      new_filtered_assignments = allAssignments;
+    } else {
+      new_filtered_assignments = allAssignments.filter(
+        (assignment) => assignment.completion_status === status_filter
+      );
+    }
+    if (event.target.value === "All") {
+      setFilteredAssignments(new_filtered_assignments);
+    } else {
+      setFilteredAssignments(
+        new_filtered_assignments.filter(
+          (assignment) => assignment.class_id === event.target.value
+        )
+      );
+    }
+    setSubjectFIlter(event.target.value);
+    // setFilteredAssignments(
+    //   allAssignments.filter(
+    //     (assignment) => assignment.class_id === event.target.value
+    //   )
+    // );
+    console.log(filteredAssignments);
+    setSelectLabel(event.target.value);
+  };
 
   const openSnackBar = (msg) => {
     setSnackbarMessage(msg);
@@ -291,49 +335,54 @@ function Assignment() {
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
             <DrawerHeader />
-            <div className="att-container">
-              <div className="options-container">
-                <div className="selector">
-                  {classes.length > 0 && (
-                    <FormControl fullWidth>
-                      <InputLabel id="class_select_label">
-                        Select Class
-                      </InputLabel>
-                      <Select
-                        labelId="class_select_label"
-                        id="class_select"
-                        value={select_label}
-                        label="Select Class"
-                        onChange={handleChange}
-                      >
-                        {classes.map((c, idx) => (
-                          <MenuItem
-                            value={c.class_id}
-                          >{`${c.subject_name} [${c.section}]`}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                </div>
-                <div className="updator">
-                  <StyledLoader
-                    active={submitLoad}
-                    classNamePrefix="MyLoader_"
-                    spinner
+            <div className="student-ass-main-container">
+              <div className="student-ass-top-container">
+                <ul className="stu-nav-container">
+                  <li
+                    // className={"stu-tabs "}
+                    className={`stu-tabs ${isActive("All")}`}
+                    onClick={() => filterBasedOnStatus("All")}
                   >
-                    <Button
-                      variant="contained"
-                      onClick={() => {
-                        setDialogOpen(true);
-                      }}
-                      height="auto"
+                    All
+                  </li>
+                  <li
+                    // className={"stu-tabs "}
+                    className={`stu-tabs ${isActive("Pending")}`}
+                    onClick={() => filterBasedOnStatus("Pending")}
+                  >
+                    Pending
+                  </li>
+                  <li
+                    // className={"stu-tabs "}
+                    className={`stu-tabs ${isActive("Completed")}`}
+                    onClick={() => filterBasedOnStatus("Completed")}
+                  >
+                    Completed
+                  </li>
+                </ul>
+                <div className="stu-first-container-button">
+                  <FormControl fullWidth>
+                    <InputLabel id="class_select_label">
+                      Select Class
+                    </InputLabel>
+                    <Select
+                      labelId="class_select_label"
+                      id="class_select"
+                      value={select_label}
+                      label="Select Class"
+                      onChange={handleChange}
                     >
-                      <span class="material-icons">add</span> New Assignment
-                    </Button>
-                  </StyledLoader>
+                      <MenuItem value={"All"}>All Classes</MenuItem>
+                      {classes.map((c, idx) => (
+                        <MenuItem
+                          value={c.class_id}
+                        >{`${c.subject_name} [${c.faculty_name}]`}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </div>
               </div>
-              <div className="list-container">
+              <div className="stu-ass-bottom-container">
                 {filteredAssignments.length > 0 ? (
                   <TableContainer
                     sx={{
@@ -358,14 +407,6 @@ function Assignment() {
                               fontSize: "1rem !important",
                             }}
                           >
-                            Section
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
                             Subject
                           </TableCell>
                           <TableCell
@@ -374,7 +415,15 @@ function Assignment() {
                               fontSize: "1rem !important",
                             }}
                           >
-                            Created At
+                            Faculty Name
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Status
                           </TableCell>
                           <TableCell
                             sx={{
@@ -390,12 +439,30 @@ function Assignment() {
                         {filteredAssignments.map((assignment) => (
                           <TableRow key={assignment.uid}>
                             <TableCell component="th" scope="row">
-                              {assignment.title}
+                              <Link
+                                to={`${curr_url}/assignments/${assignment.uid}`}
+                              >
+                                <div className={"clickable-title"}>
+                                  {assignment.title}
+                                </div>
+                              </Link>
                             </TableCell>
-                            <TableCell>{assignment.section}</TableCell>
                             <TableCell>{assignment.subject}</TableCell>
-                            <TableCell>{moment(assignment.createdAt * 1000).format('llll')}</TableCell>
-                            <TableCell>{assignment.due_date ? moment(assignment.due_date * 1000).format('llll') : '--NA--'}</TableCell>
+                            <TableCell>{assignment.faculty_name}</TableCell>
+                            <TableCell>
+                              <div
+                                className={`stu-cell-status ${assignment.status_class}`}
+                              >
+                                {`${assignment.completion_status}${assignment.time_status}`}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {assignment.due_date
+                                ? moment(assignment.due_date * 1000).format(
+                                    "llll"
+                                  )
+                                : "--NA--"}
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -420,13 +487,6 @@ function Assignment() {
               </SnackBarButton>
             </React.Fragment>
           }
-        />
-        <NewAssignmentDialog
-          open={dialogOpen}
-          onClose={onDialogClose}
-          activateLoading={activateLoading}
-          deactivateLoading={deactivateLoading}
-          openSnackBar={openSnackBar}
         />
       </LoadingOverlay>
     </>
