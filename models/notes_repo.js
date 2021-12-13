@@ -32,5 +32,13 @@ module.exports = {
     } catch (error) {
       throw error;
     }
+  },
+
+  delete: async (condition) => {
+    try {
+      return await Note.findOneAndDelete(condition);
+    } catch (error) {
+      throw error;
+    }
   }
 }

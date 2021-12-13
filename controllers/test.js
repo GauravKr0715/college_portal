@@ -190,10 +190,104 @@ const addTestSubmission = async (details, roll_no) => {
   }
 };
 
+const getTestDetailsForFaculty = async (uid) => {
+  try {
+    const test_data = await test_repo.getOneCertainFields("-id", { uid });
+    let submission_data = await test_submission_repo.getAllWithCertainFields("-id", { test_id: uid });
+
+    submission_data = submission_data.map(submission => {
+      let status_class = '';
+      let time_status = '';
+
+      if (submission.last_edit_date <= test_data.due_date) {
+        status_class += 'green-status'
+        time_status += 'In Time';
+      } else {
+        status_class += 'orange-status'
+        time_status += 'Late';
+      }
+
+      return {
+        ...submission._doc,
+        status_class,
+        time_status
+      }
+    });
+
+    console.log(submission_data);
+
+    return {
+      success: true,
+      test_data,
+      submission_data
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
+const getTestSubmissionDetailsForFaculty = async (test_id, submission_id) => {
+  try {
+    let result_obj = {};
+    const test_data = await test_repo.getOneCertainFields("-id", { uid: test_id });
+    const submission_data = await test_submission_repo.fetchOneCertainFields("-id", { uid: submission_id });
+
+    result_obj.status_class = '';
+    result_obj.time_status = '';
+
+    if (submission_data.last_edit_date <= test_data.due_date) {
+      result_obj.status_class += 'green-status'
+      result_obj.time_status += 'In Time';
+    } else {
+      result_obj.status_class += 'orange-status'
+      result_obj.time_status += 'Late';
+    }
+
+    return {
+      success: true,
+      test_data,
+      submission_data,
+      result_obj
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
+const deleteOneByUID = async (uid) => {
+  try {
+    await test_repo.delete({ uid });
+    return {
+      success: true,
+      message: 'Test deleted successfully'
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
 module.exports = {
   getAllByFaculty,
   addTest,
   getAllForStudent,
   getTestDetailsForStudent,
-  addTestSubmission
+  addTestSubmission,
+  getTestDetailsForFaculty,
+  getTestSubmissionDetailsForFaculty,
+  deleteOneByUID
 }

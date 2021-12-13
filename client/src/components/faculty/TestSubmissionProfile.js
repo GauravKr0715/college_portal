@@ -6,16 +6,16 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
@@ -25,19 +25,19 @@ import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
-import "./attendance.css";
-import moment from "moment";
-import { getNotesSheet } from "../../services/faculty";
+import "../Students/student-assignment.css";
 import { Link, useRouteMatch } from "react-router-dom";
+import LoadingOverlay from "react-loading-overlay";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import LoadingOverlay from "react-loading-overlay";
+import Checkbox from "@mui/material/Checkbox";
+import moment from "moment";
 import Paper from "@mui/material/Paper";
-import NewNotesDialog from "./NewNotesDialog";
+import { getTestSubmissionDetails } from "../../services/faculty";
 
 const drawerWidth = 240;
 
@@ -115,10 +115,12 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Notes() {
+function TestProfile(props) {
   let { url, path } = useRouteMatch();
+  console.log(url);
   const curr_url = "/" + url.split("/")[1];
-
+  const test_id = url.split("/")[3];
+  const submission_id = url.split("/")[4];
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -137,59 +139,39 @@ function Notes() {
   };
   const menuId = "primary-search-account-menu";
   const [loading, setLoading] = useState(false);
-  const [submitLoad, setSubmitLoad] = useState(false);
 
-  const [select_label, setSelectLabel] = useState("");
-  // const [selected_class, setSelectedClass] = useState("");
-  // const [selected_class_idx, setSelectedClassIdx] = useState(-1);
-
-  const handleChange = (event) => {
-    setFilteredNotes(allNotes.filter(note => note.class_id === event.target.value));
-    console.log(filteredNotes);
-    setSelectLabel(event.target.value);
-  };
+  const [test, setTest] = useState(null);
+  const [submission, setSubmission] = useState(null);
+  const [result, setResult] = useState(null);
 
   const [snackbar, setSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
-
-  const [allNotes, setAllNotes] = useState([]);
-  const [filteredNotes, setFilteredNotes] = useState([]);
-  const [classes, setClasses] = useState([]);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const onDialogClose = () => {
     setDialogOpen(false);
-    notesSheet();
-  }
+    // testDetails();
+  };
 
-  const activateLoading = () => {
-    setLoading(true);
-  }
-
-  const deactivateLoading = () => {
-    setLoading(false);
-  }
-
-  const notesSheet = async () => {
+  const testSubmissionDetails = async () => {
     try {
       setLoading(true);
-      const { data } = await getNotesSheet();
-      setAllNotes(data.final_result.notes_data);
-      setFilteredNotes(data.final_result.notes_data);
-      setClasses(data.final_result.faculty_data.classes);
+      const { data } = await getTestSubmissionDetails(test_id, submission_id);
+      setTest(data.test_data);
+      setSubmission(data.submission_data);
+      setResult(data.result_obj);
       console.log(data);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
       setLoading(false);
     }
-
     setLoading(false);
   };
 
   useEffect(() => {
-    notesSheet();
+    testSubmissionDetails();
   }, []);
 
   const openSnackBar = (msg) => {
@@ -205,7 +187,7 @@ function Notes() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Notes Sheet..."
+        text="Loading Test Sheet..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -288,117 +270,128 @@ function Notes() {
             </List>
             <Divider />
           </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, minHeight: "100vh" }}>
             <DrawerHeader />
-            <div className="att-container">
-              <div className="options-container">
-                <div className="selector">
-                  {classes.length > 0 && (
-                    <FormControl fullWidth>
-                      <InputLabel id="class_select_label">
-                        Select Class
-                      </InputLabel>
-                      <Select
-                        labelId="class_select_label"
-                        id="class_select"
-                        value={select_label}
-                        label="Select Class"
-                        onChange={handleChange}
-                      >
-                        {classes.map((c, idx) => (
-                          <MenuItem
-                            value={c.class_id}
-                          >{`${c.subject_name} [${c.section}]`}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
+            <div className="student-ass-profile-main-container">
+              {test && (
+                <div className="student-pro-ass-top-container">
+                  <div className="stu-top-left-container">
+                    <div className="stu-ass-details-container">
+                      <div className="details-tab">
+                        <div className="details-bold ass-head-head mega-head">
+                          {test.title}
+                        </div>
+                      </div>
+                      {test.description && (
+                        <div className="details-tab ">
+                          Description:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {test.description}
+                          </div>
+                        </div>
+                      )}
+                      <div className="details-tab ">
+                        {test.subject}
+                        {" • "}
+                        {test.faculty_name}
+                      </div>
+                      {result && (
+                        <div className="details-tab ">
+                          Status:{" "}
+                          <div className="details-bold ass-head-head ">
+                            <div
+                              className={`stu-pro-cell-status ${result.status_class}`}
+                            >
+                              {`${result.time_status}`}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <div className="details-tab ">
+                        Created At:{" "}
+                        <div className="details-bold ass-head-head ">
+                          {moment(test.createdAt * 1000).format("llll")}
+                        </div>
+                      </div>
+                      {test.due_date && (
+                        <div className="details-tab ">
+                          Due By:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {moment(test.due_date * 1000).format("llll")}
+                          </div>
+                        </div>
+                      )}
+                      {test.files && (
+                        <div className="details-tab ">
+                          <div className="files-outer-tab">
+                            {test.files.map((file, idx) => (
+                              <div className="file-tab">
+                                <a
+                                  href={`http://localhost:5000/tests/${file}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <Button variant="contained">{`Attachment #${idx + 1
+                                    }`}</Button>
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div className="updator">
-                  <StyledLoader
-                    active={submitLoad}
-                    classNamePrefix="MyLoader_"
-                    spinner
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={() => {
-                        setDialogOpen(true);
-                      }}
-                      height="auto"
-                    >
-                      <span class="material-icons">add</span> New Notes
-                    </Button>
-                  </StyledLoader>
-                </div>
-              </div>
-              <div className="list-container">
-                {filteredNotes.length > 0 ? (
-                  <TableContainer
-                    sx={{
-                      backgroundColor: "#fff !important",
-                    }}
-                    component={Paper}
-                  >
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Title
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Section
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Subject
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Created At
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filteredNotes.map((note) => (
-                          <TableRow key={note.uid}>
-                            <TableCell component="th" scope="row">
-                              <Link
-                                to={`${curr_url}/notes/${note.uid}`}
+              )}
+              <div className="stu-ass-pro-bottom-container">
+                {submission ? (
+                  <div className="stu-ass-details-container">
+                    <div className="response-header">Submitted Response</div>
+                    {submission.response && (
+                      <div className="details-tab ">
+                        Response:{" "}
+                        <div className="details-bold ass-head-head ">
+                          {submission.response}
+                        </div>
+                      </div>
+                    )}
+                    {submission.files && (
+                      <div className="details-tab ">
+                        <div className="files-outer-tab">
+                          {submission.files.map((file, idx) => (
+                            <div className="file-tab">
+                              <a
+                                href={`http://localhost:5000/test_submissions/${file}`}
+                                target="_blank"
+                                rel="noreferrer"
                               >
-                                <div className={"clickable-title"}>
-                                  {note.title}
-                                </div>
-                              </Link>
-                            </TableCell>
-                            <TableCell>{note.section}</TableCell>
-                            <TableCell>{note.subject}</TableCell>
-                            <TableCell>{moment(note.createdAt * 1000).format('llll')}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                                <Button variant="contained">{`Attachment #${idx + 1
+                                  }`}</Button>
+                              </a>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <div className="details-tab ">
+                      Submission Date:{" "}
+                      <div className="details-bold ass-head-head ">
+                        {moment(submission.createdAt * 1000).format("llll")}
+                      </div>
+                    </div>
+                    <div className="details-tab ">
+                      Last Edit Date:{" "}
+                      <div className="details-bold ass-head-head ">
+                        {moment(submission.last_edit_date * 1000).format(
+                          "llll"
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 ) : (
-                  <div className="no-class">No Notes to show... </div>
+                  <div className="no-class">
+                    No submission yet...
+                  </div>
                 )}
               </div>
             </div>
@@ -417,16 +410,9 @@ function Notes() {
             </React.Fragment>
           }
         />
-        <NewNotesDialog
-          open={dialogOpen}
-          onClose={onDialogClose}
-          activateLoading={activateLoading}
-          deactivateLoading={deactivateLoading}
-          openSnackBar={openSnackBar}
-        />
       </LoadingOverlay>
     </>
   );
 }
 
-export default Notes;
+export default TestProfile;

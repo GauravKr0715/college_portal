@@ -10,8 +10,13 @@ import FacultyHome from './components/Faculty/Home';
 import FacultyFeed from './components/Faculty/Feed';
 import FacultyAttendance from './components/Faculty/Attendance';
 import FacultyAssignment from './components/Faculty/Assignment';
+import FacultyAssignmentProfile from './components/Faculty/AssignmentProfile';
+import FacultyAssignmentSubmissionProfile from './components/Faculty/AssignmentSubmissionProfile';
 import FacultyTest from './components/Faculty/Test';
+import FacultyTestProfile from './components/Faculty/TestProfile';
+import FacultyTestSubmissionProfile from './components/Faculty/TestSubmissionProfile';
 import FacultyNotes from './components/Faculty/Notes';
+import FacultyNotesProfile from './components/Faculty/NotesProfile';
 import StudentHome from './components/Students/Home';
 import StudentFeed from './components/Students/Feed';
 import StudentAttendance from './components/Students/Attendance';
@@ -80,13 +85,33 @@ function App() {
                   {/* <Authorization /> */}
                   <FacultyAssignment />
                 </Route>
+                <Route path={`${url}/assignments/:id`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyAssignmentProfile />
+                </Route>
+                <Route path={`${url}/assignments/:assignment_id/:submission_id`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyAssignmentSubmissionProfile />
+                </Route>
                 <Route path={`${url}/tests`} exact >
                   {/* <Authorization /> */}
                   <FacultyTest />
                 </Route>
+                <Route path={`${url}/tests/:id`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyTestProfile />
+                </Route>
+                <Route path={`${url}/tests/:test_id/:submission_id`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyTestSubmissionProfile />
+                </Route>
                 <Route path={`${url}/notes`} exact >
                   {/* <Authorization /> */}
                   <FacultyNotes />
+                </Route>
+                <Route path={`${url}/notes/:id`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyNotesProfile />
                 </Route>
                 <Route path={`${url}/time-table`} exact >
                   {/* <Authorization /> */}
