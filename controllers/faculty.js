@@ -46,14 +46,14 @@ const getBasicDetails = async (uni_id) => {
     let class_ids = data.classes.map(c => c.class_id);
     let day_idx = days_map[moment().subtract(5, 'days').format("dddd")];
 
-    if(moment().format('dddd') !== 'Sunday') {
+    if (moment().format('dddd') !== 'Sunday') {
       for (let i = 0; i < data.time_table[day_idx].length; i++) {
         let current_slot = data.time_table[day_idx][i]._doc;
         current_slot = {
           ...current_slot,
           link: null
         };
-        if(class_ids.includes(current_slot.class_id)) {
+        if (class_ids.includes(current_slot.class_id)) {
           console.log(data.classes.filter(c => c.class_id === current_slot.class_id)[0]);
           current_slot = {
             ...current_slot,
@@ -171,7 +171,7 @@ const getClassesForAttendance = async (uni_id) => {
     const faculty_details = await faculty_repo.fetchOneCertainFields("time_table classes -_id", { uni_id });
 
     // let day_idx = days_map[moment().subtract(3, 'days').format("dddd")];
-    let day_idx = days_map[moment().subtract(2, 'days').format("dddd")];
+    let day_idx = days_map[moment().subtract(1, 'days').format("dddd")];
     let todays_time_table = faculty_details.time_table[day_idx];
     // console.log(todays_time_table);
     let final_data = [];
@@ -223,6 +223,23 @@ const getClasses = async (uni_id) => {
     logger.error(error);
     throw error;
   }
+};
+
+const getProfileDetails = async (uni_id) => {
+  try {
+    const data = await faculty_repo.fetchOneCertainFields("uni_id full_name email mobile dept yoj classes", { uni_id });
+    console.log(uni_id);
+    console.log(data);
+
+    return {
+      success: true,
+      message: 'Faculty data retrieved successfully',
+      data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -231,5 +248,6 @@ module.exports = {
   updateSlot,
   validateUser,
   getClasses,
-  getClassesForAttendance
+  getClassesForAttendance,
+  getProfileDetails
 }

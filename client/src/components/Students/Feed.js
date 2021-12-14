@@ -509,7 +509,7 @@ function Feed() {
               <div className="floating-container">
                 <div className="inner-container">
                   {moment().format("dddd") !== "Sunday"
-                    ? time_table[days[moment().subtract(2, 'days').format("dddd")]].map(
+                    ? time_table[days[moment().subtract(1, 'days').format("dddd")]].map(
                       (slot, idx) =>
                         slot.slot_id[3] === "2" ? (
                           <>
