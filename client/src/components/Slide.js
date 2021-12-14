@@ -72,7 +72,7 @@ function Slide() {
                 </div>
                 <p className="head">College Portal</p>
                 <img src={logo} alt="" className="log" />
-                <p className="nam">Dr. Akhilesh Das Gupta Institute Of Technolgy and Management</p>
+                <p className="nam">Dr. Akhilesh Das Gupta Institute Of Technology and Management</p>
             </div>
         </div>
     );

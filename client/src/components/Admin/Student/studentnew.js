@@ -29,13 +29,25 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { sidebar_admin } from "../../../environments/sidebar_admin";
 import Stack from '@mui/material/Stack';
-
-
-
+import Backdrop from '@mui/material/Backdrop';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import Typography from '@mui/material/Typography';
 import { Link, useRouteMatch } from "react-router-dom";
-
 import LoadingOverlay from "react-loading-overlay";
 import Paper from "@mui/material/Paper";
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const drawerWidth = 240;
 
@@ -114,6 +126,11 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function Studentnew() {
+
+  const [opened, setOpened] = React.useState(false);
+  const handleOpened = () => setOpened(true);
+  const handleClosed = () => setOpened(false);
+
     let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
@@ -183,6 +200,29 @@ FileSaver.saveAs(
   "csv-file-format.csv"
 );
 }
+
+const[profileValue,setProfileValue]=useState([
+  {"Name":"Enrollment No:",
+    "Value":""
+  },
+  {"Name":"Name:",
+    "Value":""
+  },
+  {"Name":"Email ID:",
+    "Value":""
+  },
+  {"Name":"Contact No:",
+    "Value":""
+  },
+  {"Name":"Course:",
+    "Value":""
+  },
+  {"Name":"YoP:",
+    "Value":""
+  },
+  {"Name":"Section:",
+    "Value":""
+  },])
   return (
     <>
       <LoadingOverlay
@@ -258,9 +298,49 @@ FileSaver.saveAs(
           <div className="start">
       <CssBaseline />
       <Container maxWidth="sm">
-        <Box sx={{ bgcolor: 'white', height: '80vh',marginTop:"6rem" }} >
+        <Box sx={{ bgcolor: 'white !important', height: '80vh',marginTop:"6rem",}} >
                  <div className="newflex">
-                 <Button variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem',fontWeight:'bold'}} >New ➕</Button><br></br>
+                 <Button onClick={handleOpened}variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem',fontWeight:'bold'}}>New ➕</Button>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={opened}
+        onClose={handleClosed}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={opened}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h4" component="h3">
+              Fill the details
+            </Typography>
+            <Box sx={{ bgcolor: 'white ', height: '55vh' }} >
+            <table className="tables" style={{padding:'2rem'}}>
+               
+            {  profileValue.map((name)=>(
+             /*  <div className="cont">
+               <label htmlFor="">{name.Name}&nbsp;&nbsp;</label>
+               <div className="sugar1"><p>{name.Value}</p></div>
+               </div> */
+               <tr className="conti">
+               <td><label htmlFor="" >{name.Name}&nbsp;&nbsp;</label></td>
+               <td><input type="text" placeholder={`${name.Name}....`} className="modalinput"/></td>
+               </tr>
+            )
+               )}
+              
+               </table>
+               <br/><br/>
+               <Button variant="contained" color='success'  >Save</Button>
+                    
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
+                <br></br>
                  <p style={{fontSize:'1.6rem', fontWeight:"bold"}}>OR</p><br />
                  <Button variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem', fontWeight:'bold' }} /* onclick={{()=>{return <>
                     <input id="csvFileInput" type="file" accept=".csv"/>

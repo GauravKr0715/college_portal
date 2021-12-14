@@ -1,6 +1,6 @@
 import React , {useState,useEffect} from 'react'
 import "./SectionCreate.css"
-import Dynamic from '../Subject/Dynamics';
+
 import Container from '@mui/material/Container';
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";

@@ -7,6 +7,8 @@ const facultySessionValidateURL = '/faculty/validateSession';
 const facultyLoginURL = '/faculty/login';
 const StudentSessionValidateURL = '/student/validateSession';
 const StudentLoginURL = '/student/login';
+const AdminSessionValidateURL = '/admin/validateSession';
+const AdminLoginURL = '/admin/login';
 
 export const validateFacultySession = () => {
   return axios.get(environment.apiUrl + base_url + facultySessionValidateURL, {
@@ -28,6 +30,18 @@ export const validateStudentSession = () => {
 }
 
 export const loginStudent = (userID, password) => {
+  return axios.post(environment.apiUrl + base_url + StudentLoginURL, { roll_no: userID, password: password }, {
+    withCredentials: true
+  })
+}
+
+export const validateAdminSession = () => {
+  return axios.get(environment.apiUrl + base_url + AdminSessionValidateURL, {
+    withCredentials: true
+  });
+}
+
+export const loginAdmin = (userID, password) => {
   return axios.post(environment.apiUrl + base_url + StudentLoginURL, { roll_no: userID, password: password }, {
     withCredentials: true
   })

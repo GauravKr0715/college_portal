@@ -283,6 +283,7 @@ label{
     display:"flex";
      flex-direction:"row";
      flex-flow: row;
+     height:3rem !important ;
 }
 .frames{
     position: absolute;

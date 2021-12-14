@@ -2,7 +2,7 @@ import React , {useState,useEffect} from 'react'
 import ClassModal from'./ClassModal';
 import Modal from '@material-ui/core/Modal';
 import "./SectionCreate.css"
-import Dynamic from '../Subject/Dynamics';
+import Dynamic from './Dynamic';
 import Container from '@mui/material/Container';
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";

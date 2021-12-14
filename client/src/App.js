@@ -33,9 +33,8 @@ import StudentTT from "./components/Students/Timetable"
 import SectionCreate from './components/Admin/Section/SectionCreate';
 import SectionTable from './components/Admin/Section/SectionTable';
 import SectionFinal from "./components/Admin/Section/SectionFinal";
-import AdminLandPage from "./components/Admin/AdminLandPage";
-import SubjectPage from './components/Admin/Subject/Subject';
 import StudentAdminNew from "./components/Admin/Student/studentnew"
+import FacultyAdminNew from "./components/Admin/Faculty/facultynew"
 
 
 
@@ -179,17 +178,15 @@ function App() {
               {/* <Authorization /> */}
               <SectionFinal />
             </Route>
-            <Route path={`${url}/SubjectPage`} exact >
-              {/* <Authorization /> */}
-              <SubjectPage />
-            </Route>
+          
             <Route path={`${url}/studentnew`} exact >
                 {/* <Authorization /> */}
                 <StudentAdminNew />
               </Route>
-              <Route path={`${url}/AdminLandPage`} exact >
+             
+              <Route path={`${url}/facultynew`} exact >
               {/* <Authorization /> */}
-              <AdminLandPage />
+              <FacultyAdminNew />
             </Route>
           </>
         )}>
@@ -205,8 +202,7 @@ function App() {
           <Route path="/SectionCreate" component={SectionCreate} />
           <Route path="/SectionTable" component={SectionTable} />
           <Route path="/SectionFinal" exact component={SectionFinal} />
-          <Route path="/SubjectPage" exact component={SubjectPage} />
-          <Route path="/AdminLandPage" exact component={AdminLandPage} />
+         
 
           <Route path="/FacultyTT" exact component={FacultyTT} />
 

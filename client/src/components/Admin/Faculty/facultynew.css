@@ -1,6 +1,9 @@
 /* .MuiBox-root {
   height: 100vh;
 } */
+#standard-basic{
+  width: 10rem;
+}
 
 .MuiPaper-root {
     background-color: #263238 !important;

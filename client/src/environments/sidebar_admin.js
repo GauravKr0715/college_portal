@@ -1,9 +1,5 @@
 export const sidebar_admin = [
-    {
-      text: 'Subjects',
-      icon: 'auto_stories',
-      link: '/SubjectPage'
-    }, {
+  {
       text: 'Student Creation',
       icon: 'groups',
       link: '/studentnew'

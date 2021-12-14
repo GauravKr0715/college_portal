@@ -1,10 +1,8 @@
 import React , {useState,useEffect} from 'react'
-
-import Dynamics from '../Subject/Dynamics';
-import "../Section/SectionCreate.css"
-
+import "./facultynew.css"
 import Container from '@mui/material/Container';
 import FileSaver from 'file-saver';
+import TextField from '@mui/material/TextField';
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -32,13 +30,25 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { sidebar_admin } from "../../../environments/sidebar_admin";
 import Stack from '@mui/material/Stack';
-
-
-
+import Backdrop from '@mui/material/Backdrop';
+import Modal from '@mui/material/Modal';
+import Fade from '@mui/material/Fade';
+import Typography from '@mui/material/Typography';
 import { Link, useRouteMatch } from "react-router-dom";
-
 import LoadingOverlay from "react-loading-overlay";
 import Paper from "@mui/material/Paper";
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const drawerWidth = 240;
 
@@ -117,6 +127,11 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function Studentnew() {
+
+  const [opened, setOpened] = React.useState(false);
+  const handleOpened = () => setOpened(true);
+  const handleClosed = () => setOpened(false);
+
     let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
@@ -161,7 +176,54 @@ function Studentnew() {
   const [loading, setLoading] = useState(false);
   const [submitLoad, setSubmitLoad] = useState(false);
 
-  
+  /* const postAttendance = async (details) => {
+    try {
+      setLoading(true);
+      setSubmitLoad(true);
+      const { data } = await postAttendanceSheet(details);
+      console.log(data);
+      openSnackBar(data.message);
+    } catch (error) {
+      console.log(error);
+      openSnackBar("Some error occured");
+      setLoading(false);
+      setSubmitLoad(false);
+    }
+
+    setLoading(false);
+    setSubmitLoad(false);
+  };
+
+ */
+    const saveFile = () => {
+FileSaver.saveAs(
+  process.env.PUBLIC_URL + "/resources/sample2.csv",
+  "csv-file-format.csv"
+);
+}
+
+const[profileValue,setProfileValue]=useState([
+  {"Name":"Unique Id:",
+      "Value":""
+    },
+    {"Name":"Name:",
+      "Value":""
+    },
+    {"Name":"Email ID:",
+      "Value":""
+    },
+    {"Name":"Contact No:",
+      "Value":""
+    },
+    {"Name":"Department:",
+      "Value":""
+    },
+    {"Name":"YoJ:",
+      "Value":""
+    },
+   ])
+
+   
   return (
     <>
       <LoadingOverlay
@@ -191,7 +253,13 @@ function Studentnew() {
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
   
-    
+              <CssBaseline />
+ 
+              <Stack spacing={2} direction="row">
+      
+      <Button variant="outlined"  style={{backgroundColor:"white", fontWeight:"bold"}} onClick={saveFile} className="filebtn">Get CSV File format</Button>
+      
+    </Stack>
             
               </Box>
             </Toolbar>
@@ -228,65 +296,63 @@ function Studentnew() {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          
-          <div className="options">
-
+          <div className="start">
+      <CssBaseline />
+      <Container maxWidth="sm">
+        <Box sx={{ bgcolor: 'white !important', height: '80vh',marginTop:"6rem",}} >
+                 <div className="newflex">
+                 <Button onClick={handleOpened}variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem',fontWeight:'bold'}}>New ➕</Button>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={opened}
+        onClose={handleClosed}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={opened}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h4" component="h3">
+              Fill the details
+            </Typography>
+            <Box sx={{ bgcolor: 'white ', height: '69vh' }} ><br/>
+            <Box
+            component="form"
+            sx={{
+              '& > :not(style)': { m: 1, width: '25ch' ,marginLeft:'3.5rem'},
+            }}
+            noValidate
+            autoComplete="off"
+          >
+               
+            {  profileValue.map((name)=>(
+             
             
-          <div className="twoss">
-              <label htmlFor="semester">Semester:  </label>
-              <select>  
-                 <option value = "Ist sem"> Ist Semester
-                   </option>  
-                 <option value = "IInd sem"> IInd Semester   
-                   </option>  
-                 <option value = "IIIrd sem"> IIIrd Semester
-                   </option>  
-                 <option value = "IVth sem"> IVth Semester                         </option>  
-                   <option value = "IVth sem"> Vth Semester 
-                   </option>  
-                   <option value = "IVth sem"> VIth Semester
-                   </option>  
-                   <option value = "IVth sem"> VIIth Semester
-                   </option>  
-                   <option value = "IVth sem"> VIIIth Semester  
-                   </option>  
-              </select>  
-          </div>
+              <TextField  id="standard-basic" label={name.Name} variant="outlined" color='action' margin='normal' sx={{width:'12rem'}}/>
 
-
-
-          <div className="fourss">
-          <label htmlFor="Department">Department: </label>
-          <select>  
-                 <option value = "CSE"> CSE
-                   </option>  
-                 <option value = "IT">  IT
-                   </option>  
-                 <option value = "ECE"> ECE
-                   </option>  
-                 <option value = "EEE"> EEE  
-                   </option>  
-                   <option value = "MECH"> MECH 
-                   </option>
-                   <option value = "CIVIL"> CIVIL
-                   </option>
-                   <option value = "BBA"> BBA 
-                   </option>
-                   <option value = "MBA"> MBA  
-                   </option>
-              </select>
-          </div>
-          </div>
-
-          <div className="dyn">
-            
-              <Dynamics/>
-                      
-          </div>
-
-          <div style={{marginLeft:'34rem', marginTop:'10rem'}} ><Button variant="contained" color="success" sx={{fontWeight:'bold',width:'5rem',height:'3rem'}}>Save</Button></div>
-
-
+            )
+               )}
+               </Box>
+              
+              
+               <br/>
+               <Button variant="contained" color='primary' sx={{marginLeft:'7rem'}} >Save</Button>
+                    
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
+                <br></br>
+                 <p style={{fontSize:'1.6rem', fontWeight:"bold"}}>OR</p><br />
+                 <Button variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem', fontWeight:'bold' }}  >Bulk Import</Button>
+                   
+                 </div>
+        </Box>
+      </Container>
+      </div>
      </Box>
         </Box>
         <Snackbar
@@ -308,6 +374,3 @@ function Studentnew() {
 }
 
 export default Studentnew
-
-
-
