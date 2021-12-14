@@ -173,11 +173,29 @@ const getBasicDetails = async (roll_no) => {
   }
 }
 
+const getProfileDetails = async (roll_no) => {
+  try {
+    const data = await student_repo.fetchOneCertainFields("roll_no full_name email mobile course yop section", { roll_no });
+    console.log(roll_no);
+    console.log(data);
+
+    return {
+      success: true,
+      message: 'Student data retrieved successfully',
+      data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+}
+
 module.exports = {
   addDetails,
   saveAllStudents,
   updateDetails,
   validateUser,
   addSubjects,
-  getBasicDetails
+  getBasicDetails,
+  getProfileDetails
 }

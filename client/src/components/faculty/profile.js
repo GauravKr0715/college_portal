@@ -26,6 +26,7 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import Typography from '@material-ui/core/Typography';
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -370,7 +371,7 @@ function Attendance() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Attendance Sheet..."
+        text="Loading Profile..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -460,45 +461,9 @@ function Attendance() {
             <DrawerHeader />
             <CssBaseline />
             <Container maxWidth="sm">
-               <Box sx={{ bgcolor: 'white', height: '90vh' ,marginTop:6}} />
-               <div className="desp">             
-               <table className="table">
-               
-              {  profileValue.map((name)=>(
-               /*  <div className="cont">
-                 <label htmlFor="">{name.Name}&nbsp;&nbsp;</label>
-                 <div className="sugar1"><p>{name.Value}</p></div>
-                 </div> */
-                 <tr className="cont">
-                 <td><label htmlFor="" >{name.Name}&nbsp;&nbsp;</label></td>
-                 <td><div className="sugar1"><p>{name.Value}</p></div></td>
-                 </tr>
-              )
-                 )}
-                
-                 </table>
-                      
-            
-               </div>
-               
-            </Container>
-            <img
-            src={"https://th.bing.com/th/id/OIP.0777WTk6jNF_2SEh632a4QHaIM?pid=ImgDet&rs=1"}
-            id="pro"
-            className="img"
-            accept="image/*"
-        />
-        <input
-                        type="file"
-                        className="file"
-                        id="input"
-                        accept="image/*"
-                        
-                    />
- 
-      
-              
-            
+            <Typography component="div" style={{ backgroundColor: '', height: '100vh' }} />
+           </Container>
+
             </Box>
         </Box>
         <Snackbar
