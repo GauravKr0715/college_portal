@@ -25,6 +25,8 @@ import "./feed.css";
 import moment from "moment";
 import { getFacultyBasicDetails } from "../../services/faculty";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
+import Button from "@mui/material/Button";
+// import ClassLinksDialog from './ClassLinksDialog';
 
 const drawerWidth = 240;
 
@@ -453,6 +455,13 @@ function Feed() {
     setSlotDetailsAnchor(true);
   };
 
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  const onDialogClose = () => {
+    setDialogOpen(false);
+    facultyBasicDetails();
+  }
+
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -462,14 +471,22 @@ function Feed() {
   const facultyBasicDetails = async () => {
     const { data } = await getFacultyBasicDetails();
     console.log(data);
-    setFacultyDetails(data);
-    setTimeTable(data.time_table);
-    setTodaysTimeTable(data.todays_time_table);
+    setFacultyDetails(data.final_result);
+    setTimeTable(data.final_result.time_table);
+    // setTodaysTimeTable(data.final_result.todays_time_table);
   };
 
   useEffect(() => {
     facultyBasicDetails();
   }, []);
+
+  const openSnackBar = (msg) => {
+    setSnackbarMessage(msg);
+    setSnackbar(true);
+  };
+
+  const [snackbar, setSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -509,7 +526,7 @@ function Feed() {
               <div className="floating-container">
                 <div className="inner-container">
                   {moment().format("dddd") !== "Sunday"
-                    ? time_table[days[moment().format("dddd")]].map(
+                    ? time_table[days[moment().subtract(1, 'days').format("dddd")]].map(
                       (slot, idx) =>
                         slot.slot_id[3] === "2" ? (
                           <>
@@ -751,7 +768,17 @@ Faculty Section
                   <div className="drawer-value">
                     {selectedSlot.link
                       ? selectedSlot.link.title
-                      : "Link Not available"}
+                      : (
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            setDialogOpen(true);
+                          }}
+                          height="auto"
+                        >
+                          <span class="material-icons">add</span> New Link
+                        </Button>
+                      )}
                   </div>
                 </div>
               </div>
@@ -759,6 +786,14 @@ Faculty Section
           </List>
         )}
       </MuiDrawer>
+      {/* {
+        faculty_details && <ClassLinksDialog
+          open={dialogOpen}
+          onClose={onDialogClose}
+          openSnackBar={openSnackBar}
+          links={faculty_details.links}
+        />
+      } */}
     </>
   );
 }

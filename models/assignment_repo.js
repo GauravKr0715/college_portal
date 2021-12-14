@@ -32,5 +32,13 @@ module.exports = {
     } catch (error) {
       throw error;
     }
+  },
+
+  delete: async (condition) => {
+    try {
+      return await Assignment.findOneAndDelete(condition);
+    } catch (error) {
+      throw error;
+    }
   }
 }

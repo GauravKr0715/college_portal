@@ -6,16 +6,16 @@ import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
@@ -25,19 +25,21 @@ import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
-import "./attendance.css";
-import moment from "moment";
-import { getNotesSheet } from "../../services/faculty";
+import "../Students/student-assignment.css";
 import { Link, useRouteMatch } from "react-router-dom";
+import LoadingOverlay from "react-loading-overlay";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import LoadingOverlay from "react-loading-overlay";
+import Checkbox from "@mui/material/Checkbox";
+import moment from "moment";
 import Paper from "@mui/material/Paper";
-import NewNotesDialog from "./NewNotesDialog";
+import { getAssignmentDetails } from "../../services/faculty";
+import Menu from "@mui/material/Menu";
+import ConfirmDeleteAssignmentDialog from "./ConfirmDeleteAssignmentDialog";
 
 const drawerWidth = 240;
 
@@ -115,10 +117,10 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Notes() {
+function AssignmentProfile(props) {
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
-
+  const id = url.split("/")[3];
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -137,59 +139,52 @@ function Notes() {
   };
   const menuId = "primary-search-account-menu";
   const [loading, setLoading] = useState(false);
-  const [submitLoad, setSubmitLoad] = useState(false);
 
-  const [select_label, setSelectLabel] = useState("");
-  // const [selected_class, setSelectedClass] = useState("");
-  // const [selected_class_idx, setSelectedClassIdx] = useState(-1);
+  const [status_filter, setStatusFilter] = useState("All");
 
-  const handleChange = (event) => {
-    setFilteredNotes(allNotes.filter(note => note.class_id === event.target.value));
-    console.log(filteredNotes);
-    setSelectLabel(event.target.value);
-  };
+  const [assignment, setAssignment] = useState(null);
+  const [submissions, setSubmissions] = useState(null);
+  // const [result, setResult] = useState(null);
 
   const [snackbar, setSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
-  const [allNotes, setAllNotes] = useState([]);
-  const [filteredNotes, setFilteredNotes] = useState([]);
-  const [classes, setClasses] = useState([]);
-
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [moreMenuanchorEl, setMoreMenuAnchorEl] = React.useState(null);
+  const moreMenuOpen = Boolean(moreMenuanchorEl);
 
-  const onDialogClose = () => {
-    setDialogOpen(false);
-    notesSheet();
-  }
+  const moreMenuHandleClick = (e) => {
+    setMoreMenuAnchorEl(e.currentTarget);
+  };
+  const moreMenuHandleClose = () => {
+    setMoreMenuAnchorEl(null);
+  };
 
-  const activateLoading = () => {
-    setLoading(true);
-  }
+  const onDeleteConfirmDialogClose = () => {
+    setDeleteConfirmDialog(false);
+    assignmentDetails();
+  };
 
-  const deactivateLoading = () => {
-    setLoading(false);
-  }
+  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
 
-  const notesSheet = async () => {
+  const assignmentDetails = async () => {
     try {
       setLoading(true);
-      const { data } = await getNotesSheet();
-      setAllNotes(data.final_result.notes_data);
-      setFilteredNotes(data.final_result.notes_data);
-      setClasses(data.final_result.faculty_data.classes);
+      const { data } = await getAssignmentDetails(id);
+      setAssignment(data.assignment_data);
+      setSubmissions(data.submission_data);
+      // setResult(data.result_obj);
       console.log(data);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
       setLoading(false);
     }
-
     setLoading(false);
   };
 
   useEffect(() => {
-    notesSheet();
+    assignmentDetails();
   }, []);
 
   const openSnackBar = (msg) => {
@@ -205,7 +200,7 @@ function Notes() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Notes Sheet..."
+        text="Loading Assignment Details..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -288,52 +283,121 @@ function Notes() {
             </List>
             <Divider />
           </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, minHeight: "100vh" }}>
             <DrawerHeader />
-            <div className="att-container">
-              <div className="options-container">
-                <div className="selector">
-                  {classes.length > 0 && (
-                    <FormControl fullWidth>
-                      <InputLabel id="class_select_label">
-                        Select Class
-                      </InputLabel>
-                      <Select
-                        labelId="class_select_label"
-                        id="class_select"
-                        value={select_label}
-                        label="Select Class"
-                        onChange={handleChange}
-                      >
-                        {classes.map((c, idx) => (
-                          <MenuItem
-                            value={c.class_id}
-                          >{`${c.subject_name} [${c.section}]`}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  )}
-                </div>
-                <div className="updator">
-                  <StyledLoader
-                    active={submitLoad}
-                    classNamePrefix="MyLoader_"
-                    spinner
+            <div className="student-ass-profile-main-container">
+              <>
+                <div className="menu-icon">
+                  <IconButton
+                    aria-label="more"
+                    id="long-button"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    aria-expanded={moreMenuOpen ? "true" : undefined}
+                    onClick={moreMenuHandleClick}
                   >
-                    <Button
-                      variant="contained"
+                    <span class="material-icons" style={{ color: "#000" }}>
+                      more_vert
+                    </span>
+                  </IconButton>
+                  <Menu
+                    id="long-menu"
+                    MenuListProps={{
+                      "aria-labelledby": "long-button",
+                    }}
+                    anchorEl={moreMenuanchorEl}
+                    open={moreMenuOpen}
+                    onClose={moreMenuHandleClose}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    PaperProps={{
+                      style: {
+                        maxHeight: 48 * 4.5,
+                        width: "20ch",
+                      },
+                    }}
+                  >
+                    <MenuItem key={"edit"}>{"Edit Assignment"}</MenuItem>
+                    <MenuItem
+                      key={"delete"}
                       onClick={() => {
-                        setDialogOpen(true);
+                        setDeleteConfirmDialog(true);
                       }}
-                      height="auto"
                     >
-                      <span class="material-icons">add</span> New Notes
-                    </Button>
-                  </StyledLoader>
+                      {"Delete Assignment"}
+                    </MenuItem>
+                  </Menu>
                 </div>
-              </div>
-              <div className="list-container">
-                {filteredNotes.length > 0 ? (
+                {assignment && (
+                  <div className="student-pro-ass-top-container">
+                    <div className="stu-top-left-container">
+                      <div className="stu-ass-details-container">
+                        <div className="details-tab">
+                          <div className="details-bold ass-head-head mega-head">
+                            {assignment.title}
+                          </div>
+                        </div>
+                        {assignment.description && (
+                          <div className="details-tab ">
+                            Description:{" "}
+                            <div className="details-bold ass-head-head ">
+                              {assignment.description}
+                            </div>
+                          </div>
+                        )}
+                        <div className="details-tab ">
+                          {assignment.subject}
+                          {" • "}
+                          {assignment.faculty_name}
+                        </div>
+                        <div className="details-tab ">
+                          Created At:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {moment(assignment.createdAt * 1000).format("llll")}
+                          </div>
+                        </div>
+                        {assignment.due_date && (
+                          <div className="details-tab ">
+                            Due By:{" "}
+                            <div className="details-bold ass-head-head ">
+                              {moment(assignment.due_date * 1000).format(
+                                "llll"
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        {assignment.files && (
+                          <div className="details-tab ">
+                            <div className="files-outer-tab">
+                              {assignment.files.map((file, idx) => (
+                                <div className="file-tab">
+                                  <a
+                                    href={`http://localhost:5000/assignments/${file}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    <Button variant="contained">{`Attachment #${
+                                      idx + 1
+                                    }`}</Button>
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </>
+              <div className="stu-ass-pro-bottom-container">
+                {submissions && submissions.length ? (
                   <TableContainer
                     sx={{
                       backgroundColor: "#fff !important",
@@ -349,7 +413,7 @@ function Notes() {
                               fontSize: "1rem !important",
                             }}
                           >
-                            Title
+                            Student Details
                           </TableCell>
                           <TableCell
                             sx={{
@@ -357,7 +421,7 @@ function Notes() {
                               fontSize: "1rem !important",
                             }}
                           >
-                            Section
+                            Status
                           </TableCell>
                           <TableCell
                             sx={{
@@ -365,40 +429,46 @@ function Notes() {
                               fontSize: "1rem !important",
                             }}
                           >
-                            Subject
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Created At
+                            Last Edit Date
                           </TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {filteredNotes.map((note) => (
-                          <TableRow key={note.uid}>
+                        {submissions.map((submission) => (
+                          <TableRow key={submission.uid}>
                             <TableCell component="th" scope="row">
                               <Link
-                                to={`${curr_url}/notes/${note.uid}`}
+                                to={`${curr_url}/assignments/${id}/${submission.uid}`}
                               >
-                                <div className={"clickable-title"}>
-                                  {note.title}
+                                <div
+                                  className={"clickable-title multiline-head"}
+                                >
+                                  {submission.student_name}
+                                  <div className="small-data">
+                                    {submission.student_id}
+                                  </div>
                                 </div>
                               </Link>
                             </TableCell>
-                            <TableCell>{note.section}</TableCell>
-                            <TableCell>{note.subject}</TableCell>
-                            <TableCell>{moment(note.createdAt * 1000).format('llll')}</TableCell>
+                            <TableCell>
+                              <div
+                                className={`stu-pro-cell-status ${submission.status_class}`}
+                              >
+                                {submission.time_status}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {moment(submission.last_edit_date * 1000).format(
+                                "llll"
+                              )}
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
                     </Table>
                   </TableContainer>
                 ) : (
-                  <div className="no-class">No Notes to show... </div>
+                  <div className="no-class">No Submissions yet... </div>
                 )}
               </div>
             </div>
@@ -417,16 +487,19 @@ function Notes() {
             </React.Fragment>
           }
         />
-        <NewNotesDialog
-          open={dialogOpen}
-          onClose={onDialogClose}
-          activateLoading={activateLoading}
-          deactivateLoading={deactivateLoading}
-          openSnackBar={openSnackBar}
-        />
+        {assignment && (
+          <ConfirmDeleteAssignmentDialog
+            open={deleteConfirmDialog}
+            onClose={onDeleteConfirmDialogClose}
+            openSnackBar={openSnackBar}
+            title={assignment.title}
+            id={assignment.uid}
+            fallbackURL={`${curr_url}/assignments`}
+          />
+        )}
       </LoadingOverlay>
     </>
   );
 }
 
-export default Notes;
+export default AssignmentProfile;

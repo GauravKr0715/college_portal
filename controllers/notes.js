@@ -93,9 +93,46 @@ const getNotesDetailsForStudent = async (roll_no, uid) => {
   }
 };
 
+const getNotesDetailsForFaculty = async (uid) => {
+  try {
+    const notes_data = await notes_repo.getOneCertainFields("-id", { uid });
+
+    return {
+      success: true,
+      notes_data
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
+const deleteOneByUID = async (uid) => {
+  try {
+    await notes_repo.delete({ uid });
+    return {
+      success: true,
+      message: 'Notes deleted successfully'
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
 module.exports = {
   getAllByFaculty,
   addNotes,
   getAllForStudent,
-  getNotesDetailsForStudent
+  getNotesDetailsForStudent,
+  getNotesDetailsForFaculty,
+  deleteOneByUID
 }

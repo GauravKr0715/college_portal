@@ -97,4 +97,27 @@ router.post('/addWithoutAttach', async (req, res) => {
   }
 });
 
+router.get('/details', async (req, res) => {
+  try {
+    const uid = req.query.id;
+    const data = await notesController.getNotesDetailsForFaculty(uid);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
+router.delete('/', async (req, res) => {
+  try {
+    const uid = req.query.id;
+    const data = await notesController.deleteOneByUID(uid);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 module.exports = router;

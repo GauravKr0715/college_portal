@@ -39,32 +39,72 @@ const getBasicDetails = async (uni_id) => {
   try {
     let data = await faculty_repo.fetchOneCertainFields("uni_id full_name dept time_table classes links -_id", { uni_id });
 
-    let result = data._doc;
+    let final_result = {};
+    final_result.time_table = data.time_table;
+    final_result.links = data.links;
+    let todays_time_table = [];
+    let class_ids = data.classes.map(c => c.class_id);
+    let day_idx = days_map[moment().subtract(5, 'days').format("dddd")];
+
+    if (moment().format('dddd') !== 'Sunday') {
+      for (let i = 0; i < data.time_table[day_idx].length; i++) {
+        let current_slot = data.time_table[day_idx][i]._doc;
+        current_slot = {
+          ...current_slot,
+          link: null
+        };
+        if (class_ids.includes(current_slot.class_id)) {
+          console.log(data.classes.filter(c => c.class_id === current_slot.class_id)[0]);
+          current_slot = {
+            ...current_slot,
+            link: data.classes.filter(c => c.class_id === current_slot.class_id)[0].link
+          };
+        }
+        todays_time_table.push(current_slot);
+      }
+    }
+    final_result.todays_time_table = todays_time_table;
+
+    // let result = data._doc;
 
     // if (moment().format("dddd") !== 'Sunday') {
-    //   let day_idx = days_map[moment().format("dddd")];
+    //   let day_idx = days_map[moment().subtract(5, 'days').format("dddd")];
     //   let todays_time_table = [];
     //   // let todays_time_table = data.time_table[day_idx];
     //   let class_ids = data.classes.map(c => c.class_id);
-    //   for (let i = 0; i < data.time_table[day_idx].length; i++) {
-    //     let current_slot = data.time_table[day_idx][i];
+    //   for (let i = 0; i < result.time_table[day_idx].length; i++) {
+    //     let current_slot = result.time_table[day_idx][i];
+    //     current_slot = {
+    //       ...current_slot,
+    //       link: null
+    //     }
+    //     // console.log(current_slot);
     //     if (class_ids.includes(current_slot.class_id)) {
-    //       let link = data.classes.filter(c => c.class_id === current_slot.class_id)[0];
-    //       console.log(link);
-    //       if (link.link) {
-    //         current_slot.link = link.link;
-    //         console.log(todays_time_table[i]);
+    //       let class_obj = result.classes.filter(c => c.class_id === current_slot.class_id)[0];
+    //       console.log(class_obj);
+    //       console.log(class_obj.link.url);
+    //       console.log(Object.keys(class_obj.link).length);
+    //       if (Object.keys(class_obj.link).length !== 0) {
+    //         current_slot.link = class_obj.link;
+    //         console.log('---------------------------------------------------------------');
+    //         console.log(class_obj);
+    //         console.log(current_slot);
+    //         console.log('---------------------------------------------------------------');
     //       }
     //     }
-    //     console.log(current_slot);
+    //     // console.log(current_slot);
     //     todays_time_table.push(current_slot);
     //   }
-    //   // console.log(todays_time_table);
+    //   console.log(todays_time_table);
     //   result.todays_time_table = todays_time_table;
     // }
     // console.log(result);
 
-    return result;
+    return {
+      success: true,
+      message: 'Data retrived successfully',
+      final_result
+    };
   } catch (error) {
     logger.error(error);
     throw error;
@@ -131,7 +171,7 @@ const getClassesForAttendance = async (uni_id) => {
     const faculty_details = await faculty_repo.fetchOneCertainFields("time_table classes -_id", { uni_id });
 
     // let day_idx = days_map[moment().subtract(3, 'days').format("dddd")];
-    let day_idx = days_map[moment().format("dddd")];
+    let day_idx = days_map[moment().subtract(1, 'days').format("dddd")];
     let todays_time_table = faculty_details.time_table[day_idx];
     // console.log(todays_time_table);
     let final_data = [];
@@ -146,7 +186,7 @@ const getClassesForAttendance = async (uni_id) => {
           section: c.section
         });
         // let todays_date = moment().subtract(3, 'days').format('DD-MM-yyyy');
-        let todays_date = moment().format('DD-MM-yyyy');
+        let todays_date = moment().subtract(2, 'days').format('DD-MM-yyyy');
         let present_students = await attendance_repo.fetchOneAndConditions(
           { date: todays_date, class_id: c.class_id });
         // console.log(present_students);
@@ -183,6 +223,23 @@ const getClasses = async (uni_id) => {
     logger.error(error);
     throw error;
   }
+};
+
+const getProfileDetails = async (uni_id) => {
+  try {
+    const data = await faculty_repo.fetchOneCertainFields("uni_id full_name email mobile dept yoj classes", { uni_id });
+    console.log(uni_id);
+    console.log(data);
+
+    return {
+      success: true,
+      message: 'Faculty data retrieved successfully',
+      data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -191,5 +248,6 @@ module.exports = {
   updateSlot,
   validateUser,
   getClasses,
-  getClassesForAttendance
+  getClassesForAttendance,
+  getProfileDetails
 }

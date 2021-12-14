@@ -99,4 +99,40 @@ router.post('/addWithoutAttach', async (req, res) => {
   }
 });
 
+router.get('/details', async (req, res) => {
+  try {
+    const uid = req.query.id;
+    const data = await testController.getTestDetailsForFaculty(uid);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
+router.get('/submissionDetails', async (req, res) => {
+  try {
+    const test_id = req.query.test_id;
+    const submission_id = req.query.submission_id;
+    const data = await testController.getTestSubmissionDetailsForFaculty(test_id, submission_id);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
+router.delete('/', async (req, res) => {
+  try {
+    const uid = req.query.id;
+    const data = await testController.deleteOneByUID(uid);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 module.exports = router;

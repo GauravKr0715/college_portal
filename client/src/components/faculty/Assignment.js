@@ -26,6 +26,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
 import "./attendance.css";
+import './assignment.css';
 import moment from "moment";
 import { getAssignmentSheet } from "../../services/faculty";
 import { Link, useRouteMatch } from "react-router-dom";
@@ -226,7 +227,7 @@ function Assignment() {
               </IconButton>
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
+                {/* <IconButton
                   size="large"
                   aria-label="show 4 new mails"
                   color="inherit"
@@ -254,7 +255,7 @@ function Assignment() {
                   color="inherit"
                 >
                   <AccountCircle />
-                </IconButton>
+                </IconButton> */}
               </Box>
             </Toolbar>
           </AppBar>
@@ -390,7 +391,13 @@ function Assignment() {
                         {filteredAssignments.map((assignment) => (
                           <TableRow key={assignment.uid}>
                             <TableCell component="th" scope="row">
-                              {assignment.title}
+                              <Link
+                                to={`${curr_url}/assignments/${assignment.uid}`}
+                              >
+                                <div className={"clickable-title"}>
+                                  {assignment.title}
+                                </div>
+                              </Link>
                             </TableCell>
                             <TableCell>{assignment.section}</TableCell>
                             <TableCell>{assignment.subject}</TableCell>

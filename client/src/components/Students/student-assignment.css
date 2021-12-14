@@ -76,6 +76,11 @@
   color: green;
 }
 
+.orange-status {
+  background-color: rgb(255 234 198);
+  color: #ff8c00;
+}
+
 .clickable-title {
   text-decoration: none;
   color: black;
@@ -88,6 +93,7 @@
 }
 
 .student-ass-profile-main-container {
+  position: relative;
   max-width: 60vw;
   margin: auto;
   padding: 1%;
@@ -281,4 +287,23 @@
 
 .mega-head {
   font-size: 21px !important;
+}
+
+.multiline-head {
+  display: flex;
+  flex-direction: column;
+}
+
+.small-data {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 400;
+  color: grey;
+  margin: 3px 0 4px;
+}
+
+.menu-icon {
+  position: absolute;
+  top: 1%;
+  right: 1%;
 }

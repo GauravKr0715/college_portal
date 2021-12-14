@@ -63,4 +63,16 @@ router.get('/classes', async (req, res) => {
   }
 });
 
+router.get('/profileDetails', async (req, res) => {
+  try {
+    const uni_id = req.token_data.data.user_id;
+    const data = await facultyController.getProfileDetails(uni_id);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 module.exports = router;

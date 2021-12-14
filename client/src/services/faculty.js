@@ -17,6 +17,14 @@ const postTestWithAttachURL = '/test/addWithAttach';
 const postTestWithoutAttachURL = '/test/addWithoutAttach';
 const postNotesWithAttachURL = '/notes/addWithAttach';
 const postNotesWithoutAttachURL = '/notes/addWithoutAttach';
+const assignmentDetailsURL = '/assignment/details';
+const testDetailsURL = '/test/details';
+const notesDetailsURL = '/notes/details';
+const assignmentSubmissionDetailsURL = '/assignment/submissionDetails';
+const testSubmissionDetailsURL = '/test/submissionDetails';
+const deleteAssignmentURL = '/assignment/';
+const deleteTestURL = '/test/';
+const deleteNotesURL = '/notes/';
 
 export const getFacultyBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
@@ -98,6 +106,54 @@ export const uploadNewNotesWithoutAttach = (details) => {
 export const uploadNewNotesWithAttach = (details) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + postNotesWithAttachURL + '?uid=' + uuidv4(), details, {
+    withCredentials: true
+  });
+}
+
+export const getAssignmentDetails = (id) => {
+  return axios.get(environment.apiUrl + base_url + assignmentDetailsURL + '?id=' + id, {
+    withCredentials: true
+  });
+}
+
+export const getTestDetails = (id) => {
+  return axios.get(environment.apiUrl + base_url + testDetailsURL + '?id=' + id, {
+    withCredentials: true
+  });
+}
+
+export const getNotesDetails = (id) => {
+  return axios.get(environment.apiUrl + base_url + notesDetailsURL + '?id=' + id, {
+    withCredentials: true
+  });
+}
+
+export const getAssignmentSubmissionDetails = (assignment_id, submission_id) => {
+  return axios.get(environment.apiUrl + base_url + assignmentSubmissionDetailsURL + '?assignment_id=' + assignment_id + '&submission_id=' + submission_id, {
+    withCredentials: true
+  });
+}
+
+export const getTestSubmissionDetails = (test_id, submission_id) => {
+  return axios.get(environment.apiUrl + base_url + testSubmissionDetailsURL + '?test_id=' + test_id + '&submission_id=' + submission_id, {
+    withCredentials: true
+  });
+}
+
+export const deleteAssignmentDetails = (assignment_id) => {
+  return axios.delete(environment.apiUrl + base_url + deleteAssignmentURL + '?id=' + assignment_id, {
+    withCredentials: true
+  });
+}
+
+export const deleteTestDetails = (test_id) => {
+  return axios.delete(environment.apiUrl + base_url + deleteTestURL + '?id=' + test_id, {
+    withCredentials: true
+  });
+}
+
+export const deleteNotesDetails = (test_id) => {
+  return axios.delete(environment.apiUrl + base_url + deleteNotesURL + '?id=' + test_id, {
     withCredentials: true
   });
 }

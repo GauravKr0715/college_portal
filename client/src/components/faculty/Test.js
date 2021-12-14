@@ -386,12 +386,18 @@ function Test() {
                         {filteredTests.map((test) => (
                           <TableRow key={test.uid}>
                             <TableCell component="th" scope="row">
-                              {test.title}
+                              <Link
+                                to={`${curr_url}/tests/${test.uid}`}
+                              >
+                                <div className={"clickable-title"}>
+                                  {test.title}
+                                </div>
+                              </Link>
                             </TableCell>
                             <TableCell>{test.section}</TableCell>
                             <TableCell>{test.subject}</TableCell>
                             <TableCell>{moment(test.createdAt * 1000).format('llll')}</TableCell>
-                            <TableCell>{test.due_date ? moment(test.due_date).format('llll') : '--NA--'}</TableCell>
+                            <TableCell>{test.due_date ? moment(test.due_date * 1000).format('llll') : '--NA--'}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
