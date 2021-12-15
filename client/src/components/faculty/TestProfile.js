@@ -13,9 +13,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import FormControl from "@mui/material/FormControl";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
@@ -39,6 +36,7 @@ import moment from "moment";
 import Paper from "@mui/material/Paper";
 import { getTestDetails } from "../../services/faculty";
 import ConfirmDeleteTestDialog from "./ConfirmDeleteTestDialog";
+import UpdateTestDialog from './UpdateTestDialog';
 import Menu from "@mui/material/Menu";
 
 const drawerWidth = 240;
@@ -166,6 +164,13 @@ function TestProfile(props) {
     setMoreMenuAnchorEl(null);
   };
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
+
+  const onEditDialogClose = () => {
+    setEditDialog(false);
+    testDetails();
+  };
+
+  const [editDialog, setEditDialog] = useState(false);
 
   const onDialogClose = () => {
     setDialogOpen(false);
@@ -359,7 +364,7 @@ function TestProfile(props) {
                         <div className="details-tab ">
                           {test.subject}
                           {" • "}
-                          {test.faculty_name}
+                          {test.section}
                         </div>
                         <div className="details-tab ">
                           Created At:{" "}
@@ -499,6 +504,16 @@ function TestProfile(props) {
             fallbackURL={`${curr_url}/tests`}
           />
         )}
+        {
+          test &&
+          <UpdateTestDialog
+            open={editDialog}
+            onClose={onEditDialogClose}
+            openSnackBar={openSnackBar}
+            test={test}
+            test_id={test.uid}
+          />
+        }
       </LoadingOverlay>
     </>
   );

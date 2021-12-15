@@ -293,7 +293,7 @@ function AssignmentProfile(props) {
                       <div className="details-tab ">
                         {assignment.subject}
                         {" • "}
-                        {assignment.faculty_name}
+                        {assignment.section}
                       </div>
                       {result && (
                         <div className="details-tab ">

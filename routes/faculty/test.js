@@ -57,6 +57,7 @@ router.post('/addWithAttach', upload.array('attachments', 6), async (req, res) =
     details.uid = req.query.uid;
     details.files = req.files.map(file => file.filename);
     details.createdAt = Math.floor(Date.now() / 1000);
+    details.last_edit_date = Math.floor(Date.now() / 1000);
     details.due_date = new Date(details.due_date).toISOString();
     console.log(details);
     const uni_id = req.token_data.data.user_id;
@@ -85,9 +86,57 @@ router.post('/addWithoutAttach', async (req, res) => {
     let details = Object.assign({}, req.body);
     details.uid = req.query.uid;
     details.createdAt = Math.floor(Date.now() / 1000);
+    details.last_edit_date = Math.floor(Date.now() / 1000);
     details.due_date = new Date(details.due_date).toISOString();
 
     const data = await testController.addTest(details, uni_id);
+    // console.log(details);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({
+      error,
+      success: false
+    });
+  }
+});
+
+router.put('/editWithAttach', upload.array('new_attachments', 6), async (req, res) => {
+  try {
+    let details = Object.assign({}, req.body);
+    const uid = req.query.uid;
+    details.files = req.files.map(file => file.filename);
+    details.last_edit_date = Math.floor(Date.now() / 1000);
+    if (details.due_date) {
+      details.due_date = Math.floor(new Date(details.due_date).getTime() / 1000);
+    } else {
+      details.due_date = null;
+    }
+    console.log(details);
+    const data = await testController.editTest(details, uid);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({
+      error,
+      success: false
+    });
+  }
+});
+
+router.put('/editWithoutAttach', async (req, res) => {
+  try {
+    const uid = req.query.uid;
+    let details = Object.assign({}, req.body);
+    details.last_edit_date = Math.floor(Date.now() / 1000);
+    if (details.due_date) {
+      details.due_date = Math.floor(new Date(details.due_date).getTime() / 1000);
+    } else {
+      details.due_date = null;
+    }
+    console.log(details);
+    const data = await testController.editTest(details, uid);
     // console.log(details);
     return res.send(data);
   } catch (error) {

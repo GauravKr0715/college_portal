@@ -43,6 +43,10 @@ const testSchema = mongoose.Schema({
   files: {
     type: [String],
     default: null
+  },
+  last_edit_date: {
+    type: String,
+    default: null
   }
 });
 

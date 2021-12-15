@@ -51,6 +51,42 @@ const addTest = async (details, uni_id) => {
   }
 };
 
+const editTest = async (details, uid) => {
+  try {
+    if (details.files) {
+      // files is an array
+      if (details.old_files) {
+        if (typeof details.old_files === 'string') {
+          details.files = [...details.files, details.old_files];
+        } else {
+          details.files = [...details.files, ...details.old_files];
+        }
+      }
+    } else {
+      // make a files array with somthing
+      if (details.old_files) {
+        details.files = details.old_files;
+      }
+    }
+
+    delete (details.old_files);
+
+    console.log(details);
+    await test_repo.updateOne(details, { uid });
+    return {
+      success: true,
+      message: 'Test edited successfully'
+    };
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
 const getAllForStudent = async (roll_no) => {
   try {
     const student_data = await student_repo.fetchOneCertainFields("section", { roll_no });

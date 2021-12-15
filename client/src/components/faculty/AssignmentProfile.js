@@ -13,9 +13,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import FormControl from "@mui/material/FormControl";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
@@ -40,6 +37,7 @@ import Paper from "@mui/material/Paper";
 import { getAssignmentDetails } from "../../services/faculty";
 import Menu from "@mui/material/Menu";
 import ConfirmDeleteAssignmentDialog from "./ConfirmDeleteAssignmentDialog";
+import UpdateAssignmentDialog from './UpdateAssignmentDialog';
 
 const drawerWidth = 240;
 
@@ -166,6 +164,13 @@ function AssignmentProfile(props) {
   };
 
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
+
+  const onEditDialogClose = () => {
+    setEditDialog(false);
+    assignmentDetails();
+  };
+
+  const [editDialog, setEditDialog] = useState(false);
 
   const assignmentDetails = async () => {
     try {
@@ -323,7 +328,12 @@ function AssignmentProfile(props) {
                       },
                     }}
                   >
-                    <MenuItem key={"edit"}>{"Edit Assignment"}</MenuItem>
+                    <MenuItem
+                      key={"edit"}
+                      onClick={() => {
+                        setEditDialog(true);
+                      }}
+                    >{"Edit Assignment"}</MenuItem>
                     <MenuItem
                       key={"delete"}
                       onClick={() => {
@@ -354,7 +364,7 @@ function AssignmentProfile(props) {
                         <div className="details-tab ">
                           {assignment.subject}
                           {" • "}
-                          {assignment.faculty_name}
+                          {assignment.section}
                         </div>
                         <div className="details-tab ">
                           Created At:{" "}
@@ -382,9 +392,8 @@ function AssignmentProfile(props) {
                                     target="_blank"
                                     rel="noreferrer"
                                   >
-                                    <Button variant="contained">{`Attachment #${
-                                      idx + 1
-                                    }`}</Button>
+                                    <Button variant="contained">{`Attachment #${idx + 1
+                                      }`}</Button>
                                   </a>
                                 </div>
                               ))}
@@ -497,6 +506,17 @@ function AssignmentProfile(props) {
             fallbackURL={`${curr_url}/assignments`}
           />
         )}
+        {
+          assignment && (
+            <UpdateAssignmentDialog
+              open={editDialog}
+              onClose={onEditDialogClose}
+              openSnackBar={openSnackBar}
+              assignment={assignment}
+              assignment_id={assignment.uid}
+            />
+          )
+        }
       </LoadingOverlay>
     </>
   );

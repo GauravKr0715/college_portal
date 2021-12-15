@@ -293,7 +293,7 @@ function TestProfile(props) {
                       <div className="details-tab ">
                         {test.subject}
                         {" • "}
-                        {test.faculty_name}
+                        {test.section}
                       </div>
                       {result && (
                         <div className="details-tab ">

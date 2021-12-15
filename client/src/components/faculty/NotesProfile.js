@@ -356,7 +356,7 @@ function NotesProfile(props) {
                         <div className="details-tab ">
                           {notes.subject}
                           {" • "}
-                          {notes.faculty_name}
+                          {notes.section}
                         </div>
                         <div className="details-tab ">
                           Created At:{" "}
