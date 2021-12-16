@@ -320,6 +320,7 @@ const deleteOneByUID = async (uid) => {
 module.exports = {
   getAllByFaculty,
   addTest,
+  editTest,
   getAllForStudent,
   getTestDetailsForStudent,
   addTestSubmission,

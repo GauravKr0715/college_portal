@@ -26,7 +26,7 @@ function UpdateTestDialog(props) {
       setSubmitLoading(true);
       // props.activateLoading();
       setError(null);
-      if (title === null || title === "" || due_date === null || due_date === '' || due_date === null) {
+      if (title === null || title === "" || due_date === null || due_date === '') {
         setError("Please fill all mandatory fields first");
       } else {
         if (document.getElementById("attachments").files.length) {
@@ -44,7 +44,6 @@ function UpdateTestDialog(props) {
           for (const file of old_files) {
             formData.append("old_files", file);
           }
-          console.log(formData);
           const { data } = await editTestWithAttach(
             formData,
             props.test_id
@@ -77,8 +76,8 @@ function UpdateTestDialog(props) {
           setTitle("");
           props.openSnackBar(data.message);
         }
+        props.onClose();
       }
-      props.onClose();
     } catch (error) {
       console.log(error);
       props.openSnackBar("Some Error Occurred. Try Again.");
@@ -106,12 +105,10 @@ function UpdateTestDialog(props) {
     props.test.description ? props.test.description : ""
   );
   const [due_date, setDueDate] = useState(new Date(props.test.due_date * 1000));
-  console.log(due_date);
   const [old_files, setOldFiles] = useState(
     props.test.files ? props.test.files : []
   );
   const [new_files, setNewFiles] = useState(null);
-  console.log(due_date);
 
   const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -312,7 +309,7 @@ function UpdateTestDialog(props) {
                       rel="noreferrer"
                     >
                       <div className="file-name">
-                        {file.split(props.test)[1].slice(1)}
+                        {file.split(props.test_id)[1].slice(1)}
                       </div>
                     </a>
                     <div

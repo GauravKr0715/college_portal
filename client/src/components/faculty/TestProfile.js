@@ -333,7 +333,12 @@ function TestProfile(props) {
                       },
                     }}
                   >
-                    <MenuItem key={"edit"}>{"Edit Test"}</MenuItem>
+                    <MenuItem
+                      key={"edit"}
+                      onClick={() => {
+                        setEditDialog(true);
+                      }}
+                    >{"Edit Test"}</MenuItem>
                     <MenuItem
                       key={"delete"}
                       onClick={() => {

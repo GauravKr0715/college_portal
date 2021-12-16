@@ -10,6 +10,14 @@ module.exports = {
     }
   },
 
+  updateOne: async (details, condition) => {
+    try {
+      return await Note.findOneAndUpdate(condition, details);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getAll: async (field_string, condition) => {
     try {
       return await Note.find(condition).select(field_string);

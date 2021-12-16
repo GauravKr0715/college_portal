@@ -12,16 +12,16 @@ import LoadingOverlay from "react-loading-overlay";
 import Box from "@mui/material/Box";
 import "./update-assignment.css";
 import {
-  editAssignmentWithoutAttach,
-  editAssignmentWithAttach,
+  editNotesWithoutAttach,
+  editNotesWithAttach,
 } from "../../services/faculty";
 import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
 import { createMuiTheme } from "@material-ui/core";
 
-function UpdateAssignmentDialog(props) {
+function UpdateNotesDialog(props) {
   useEffect(() => { }, []);
 
-  const saveAssignment = async () => {
+  const saveNotes = async () => {
     try {
       setSubmitLoading(true);
       // props.activateLoading();
@@ -38,20 +38,15 @@ function UpdateAssignmentDialog(props) {
           if (description !== "" && description !== null) {
             formData.append("description", description);
           }
-          if (due_date !== "" && due_date !== null) {
-            formData.append("due_date", due_date);
-          }
           for (const file of old_files) {
             formData.append("old_files", file);
           }
-          console.log(formData);
-          const { data } = await editAssignmentWithAttach(
+          const { data } = await editNotesWithAttach(
             formData,
-            props.assignment_id
+            props.notes_id
           );
           console.log(data);
           setNewFiles(null);
-          setDueDate(null);
           setDescription("");
           setTitle("");
           props.openSnackBar(data.message);
@@ -61,18 +56,14 @@ function UpdateAssignmentDialog(props) {
           if (description !== "" && description !== null) {
             details.description = description;
           }
-          if (due_date !== "" && due_date !== null) {
-            details.due_date = due_date;
-          }
           details.old_files = old_files;
           console.log(details);
-          const { data } = await editAssignmentWithoutAttach(
+          const { data } = await editNotesWithoutAttach(
             details,
-            props.assignment_id
+            props.notes_id
           );
           console.log(data);
           setNewFiles(null);
-          setDueDate(null);
           setDescription("");
           setTitle("");
           props.openSnackBar(data.message);
@@ -101,21 +92,14 @@ function UpdateAssignmentDialog(props) {
   };
 
   const [error, setError] = useState(null);
-  const [title, setTitle] = useState(props.assignment.title);
+  const [title, setTitle] = useState(props.notes.title);
   const [description, setDescription] = useState(
-    props.assignment.description ? props.assignment.description : ""
+    props.notes.description ? props.notes.description : ""
   );
-  const [due_date, setDueDate] = useState(
-    props.assignment.due_date
-      ? new Date(props.assignment.due_date * 1000)
-      : null
-  );
-  console.log(due_date);
   const [old_files, setOldFiles] = useState(
-    props.assignment.files ? props.assignment.files : []
+    props.notes.files ? props.notes.files : []
   );
   const [new_files, setNewFiles] = useState(null);
-  console.log(due_date);
 
   const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -161,7 +145,7 @@ function UpdateAssignmentDialog(props) {
   });
 
   return (
-    <LoadingOverlay active={submitLoading} spinner text="Loading Test Sheet...">
+    <LoadingOverlay active={submitLoading} spinner text="Loading Notes Sheet...">
       <Dialog
         maxWidth="md"
         {...props}
@@ -176,11 +160,11 @@ function UpdateAssignmentDialog(props) {
           }}
           id="responsive-dialog-title"
         >
-          {"Edit Assignment"}
+          {"Edit Notes"}
           {" • "}
-          {props.assignment.subject}
+          {props.notes.subject}
           {" • "}
-          {props.assignment.section}
+          {props.notes.section}
         </DialogTitle>
         <DialogContent
           sx={{
@@ -218,64 +202,6 @@ function UpdateAssignmentDialog(props) {
               </>
             )}
             <ThemeProvider theme={defaultMaterialTheme}>
-              <Box
-                component="form"
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  m: "auto",
-                  width: "fit-content",
-                  minWidth: "90%",
-                  margin: "15px",
-                }}
-                noValidate
-                autoComplete="off"
-              >
-                <LocalizationProvider
-                  sx={{
-                    margin: "15px",
-                    backgroundColor: "#fff !important",
-                  }}
-                  dateAdapter={AdapterDateFns}
-                >
-                  <DateTimePicker
-                    sx={{
-                      margin: "15px",
-                      backgroundColor: "#fff !important",
-                    }}
-                    label="Select Due Date (optional)"
-                    value={due_date}
-                    onChange={setDueDate}
-                    renderInput={(params) => (
-                      <TextField
-                        sx={{
-                          backgroundColor: "#fff !important",
-                          margin: "15px",
-                        }}
-                        {...params}
-                      />
-                    )}
-                  />
-                </LocalizationProvider>
-
-                <div>
-                  <Button
-                    size="large"
-                    variant="outlined"
-                    sx={{
-                      fontWeight: "bolder",
-                    }}
-                    disabled={due_date === null}
-                    onClick={() => {
-                      setDueDate(null);
-                    }}
-                  >
-                    Remove Due Date
-                  </Button>
-                </div>
-              </Box>
             </ThemeProvider>
             <TextField
               sx={{
@@ -311,12 +237,12 @@ function UpdateAssignmentDialog(props) {
                       style={{
                         textDecoration: "none",
                       }}
-                      href={`http://localhost:5000/assignments/${file}`}
+                      href={`http://localhost:5000/notes/${file}`}
                       target="_blank"
                       rel="noreferrer"
                     >
                       <div className="file-name">
-                        {file.split(props.assignment_id)[1].slice(1)}
+                        {file.split(props.notes_id)[1].slice(1)}
                       </div>
                     </a>
                     <div
@@ -414,7 +340,7 @@ function UpdateAssignmentDialog(props) {
           <Button
             disabled={submitLoading}
             variant="contained"
-            onClick={saveAssignment}
+            onClick={saveNotes}
             autoFocus
             sx={{ fontWeight: "bolder" }}
           >
@@ -426,4 +352,4 @@ function UpdateAssignmentDialog(props) {
   );
 }
 
-export default UpdateAssignmentDialog;
+export default UpdateNotesDialog;

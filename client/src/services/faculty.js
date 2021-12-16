@@ -21,6 +21,8 @@ const editTestWithAttachURL = '/test/editWithAttach';
 const editTestWithoutAttachURL = '/test/editWithoutAttach';
 const postNotesWithAttachURL = '/notes/addWithAttach';
 const postNotesWithoutAttachURL = '/notes/addWithoutAttach';
+const editNotesWithAttachURL = '/notes/editWithAttach';
+const editNotesWithoutAttachURL = '/notes/editWithoutAttach';
 const assignmentDetailsURL = '/assignment/details';
 const testDetailsURL = '/test/details';
 const notesDetailsURL = '/notes/details';
@@ -138,6 +140,20 @@ export const uploadNewNotesWithoutAttach = (details) => {
 export const uploadNewNotesWithAttach = (details) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + postNotesWithAttachURL + '?uid=' + uuidv4(), details, {
+    withCredentials: true
+  });
+}
+
+export const editNotesWithoutAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editNotesWithoutAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const editNotesWithAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editNotesWithAttachURL + '?uid=' + uid, details, {
     withCredentials: true
   });
 }
