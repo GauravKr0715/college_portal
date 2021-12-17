@@ -184,6 +184,10 @@
   font-size: 15px;
 }
 
+.right-aligned {
+  margin-left: auto;
+}
+
 .student-ass-profile-main-container
   .stu-ass-pro-bottom-container
   .stu-ass-details-container

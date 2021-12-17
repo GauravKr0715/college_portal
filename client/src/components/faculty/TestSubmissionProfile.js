@@ -38,6 +38,8 @@ import Checkbox from "@mui/material/Checkbox";
 import moment from "moment";
 import Paper from "@mui/material/Paper";
 import { getTestSubmissionDetails } from "../../services/faculty";
+import Menu from "@mui/material/Menu";
+import ScoreTestDialog from './ScoreTestDialog';
 
 const drawerWidth = 240;
 
@@ -148,6 +150,22 @@ function TestProfile(props) {
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [moreMenuanchorEl, setMoreMenuAnchorEl] = React.useState(null);
+  const moreMenuOpen = Boolean(moreMenuanchorEl);
+
+  const moreMenuHandleClick = (e) => {
+    setMoreMenuAnchorEl(e.currentTarget);
+  };
+  const moreMenuHandleClose = () => {
+    setMoreMenuAnchorEl(null);
+  };
+
+  const onScoreDialogClose = () => {
+    setScoreDialog(false);
+    testSubmissionDetails();
+  };
+
+  const [scoreDialog, setScoreDialog] = useState(false);
 
   const onDialogClose = () => {
     setDialogOpen(false);
@@ -344,17 +362,68 @@ function TestProfile(props) {
                 </div>
               )}
               <div className="stu-ass-pro-bottom-container">
+                <div className="menu-icon">
+                  <IconButton
+                    aria-label="more"
+                    id="long-button"
+                    aria-controls="long-menu"
+                    aria-haspopup="true"
+                    aria-expanded={moreMenuOpen ? "true" : undefined}
+                    onClick={moreMenuHandleClick}
+                  >
+                    <span class="material-icons" style={{ color: "#000" }}>
+                      more_vert
+                    </span>
+                  </IconButton>
+                  <Menu
+                    id="long-menu"
+                    MenuListProps={{
+                      "aria-labelledby": "long-button",
+                    }}
+                    anchorEl={moreMenuanchorEl}
+                    open={moreMenuOpen}
+                    onClose={moreMenuHandleClose}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    PaperProps={{
+                      style: {
+                        maxHeight: 48 * 4.5,
+                        width: "20ch",
+                      },
+                    }}
+                  >
+                    <MenuItem
+                      key={"edit"}
+                      onClick={() => {
+                        setScoreDialog(true);
+                      }}
+                    >{"Score Test"}</MenuItem>
+                  </Menu>
+                </div>
                 {submission ? (
                   <div className="stu-ass-details-container">
                     <div className="response-header">Submitted Response</div>
-                    {submission.response && (
-                      <div className="details-tab ">
-                        Response:{" "}
-                        <div className="details-bold ass-head-head ">
-                          {submission.response}
-                        </div>
+                    <div className="details-tab right-aligned">
+                      <div className="details-bold ass-head-head total-marks-container">
+                        {submission.marks_scored ? submission.marks_scored : '--'}
                       </div>
-                    )}
+                      {`/ ${test.total_marks} scored`}
+                    </div>
+                    {
+                      submission.response && (
+                        <div className="details-tab ">
+                          Response:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {submission.response}
+                          </div>
+                        </div>
+                      )}
                     {submission.files && (
                       <div className="details-tab ">
                         <div className="files-outer-tab">
@@ -410,6 +479,18 @@ function TestProfile(props) {
             </React.Fragment>
           }
         />
+        {
+          test && test.total_marks && submission && (
+            <ScoreTestDialog
+              open={scoreDialog}
+              onClose={onScoreDialogClose}
+              openSnackBar={openSnackBar}
+              test={test}
+              submission={submission}
+              submission_id={submission.uid}
+            />
+          )
+        }
       </LoadingOverlay>
     </>
   );

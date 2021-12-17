@@ -32,6 +32,9 @@ const deleteAssignmentURL = '/assignment/';
 const deleteTestURL = '/test/';
 const deleteNotesURL = '/notes/';
 
+const scoreAssignmentSubmissionURL = '/assignment/scoreSubmission';
+const scoreTestSubmissionURL = '/test/scoreSubmission';
+
 export const getFacultyBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
     withCredentials: true
@@ -202,6 +205,20 @@ export const deleteTestDetails = (test_id) => {
 
 export const deleteNotesDetails = (test_id) => {
   return axios.delete(environment.apiUrl + base_url + deleteNotesURL + '?id=' + test_id, {
+    withCredentials: true
+  });
+}
+
+export const scoreAssignmentSubmission = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + scoreAssignmentSubmissionURL + '?id=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const scoreTestSubmission = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + scoreTestSubmissionURL + '?id=' + uid, details, {
     withCredentials: true
   });
 }

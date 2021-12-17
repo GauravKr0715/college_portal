@@ -26,8 +26,10 @@ function UpdateTestDialog(props) {
       setSubmitLoading(true);
       // props.activateLoading();
       setError(null);
-      if (title === null || title === "" || due_date === null || due_date === '') {
+      if (title === null || title === "" || due_date === null || due_date === '' || total_marks === null || total_marks === '') {
         setError("Please fill all mandatory fields first");
+      } else if (total_marks < 10 || total_marks > 100) {
+        setError("Please enter marks in the proper range (10 - 100)");
       } else {
         if (document.getElementById("attachments").files.length) {
           var formData = new FormData();
@@ -40,6 +42,9 @@ function UpdateTestDialog(props) {
           }
           if (due_date !== "" && due_date !== null) {
             formData.append("due_date", due_date);
+          }
+          if (total_marks !== "" && total_marks !== null) {
+            formData.append("total_marks", total_marks);
           }
           for (const file of old_files) {
             formData.append("old_files", file);
@@ -62,6 +67,9 @@ function UpdateTestDialog(props) {
           }
           if (due_date !== "" && due_date !== null) {
             details.due_date = due_date;
+          }
+          if (total_marks !== "" && total_marks !== null) {
+            details.total_marks = total_marks;
           }
           details.old_files = old_files;
           console.log(details);
@@ -105,6 +113,7 @@ function UpdateTestDialog(props) {
     props.test.description ? props.test.description : ""
   );
   const [due_date, setDueDate] = useState(new Date(props.test.due_date * 1000));
+  const [total_marks, setTotalMarks] = useState(props.test.total_marks);
   const [old_files, setOldFiles] = useState(
     props.test.files ? props.test.files : []
   );
@@ -238,6 +247,7 @@ function UpdateTestDialog(props) {
                       margin: "15px",
                       backgroundColor: "#fff !important",
                     }}
+                    minDateTime={new Date()}
                     label="Select Due Date (optional)"
                     value={due_date}
                     onChange={setDueDate}
@@ -270,6 +280,56 @@ function UpdateTestDialog(props) {
                 </div>
               </Box>
             </ThemeProvider>
+            <Box
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                m: "auto",
+                width: "fit-content",
+                minWidth: "90%",
+                margin: "0px 15px",
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="marks_scored"
+                label="Total Marks"
+                type="number"
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 10, max: 100 }}
+                sx={{
+                  backgroundColor: "#fff !important",
+                  margin: "15px",
+                  minWidth: '30%'
+                }}
+                value={total_marks}
+                onChange={(e) => {
+                  setTotalMarks(e.target.value);
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+
+              <div>
+                <Button
+                  size="large"
+                  variant="outlined"
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
+                  disabled={total_marks === null || total_marks === ''}
+                  onClick={() => {
+                    setTotalMarks("");
+                  }}
+                >
+                  Remove Marks
+                </Button>
+              </div>
+            </Box>
             <TextField
               sx={{
                 margin: "15px",

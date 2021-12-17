@@ -10,6 +10,14 @@ module.exports = {
     }
   },
 
+  updateOne: async (details, condition) => {
+    try {
+      return await AssignmentSubmission.findOneAndUpdate(condition, details);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   fetchOneCertainFields: async (field_string, condition) => {
     try {
       return await AssignmentSubmission.findOne(condition).select(field_string);

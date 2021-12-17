@@ -365,6 +365,9 @@ function AssignmentProfile(props) {
                           {assignment.subject}
                           {" • "}
                           {assignment.section}
+                          {
+                            assignment.total_marks && ` • ${assignment.total_marks} marks`
+                          }
                         </div>
                         <div className="details-tab ">
                           Created At:{" "}
@@ -432,6 +435,16 @@ function AssignmentProfile(props) {
                           >
                             Status
                           </TableCell>
+                          {
+                            assignment.total_marks && <TableCell
+                              sx={{
+                                fontWeight: "bold !important",
+                                fontSize: "1rem !important",
+                              }}
+                            >
+                              Marks Scored
+                            </TableCell>
+                          }
                           <TableCell
                             sx={{
                               fontWeight: "bold !important",
@@ -466,6 +479,15 @@ function AssignmentProfile(props) {
                                 {submission.time_status}
                               </div>
                             </TableCell>
+                            {
+                              assignment.total_marks ? (
+                                <TableCell>
+                                  <div>
+                                    {submission.marks_scored ? `${submission.marks_scored}` : `--NA--`}
+                                  </div>
+                                </TableCell>
+                              ) : null
+                            }
                             <TableCell>
                               {moment(submission.last_edit_date * 1000).format(
                                 "llll"

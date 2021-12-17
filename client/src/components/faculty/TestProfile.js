@@ -370,6 +370,8 @@ function TestProfile(props) {
                           {test.subject}
                           {" • "}
                           {test.section}
+                          {" • "}
+                          {`${test.total_marks} marks`}
                         </div>
                         <div className="details-tab ">
                           Created At:{" "}
@@ -440,6 +442,14 @@ function TestProfile(props) {
                                 fontSize: "1rem !important",
                               }}
                             >
+                              Marks Scored
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                fontWeight: "bold !important",
+                                fontSize: "1rem !important",
+                              }}
+                            >
                               Last Edit Date
                             </TableCell>
                           </TableRow>
@@ -466,6 +476,11 @@ function TestProfile(props) {
                                   className={`stu-pro-cell-status ${submission.status_class}`}
                                 >
                                   {submission.time_status}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  {submission.marks_scored ? `${submission.marks_scored}` : `--NA--`}
                                 </div>
                               </TableCell>
                               <TableCell>

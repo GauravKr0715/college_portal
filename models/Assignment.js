@@ -40,6 +40,10 @@ const assignmentSchema = mongoose.Schema({
     type: String,
     default: null
   },
+  total_marks: {
+    type: String,
+    default: null
+  },
   files: {
     type: [String],
     default: null

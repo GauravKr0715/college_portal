@@ -41,8 +41,10 @@ function NewTestDialog(props) {
       setSubmitLoading(true);
       // props.activateLoading();
       setError(null);
-      if (class_id === null || title === null || title === "" || due_date === null || due_date === '') {
+      if (class_id === null || title === null || title === "" || due_date === null || due_date === '' || total_marks === null || total_marks === '') {
         setError("Please fill all mandatory fields first");
+      } else if (total_marks < 10 || total_marks > 100) {
+        setError("Please enter marks in the proper range (10 - 100)");
       } else {
         if (document.getElementById("attachments").files.length) {
           var formData = new FormData();
@@ -57,6 +59,7 @@ function NewTestDialog(props) {
             formData.append("description", description);
           }
           formData.append("due_date", due_date);
+          formData.append("total_marks", total_marks);
           console.log(formData);
           const { data } = await uploadNewTestWithAttach(formData);
           console.log(data);
@@ -79,6 +82,7 @@ function NewTestDialog(props) {
             details.description = description;
           }
           details.due_date = due_date;
+          details.total_marks = total_marks;
           console.log(details);
           const { data } = await uploadNewTestWithoutAttach(details);
           console.log(data);
@@ -92,8 +96,8 @@ function NewTestDialog(props) {
           setTitle("");
           props.openSnackBar(data.message);
         }
+        props.onClose();
       }
-      props.onClose();
     } catch (error) {
       console.log(error);
       props.openSnackBar('Some Error Occurred. Try Again.');
@@ -135,6 +139,7 @@ function NewTestDialog(props) {
   const [subject, setSubject] = useState(null);
   const [description, setDescription] = useState("");
   const [due_date, setDueDate] = useState(null);
+  const [total_marks, setTotalMarks] = useState(null);
   const [files, setFiles] = useState(null);
   const [classValue, setClassValue] = useState("");
 
@@ -240,6 +245,21 @@ function NewTestDialog(props) {
                   </MenuItem>
                 ))}
               </TextField>
+            </Box><Box
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                m: "auto",
+                width: "fit-content",
+                minWidth: "90%",
+                margin: "0px 15px",
+              }}
+              noValidate
+              autoComplete="off"
+            >
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
                   sx={{
@@ -247,7 +267,9 @@ function NewTestDialog(props) {
                     backgroundColor: "#fff !important",
                     flex: "1",
                   }}
-                  label="*Select Due Date"
+                  minDateTime={new Date()}
+                  showDaysOutsideCurrentMonth={true}
+                  label="Select Due Date"
                   value={due_date}
                   onChange={setDueDate}
                   renderInput={(params) => (
@@ -261,6 +283,72 @@ function NewTestDialog(props) {
                   )}
                 />
               </LocalizationProvider>
+
+              <div>
+                <Button
+                  size="large"
+                  variant="outlined"
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
+                  disabled={due_date === null}
+                  onClick={() => {
+                    setDueDate(null);
+                  }}
+                >
+                  Remove Due Date
+                </Button>
+              </div>
+            </Box>
+            <Box
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                m: "auto",
+                width: "fit-content",
+                minWidth: "90%",
+                margin: "0px 15px",
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="marks_scored"
+                label="Total Marks"
+                type="number"
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 10, max: 100 }}
+                sx={{
+                  backgroundColor: "#fff !important",
+                  margin: "15px",
+                  minWidth: '30%'
+                }}
+                value={total_marks}
+                onChange={(e) => {
+                  setTotalMarks(e.target.value);
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+
+              <div>
+                <Button
+                  size="large"
+                  variant="outlined"
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
+                  disabled={total_marks === null || total_marks === ''}
+                  onClick={() => {
+                    setTotalMarks("");
+                  }}
+                >
+                  Remove Marks
+                </Button>
+              </div>
             </Box>
             <TextField
               sx={{

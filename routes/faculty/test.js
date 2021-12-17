@@ -112,6 +112,9 @@ router.put('/editWithAttach', upload.array('new_attachments', 6), async (req, re
     } else {
       details.due_date = null;
     }
+    if (!details.total_marks) {
+      details.total_marks = null;
+    }
     console.log(details);
     const data = await testController.editTest(details, uid);
 
@@ -134,6 +137,9 @@ router.put('/editWithoutAttach', async (req, res) => {
       details.due_date = Math.floor(new Date(details.due_date).getTime() / 1000);
     } else {
       details.due_date = null;
+    }
+    if (!details.total_marks) {
+      details.total_marks = null;
     }
     console.log(details);
     const data = await testController.editTest(details, uid);
@@ -165,6 +171,19 @@ router.get('/submissionDetails', async (req, res) => {
     const test_id = req.query.test_id;
     const submission_id = req.query.submission_id;
     const data = await testController.getTestSubmissionDetailsForFaculty(test_id, submission_id);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
+router.put('/scoreSubmission', async (req, res) => {
+  try {
+    const details = Object.assign({}, req.body);
+    const submission_id = req.query.id;
+    const data = await testController.scoreTestSubmission(submission_id, details);
 
     return res.send(data);
   } catch (error) {

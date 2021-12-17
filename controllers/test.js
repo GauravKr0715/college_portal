@@ -317,6 +317,23 @@ const deleteOneByUID = async (uid) => {
   }
 };
 
+const scoreTestSubmission = async (uid, details) => {
+  try {
+    await test_submission_repo.updateOne(details, { uid });
+    return {
+      success: true,
+      message: 'Test Scored successfully'
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
 module.exports = {
   getAllByFaculty,
   addTest,
@@ -326,5 +343,6 @@ module.exports = {
   addTestSubmission,
   getTestDetailsForFaculty,
   getTestSubmissionDetailsForFaculty,
-  deleteOneByUID
+  deleteOneByUID,
+  scoreTestSubmission
 }
