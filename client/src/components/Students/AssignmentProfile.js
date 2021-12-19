@@ -39,6 +39,7 @@ import moment from "moment";
 import Paper from "@mui/material/Paper";
 import NewAssignmentSubmissionDialog from "./NewAssignmentSubmissionDialog";
 import { getAssignmentDetails } from "../../services/student";
+import StudentAppBar from './StudentAppBar';
 
 const drawerWidth = 240;
 
@@ -211,54 +212,7 @@ function AssignmentProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                >
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <StudentAppBar />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -351,9 +305,8 @@ function AssignmentProfile(props) {
                                   target="_blank"
                                   rel="noreferrer"
                                 >
-                                  <Button variant="contained">{`Attachment #${
-                                    idx + 1
-                                  }`}</Button>
+                                  <Button variant="contained">{`Attachment #${idx + 1
+                                    }`}</Button>
                                 </a>
                               </div>
                             ))}
@@ -386,9 +339,8 @@ function AssignmentProfile(props) {
                                 target="_blank"
                                 rel="noreferrer"
                               >
-                                <Button variant="contained">{`Attachment #${
-                                  idx + 1
-                                }`}</Button>
+                                <Button variant="contained">{`Attachment #${idx + 1
+                                  }`}</Button>
                               </a>
                             </div>
                           ))}

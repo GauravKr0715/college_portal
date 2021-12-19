@@ -5,6 +5,7 @@ const student_repo = require('../models/student_repo');
 const assignment_submission_repo = require('../models/assignment_submission_repo');
 const logger = require('../helpers/logger');
 const moment = require('moment');
+const jsonexport = require('jsonexport');
 
 const getAllByFaculty = async (faculty_id) => {
   try {
@@ -254,6 +255,8 @@ const getAssignmentDetailsForFaculty = async (uid) => {
 
     console.log(submission_data);
 
+    submission_data.sort((a, b) => b.createdAt - a.createdAt);
+
     return {
       success: true,
       assignment_data,
@@ -341,6 +344,91 @@ const scoreAssignmentSubmission = async (uid, details) => {
   }
 };
 
+const getCSVData = async (uid, type) => {
+  try {
+    let final_result = [];
+    if (type == 1) {
+      const assignment_data = await assignment_repo.getOneCertainFields("section due_date total_marks", { uid });
+      const students_data = await student_repo.fetchAllByCondition({ section: assignment_data.section });
+      const inter_array = students_data.map(async student => {
+        const submission_data = await assignment_submission_repo.fetchOneCertainFields("student_id student_name marks_scored last_edit_date", {
+          assignment_id: uid,
+          student_id: student.roll_no
+        });
+        let student_obj = {};
+        student_obj['Roll No'] = `"${student.roll_no}"`;
+        student_obj['Name'] = student.full_name;
+        if (submission_data) {
+          // there is a submission
+          student_obj['Submission Status'] = 'Completed';
+          if (assignment_data.total_marks) {
+            student_obj['Marks Given'] = submission_data.marks_scored ? submission_data.marks_scored : 'NA';
+          }
+        } else {
+          // there is no submission
+          student_obj['Submission Status'] = 'Pending';
+          if (assignment_data.total_marks) {
+            student_obj['Marks Given'] = 'NA';
+          }
+        }
+        final_result.push(student_obj);
+      });
+      await Promise.all(inter_array);
+    } else if (type == 2) {
+      const assignment_data = await assignment_repo.getOneCertainFields("section due_date total_marks", { uid });
+      let submission_data = await assignment_submission_repo.getAllWithCertainFields("-id", { assignment_id: uid });
+      submission_data = submission_data.map(submission => {
+        let student_obj = {};
+        student_obj['Roll No'] = `"${submission.student_id}"`;
+        student_obj['Name'] = submission.student_name;
+        if (assignment_data.total_marks) {
+          student_obj['Marks Given'] = submission.marks_scored ? submission.marks_scored : 'NA';
+        }
+        final_result.push(student_obj);
+      });
+    } else {
+      const assignment_data = await assignment_repo.getOneCertainFields("section due_date total_marks", { uid });
+      const students_data = await student_repo.fetchAllByCondition({ section: assignment_data.section });
+      const inter_array = students_data.map(async student => {
+        const submission_data = await assignment_submission_repo.fetchOneCertainFields("student_id student_name marks_scored last_edit_date", {
+          assignment_id: uid,
+          student_id: student.roll_no
+        });
+        if (!submission_data) {
+          // there is no submission
+          let student_obj = {};
+          student_obj['Roll No'] = `"${student.roll_no}"`;
+          student_obj['Name'] = student.full_name;
+          final_result.push(student_obj);
+        }
+      });
+      await Promise.all(inter_array);
+    }
+    final_result.sort((a, b) => a['Roll No'].substring(1, 4) - b['Roll No'].substring(1, 4));
+    const resolved_data = await new Promise((resolve, reject) => {
+      jsonexport(final_result, function (err, csv) {
+        if (err) {
+          logger.error(err);
+          return reject(err);
+        }
+        return resolve(csv);
+      });
+    });
+    return {
+      success: 'true',
+      message: 'CSV Downloaded successfully',
+      csv_data: resolved_data
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+}
+
 module.exports = {
   getAllByFaculty,
   addAssignment,
@@ -351,5 +439,6 @@ module.exports = {
   getAssignmentSubmissionDetailsForFaculty,
   deleteOneByUID,
   editAssignment,
-  scoreAssignmentSubmission
+  scoreAssignmentSubmission,
+  getCSVData
 }

@@ -37,7 +37,10 @@ import Paper from "@mui/material/Paper";
 import { getAssignmentDetails } from "../../services/faculty";
 import Menu from "@mui/material/Menu";
 import ConfirmDeleteAssignmentDialog from "./ConfirmDeleteAssignmentDialog";
-import UpdateAssignmentDialog from './UpdateAssignmentDialog';
+import UpdateAssignmentDialog from "./UpdateAssignmentDialog";
+import CSVAssignmentDialog from "./CSVAssignmentDialog";
+import Logout from '@mui/icons-material/Logout';
+import FacultyAppBar from './FacultyAppBar';
 
 const drawerWidth = 240;
 
@@ -123,6 +126,11 @@ function AssignmentProfile(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const profileOpen = Boolean(anchorEl);
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -172,6 +180,13 @@ function AssignmentProfile(props) {
 
   const [editDialog, setEditDialog] = useState(false);
 
+  const onCSVDialogClose = () => {
+    setCSVDialog(false);
+    // assignmentDetails();
+  };
+
+  const [CSVDialog, setCSVDialog] = useState(false);
+
   const assignmentDetails = async () => {
     try {
       setLoading(true);
@@ -209,54 +224,7 @@ function AssignmentProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                >
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <FacultyAppBar />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -293,6 +261,28 @@ function AssignmentProfile(props) {
             <div className="student-ass-profile-main-container">
               <>
                 <div className="menu-icon">
+                  <Button
+                    sx={{
+                      maxWidth: "fit-content",
+                      marginRight: "10px",
+                      fontWeight: "bolder",
+                    }}
+                    variant="contained"
+                    onClick={() => {
+                      setCSVDialog(true);
+                    }}
+                  >
+                    <span
+                      class="material-icons"
+                      style={{
+                        color: "#fff",
+                        marginRight: "5px",
+                      }}
+                    >
+                      cloud_download
+                    </span>
+                    CSV
+                  </Button>
                   <IconButton
                     aria-label="more"
                     id="long-button"
@@ -332,12 +322,16 @@ function AssignmentProfile(props) {
                       key={"edit"}
                       onClick={() => {
                         setEditDialog(true);
+                        setMoreMenuAnchorEl(null);
                       }}
-                    >{"Edit Assignment"}</MenuItem>
+                    >
+                      {"Edit Assignment"}
+                    </MenuItem>
                     <MenuItem
                       key={"delete"}
                       onClick={() => {
                         setDeleteConfirmDialog(true);
+                        setMoreMenuAnchorEl(null);
                       }}
                     >
                       {"Delete Assignment"}
@@ -365,9 +359,8 @@ function AssignmentProfile(props) {
                           {assignment.subject}
                           {" • "}
                           {assignment.section}
-                          {
-                            assignment.total_marks && ` • ${assignment.total_marks} marks`
-                          }
+                          {assignment.total_marks &&
+                            ` • ${assignment.total_marks} marks`}
                         </div>
                         <div className="details-tab ">
                           Created At:{" "}
@@ -435,8 +428,8 @@ function AssignmentProfile(props) {
                           >
                             Status
                           </TableCell>
-                          {
-                            assignment.total_marks && <TableCell
+                          {assignment.total_marks && (
+                            <TableCell
                               sx={{
                                 fontWeight: "bold !important",
                                 fontSize: "1rem !important",
@@ -444,7 +437,7 @@ function AssignmentProfile(props) {
                             >
                               Marks Scored
                             </TableCell>
-                          }
+                          )}
                           <TableCell
                             sx={{
                               fontWeight: "bold !important",
@@ -479,15 +472,15 @@ function AssignmentProfile(props) {
                                 {submission.time_status}
                               </div>
                             </TableCell>
-                            {
-                              assignment.total_marks ? (
-                                <TableCell>
-                                  <div>
-                                    {submission.marks_scored ? `${submission.marks_scored}` : `--NA--`}
-                                  </div>
-                                </TableCell>
-                              ) : null
-                            }
+                            {assignment.total_marks ? (
+                              <TableCell>
+                                <div>
+                                  {submission.marks_scored
+                                    ? `${submission.marks_scored}`
+                                    : `--NA--`}
+                                </div>
+                              </TableCell>
+                            ) : null}
                             <TableCell>
                               {moment(submission.last_edit_date * 1000).format(
                                 "llll"
@@ -528,17 +521,24 @@ function AssignmentProfile(props) {
             fallbackURL={`${curr_url}/assignments`}
           />
         )}
-        {
-          assignment && (
-            <UpdateAssignmentDialog
-              open={editDialog}
-              onClose={onEditDialogClose}
-              openSnackBar={openSnackBar}
-              assignment={assignment}
-              assignment_id={assignment.uid}
-            />
-          )
-        }
+        {assignment && (
+          <UpdateAssignmentDialog
+            open={editDialog}
+            onClose={onEditDialogClose}
+            openSnackBar={openSnackBar}
+            assignment={assignment}
+            assignment_id={assignment.uid}
+          />
+        )}
+        {assignment && (
+          <CSVAssignmentDialog
+            open={CSVDialog}
+            onClose={onCSVDialogClose}
+            openSnackBar={openSnackBar}
+            assignment_id={assignment.uid}
+            assignment_title={assignment.title}
+          />
+        )}
       </LoadingOverlay>
     </>
   );

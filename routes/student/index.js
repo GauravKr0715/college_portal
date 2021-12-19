@@ -36,6 +36,11 @@ router.get('/validateSession', (req, res) => {
   });
 });
 
+router.put('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.send({ success: true });
+});
+
 router.get('/basicDetails', async (req, res) => {
   try {
     const roll_no = req.token_data.data.user_id;

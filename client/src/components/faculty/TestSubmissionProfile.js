@@ -40,6 +40,7 @@ import Paper from "@mui/material/Paper";
 import { getTestSubmissionDetails } from "../../services/faculty";
 import Menu from "@mui/material/Menu";
 import ScoreTestDialog from './ScoreTestDialog';
+import FacultyAppBar from './FacultyAppBar';
 
 const drawerWidth = 240;
 
@@ -209,54 +210,7 @@ function TestProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                >
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <FacultyAppBar />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -402,6 +356,7 @@ function TestProfile(props) {
                       key={"edit"}
                       onClick={() => {
                         setScoreDialog(true);
+                        setMoreMenuAnchorEl(null);
                       }}
                     >{"Score Test"}</MenuItem>
                   </Menu>

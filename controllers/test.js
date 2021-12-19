@@ -252,6 +252,8 @@ const getTestDetailsForFaculty = async (uid) => {
 
     console.log(submission_data);
 
+    submission_data.sort((a, b) => b.createdAt - a.createdAt);
+
     return {
       success: true,
       test_data,

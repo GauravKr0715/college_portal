@@ -197,6 +197,18 @@ router.put('/scoreSubmission', async (req, res) => {
   }
 });
 
+router.get('/getCSVData', async (req, res) => {
+  try {
+    const uid = req.query.id;
+    const type = req.query.type;
+    const data = await assignmentController.getCSVData(uid, type);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 router.delete('/', async (req, res) => {
   try {
     const uid = req.query.id;
