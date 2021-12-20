@@ -1,4 +1,4 @@
-import React , {useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import "./facultynew.css"
 import Container from '@mui/material/Container';
 import FileSaver from 'file-saver';
@@ -133,7 +133,7 @@ function Studentnew() {
   const handleOpened = () => setOpened(true);
   const handleClosed = () => setOpened(false);
 
-    let { url, path } = useRouteMatch();
+  let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
   const theme = useTheme();
@@ -153,7 +153,7 @@ function Studentnew() {
   };
   const menuId = "primary-search-account-menu";
 
-  
+
   const [select_label, setSelectLabel] = useState("");
   const [selected_class, setSelectedClass] = useState("");
   const [selected_class_idx, setSelectedClassIdx] = useState(-1);
@@ -196,35 +196,41 @@ function Studentnew() {
   };
 
  */
-    const saveFile = () => {
-FileSaver.saveAs(
-  environment.apiUrl + "static/sampleFaculty.csv",
-  "csv-file-format.csv"
-);
-}
+  const saveFile = () => {
+    FileSaver.saveAs(
+      environment.apiUrl + "static/sampleFaculty.csv",
+      "csv-file-format.csv"
+    );
+  }
 
-const[profileValue,setProfileValue]=useState([
-  {"Name":"Unique Id:",
-      "Value":""
+  const [profileValue, setProfileValue] = useState([
+    {
+      "Name": "Unique Id:",
+      "Value": ""
     },
-    {"Name":"Name:",
-      "Value":""
+    {
+      "Name": "Name:",
+      "Value": ""
     },
-    {"Name":"Email ID:",
-      "Value":""
+    {
+      "Name": "Email ID:",
+      "Value": ""
     },
-    {"Name":"Contact No:",
-      "Value":""
+    {
+      "Name": "Contact No:",
+      "Value": ""
     },
-    {"Name":"Department:",
-      "Value":""
+    {
+      "Name": "Department:",
+      "Value": ""
     },
-    {"Name":"YoJ:",
-      "Value":""
+    {
+      "Name": "YoJ:",
+      "Value": ""
     },
-   ])
+  ])
 
-   
+
   return (
     <>
       <LoadingOverlay
@@ -253,15 +259,15 @@ const[profileValue,setProfileValue]=useState([
             </Typography> */}
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-  
-              <CssBaseline />
- 
-              <Stack spacing={2} direction="row">
-      
-      <Button variant="outlined"  style={{backgroundColor:"white", fontWeight:"bold"}} onClick={saveFile} className="filebtn">Get CSV File format</Button>
-      
-    </Stack>
-            
+
+                <CssBaseline />
+
+                <Stack spacing={2} direction="row">
+
+                  <Button variant="outlined" style={{ backgroundColor: "white", fontWeight: "bold" }} onClick={saveFile} className="filebtn">Get CSV File format</Button>
+
+                </Stack>
+
               </Box>
             </Toolbar>
           </AppBar> */
@@ -297,64 +303,64 @@ const[profileValue,setProfileValue]=useState([
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <div className="start">
-      <CssBaseline />
-      <Container maxWidth="sm">
-        <Box sx={{ bgcolor: 'white !important', height: '80vh',marginTop:"6rem",}} >
-                 <div className="newflex">
-                 <Button onClick={handleOpened}variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem',fontWeight:'bold'}}>New ➕</Button>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={opened}
-        onClose={handleClosed}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={opened}>
-          <Box sx={style}>
-            <Typography id="transition-modal-title" variant="h4" component="h3">
-              Fill the details
-            </Typography>
-            <Box sx={{ bgcolor: 'white ', height: '69vh' }} ><br/>
-            <Box
-            component="form"
-            sx={{
-              '& > :not(style)': { m: 1, width: '25ch' ,marginLeft:'3.5rem'},
-            }}
-            noValidate
-            autoComplete="off"
-          >
-               
-            {  profileValue.map((name)=>(
-             
-            
-              <TextField  id="standard-basic" label={name.Name} variant="outlined" color='action' margin='normal' sx={{width:'12rem'}}/>
+            <div className="start">
+              <CssBaseline />
+              <Container maxWidth="sm">
+                <Box sx={{ bgcolor: 'white !important', height: '80vh', marginTop: "6rem", }} >
+                  <div className="newflex">
+                    <Button onClick={handleOpened} variant="contained" sx={{ width: '10rem', height: '5rem', fontSize: '1.3rem', fontWeight: 'bold' }}>New ➕</Button>
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={opened}
+                      onClose={handleClosed}
+                      closeAfterTransition
+                      BackdropComponent={Backdrop}
+                      BackdropProps={{
+                        timeout: 500,
+                      }}
+                    >
+                      <Fade in={opened}>
+                        <Box sx={style}>
+                          <Typography id="transition-modal-title" variant="h4" component="h3">
+                            Fill the details
+                          </Typography>
+                          <Box sx={{ bgcolor: 'white ', height: '69vh' }} ><br />
+                            <Box
+                              component="form"
+                              sx={{
+                                '& > :not(style)': { m: 1, width: '25ch', marginLeft: '3.5rem' },
+                              }}
+                              noValidate
+                              autoComplete="off"
+                            >
 
-            )
-               )}
-               </Box>
-              
-              
-               <br/>
-               <Button variant="contained" color='primary' sx={{marginLeft:'7rem'}} >Save</Button>
-                    
-            </Box>
+                              {profileValue.map((name) => (
+
+
+                                <TextField id="standard-basic" label={name.Name} variant="outlined" color='action' margin='normal' sx={{ width: '12rem' }} />
+
+                              )
+                              )}
+                            </Box>
+
+
+                            <br />
+                            <Button variant="contained" color='primary' sx={{ marginLeft: '7rem' }} >Save</Button>
+
+                          </Box>
+                        </Box>
+                      </Fade>
+                    </Modal>
+                    <br></br>
+                    <p style={{ fontSize: '1.6rem', fontWeight: "bold" }}>OR</p><br />
+                    <Button variant="contained" sx={{ width: '10rem', height: '5rem', fontSize: '1.3rem', fontWeight: 'bold' }}  >Bulk Import</Button>
+
+                  </div>
+                </Box>
+              </Container>
+            </div>
           </Box>
-        </Fade>
-      </Modal>
-                <br></br>
-                 <p style={{fontSize:'1.6rem', fontWeight:"bold"}}>OR</p><br />
-                 <Button variant="contained" sx={{width:'10rem', height:'5rem',fontSize:'1.3rem', fontWeight:'bold' }}  >Bulk Import</Button>
-                   
-                 </div>
-        </Box>
-      </Container>
-      </div>
-     </Box>
         </Box>
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}

@@ -223,7 +223,7 @@ function TestProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <FacultyAppBar />
+          <FacultyAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -260,28 +260,28 @@ function TestProfile(props) {
             <div className="student-ass-profile-main-container">
               <>
                 <div className="menu-icon">
-                <Button
-                sx={{
-                  maxWidth: "fit-content",
-                  marginRight: "10px",
-                  fontWeight: "bolder",
-                }}
-                variant="contained"
-                onClick={() => {
-                  setCSVDialog(true);
-                }}
-              >
-                <span
-                  class="material-icons"
-                  style={{
-                    color: "#fff",
-                    marginRight: "5px",
-                  }}
-                >
-                  cloud_download
-                </span>
-                CSV
-              </Button>
+                  <Button
+                    sx={{
+                      maxWidth: "fit-content",
+                      marginRight: "10px",
+                      fontWeight: "bolder",
+                    }}
+                    variant="contained"
+                    onClick={() => {
+                      setCSVDialog(true);
+                    }}
+                  >
+                    <span
+                      class="material-icons"
+                      style={{
+                        color: "#fff",
+                        marginRight: "5px",
+                      }}
+                    >
+                      cloud_download
+                    </span>
+                    CSV
+                  </Button>
                   <IconButton
                     aria-label="more"
                     id="long-button"

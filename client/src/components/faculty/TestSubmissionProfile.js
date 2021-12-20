@@ -210,7 +210,7 @@ function TestProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <FacultyAppBar />
+          <FacultyAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton

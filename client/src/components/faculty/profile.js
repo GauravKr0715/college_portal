@@ -127,8 +127,8 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function Attendance() {
- 
-  
+
+
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
@@ -259,7 +259,7 @@ function Attendance() {
     setLoading(false);
   };
 
-  
+
   const[profileValue,setProfileValue]=useState([])
 
   const ProfileValues = async () => {
@@ -284,8 +284,8 @@ function Attendance() {
      {"Name":"Year of Joining:",
        "Value":data.data.yoj
      },
-    
-    ]); 
+
+    ]);
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -355,7 +355,7 @@ function Attendance() {
         }
       });
     });
-    
+
     console.log(classes[selected_class_idx]);
   };
 
@@ -380,7 +380,7 @@ function Attendance() {
     setSnackbar(false);
   };
 
-  
+
 
 /*  */
 
@@ -393,7 +393,7 @@ function Attendance() {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <FacultyAppBar />
+          <FacultyAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -432,36 +432,36 @@ function Attendance() {
                <Box sx={{ bgcolor: 'white', height: '75vh',width:'60vh' }} >
                             <h2 className='h'>Profile</h2>
                <table className="table">
-               
-             
+
+
                           {  profileValue.map((data)=>(
-                                        
+
                             <tr className="cont">
                             <td><label htmlFor="" >{data.Name}&nbsp;&nbsp;</label></td>
                             <td><div className="sugar1"><p>{data.Value}</p></div></td>
                             </tr>
                           )
-                            )} 
-                         
-                
+                            )}
+
+
                  </table>
 
-                 
-                 
-               
+
+
+
                </Box>
             </Container>
             <Container>
                                 <h2 className='h'>My Classes</h2>
                          <br />
-                  
+
                     <Table  aria-label="simple table">
                     <TableHead>
                     <TableRow>
                     <TableCell  sx={{
                               fontWeight: "bold !important",
                               fontSize: "1rem !important",
-                             
+
                             }}>Subject Id</TableCell>
                     <TableCell  sx={{
                               fontWeight: "bold !important",
@@ -497,12 +497,12 @@ function Attendance() {
                     </TableBody>
                     </Table>
 
-             
+
             </Container>
- 
-      
-              
-            
+
+
+
+
             </Box>
         </Box>
         <Snackbar
