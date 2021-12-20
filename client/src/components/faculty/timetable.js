@@ -363,7 +363,7 @@ function Attendance() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Attendance Sheet..."
+        text="Loading Time Table..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
