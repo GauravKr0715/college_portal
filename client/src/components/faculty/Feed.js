@@ -26,14 +26,14 @@ import moment from "moment";
 import { getFacultyBasicDetails } from "../../services/faculty";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import Button from "@mui/material/Button";
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Logout from '@mui/icons-material/Logout';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Logout from "@mui/icons-material/Logout";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createMuiTheme } from "@material-ui/core";
-// import ClassLinksDialog from './ClassLinksDialog';
-import { logoutFaculty } from '../../services/authentication';
+import ClassLinksDialog from "./ClassLinksDialog";
+import { logoutFaculty } from "../../services/authentication";
 
 const drawerWidth = 240;
 
@@ -74,14 +74,6 @@ const AppBar = styled(MuiAppBar, {
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
   }),
 }));
 
@@ -447,6 +439,7 @@ function Feed() {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState(null);
 
+  console.log(selectedSlot);
   const toggleSlotDrawer = () => {
     if (slot_details_anchor === true) {
       setSelectedSlot(null);
@@ -466,8 +459,9 @@ function Feed() {
 
   const onDialogClose = () => {
     setDialogOpen(false);
+    toggleSlotDrawer();
     facultyBasicDetails();
-  }
+  };
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -488,7 +482,7 @@ function Feed() {
     console.log(data);
     setFacultyDetails(data.final_result);
     setTimeTable(data.final_result.time_table);
-    // setTodaysTimeTable(data.final_result.todays_time_table);
+    setTodaysTimeTable(data.final_result.todays_time_table);
   };
 
   useEffect(() => {
@@ -515,11 +509,11 @@ function Feed() {
   const facultyLogout = async () => {
     try {
       await logoutFaculty();
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <>
@@ -527,7 +521,41 @@ function Feed() {
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar>
-            <IconButton
+            {!open ? (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={() => {
+                  handleDrawerOpen();
+                  setOpen(true);
+                }}
+                edge="start"
+                sx={{
+                  marginRight: "36px",
+                  ...(open && { display: "none" }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            ) : (
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={() => {
+                  handleDrawerClose();
+                  setOpen(false);
+                }}
+                edge="start"
+                sx={{
+                  marginRight: "36px",
+                  ...(!open && { display: "none" }),
+                }}
+              >
+                <ChevronLeftIcon />
+              </IconButton>
+            )}
+
+            {/* <IconButton
               color="inherit"
               aria-label="open drawer"
               onClick={handleDrawerOpen}
@@ -538,7 +566,7 @@ function Feed() {
               }}
             >
               <MenuIcon />
-            </IconButton>
+            </IconButton> */}
             {/* <Typography variant="h6" noWrap component="div">
               Mini variant drawer
             </Typography> */}
@@ -546,6 +574,61 @@ function Feed() {
               <div className="floating-container">
                 <div className="inner-container">
                   {moment().format("dddd") !== "Sunday"
+                    ? todays_time_table.map((slot, idx) =>
+                        slot.slot_id[3] === "2" ? (
+                          <>
+                            <div
+                              className="slot"
+                              onClick={() => {
+                                openSlotDrawer(slot, idx);
+                              }}
+                            >
+                              <div className="slot_time">{slot_times[idx]}</div>
+                              <div className="slot_sub">
+                                {slot.subject_name}
+                              </div>
+                              <div className="slot-sec">
+                                {slot.section !== "ABCXYZ"
+                                  ? slot.section
+                                  : "NA"}
+                              </div>
+                            </div>
+                            <div className="slot lunch">
+                              <div className="slot_time">
+                                {lunch_details.time}
+                              </div>
+                              <div className="slot_sub">
+                                {lunch_details.name}
+                              </div>
+                              <div className="slot-sec">
+                                {lunch_details.section}
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <div
+                            className="slot"
+                            onClick={() => {
+                              openSlotDrawer(slot, idx);
+                            }}
+                          >
+                            <div className="slot_time">{slot_times[idx]}</div>
+                            <div className="slot_sub">{slot.subject_name}</div>
+                            <div className="slot-sec">
+                              {slot.section !== "ABCXYZ" ? slot.section : "NA"}
+                            </div>
+                          </div>
+                        )
+                      )
+                    : holiday_time_table.map((slot, idx) => (
+                        <div className="slot">
+                          <div className="slot_time">{slot_times[idx]}</div>
+                          <div className="slot_sub">{slot.subject_name}</div>
+                          <div className="slot-sec">{slot.section}</div>
+                        </div>
+                      ))}
+                  {/* {
+                    moment().format("dddd") !== "Sunday"
                     ? time_table[days[moment().format("dddd")]].map(
                       (slot, idx) =>
                         slot.slot_id[3] === "2" ? (
@@ -605,7 +688,7 @@ function Feed() {
                         <div className="slot_sub">{slot.subject_name}</div>
                         <div className="slot-sec">{slot.section}</div>
                       </div>
-                    ))}
+                    ))} */}
                   {/* {
                     moment().format("dddd") !== 'Sunday' ? (
                       time_table[days[moment().format("dddd")]].map((slot, idx) => (
@@ -681,21 +764,21 @@ function Feed() {
                 PaperProps={{
                   elevation: 0,
                   sx: {
-                    '& .MuiList-root': {
-                      color: '#000 !important',
-                      fontWeight: '700'
+                    "& .MuiList-root": {
+                      color: "#000 !important",
+                      fontWeight: "700",
                     },
-                    '& .MuiMenu-paper': {
-                      backgroundColor: '#fff'
+                    "& .MuiMenu-paper": {
+                      backgroundColor: "#fff",
                     },
-                    '& .MuiMenu-list': {
-                      backgroundColor: '#fff',
-                      color: '#000'
-                    }
-                  }
+                    "& .MuiMenu-list": {
+                      backgroundColor: "#fff",
+                      color: "#000",
+                    },
+                  },
                 }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
                 <MenuItem onClick={facultyLogout}>
                   <ListItemIcon>
@@ -758,13 +841,13 @@ function Feed() {
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
-          <Typography paragraph style={{textAlign:"center" ,marginTop:150, fontSize:90}}>         
-
-Faculty Section
-</Typography>
-<Typography paragraph>
-
-</Typography>
+          <Typography
+            paragraph
+            style={{ textAlign: "center", marginTop: 150, fontSize: 90 }}
+          >
+            Faculty Section
+          </Typography>
+          <Typography paragraph></Typography>
         </Box>
       </Box>
       <MuiDrawer
@@ -817,9 +900,33 @@ Faculty Section
                 <div className="drawer-key">
                   Class Link:&nbsp;&nbsp;&nbsp;
                   <div className="drawer-value">
-                    {selectedSlot.link
-                      ? selectedSlot.link.title
-                      : (
+                    {selectedSlot.class_id !== "ABC123" ? (
+                      selectedSlot.link ? (
+                        <>
+                          <a
+                            href={`https://${selectedSlot.link.url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Button
+                              variant="outlined"
+                              sx={{
+                                backgroundColor: "#fff",
+                                borderColor: "#fff",
+                                fontWeight: "bolder",
+                                color: "#000",
+                                "&:hover": {
+                                  backgroundColor: "#c2bbbb",
+                                  borderColor: "#000",
+                                },
+                              }}
+                              height="auto"
+                            >
+                              {selectedSlot.link.title}
+                            </Button>
+                          </a>
+                        </>
+                      ) : (
                         <Button
                           variant="contained"
                           onClick={() => {
@@ -829,7 +936,46 @@ Faculty Section
                         >
                           <span class="material-icons">add</span> New Link
                         </Button>
-                      )}
+                      )
+                    ) : (
+                      "--NA--"
+                    )}
+                    {/* {selectedSlot.link ? (
+                      <>
+                        <a
+                          href={`https://${selectedSlot.link.url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: "#fff",
+                              borderColor: "#fff",
+                              fontWeight: "bolder",
+                              color: "#000",
+                              "&:hover": {
+                                backgroundColor: "#c2bbbb",
+                                borderColor: "#000",
+                              },
+                            }}
+                            height="auto"
+                          >
+                            {selectedSlot.link.title}
+                          </Button>
+                        </a>
+                      </>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        onClick={() => {
+                          setDialogOpen(true);
+                        }}
+                        height="auto"
+                      >
+                        <span class="material-icons">add</span> New Link
+                      </Button>
+                    )} */}
                   </div>
                 </div>
               </div>
@@ -837,14 +983,15 @@ Faculty Section
           </List>
         )}
       </MuiDrawer>
-      {/* {
-        faculty_details && <ClassLinksDialog
+      {faculty_details && selectedSlot && (
+        <ClassLinksDialog
           open={dialogOpen}
           onClose={onDialogClose}
           openSnackBar={openSnackBar}
           links={faculty_details.links}
+          selectedClass={selectedSlot}
         />
-      } */}
+      )}
     </>
   );
 }

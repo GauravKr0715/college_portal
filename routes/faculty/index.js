@@ -3,6 +3,7 @@ const auth = require('../../middlewares/auth');
 const logger = require('../../helpers/logger');
 const facultyController = require('../../controllers/faculty');
 const Cookies = require('cookies');
+const uuidv4 = require('uuid').v4;
 
 router.use('/attendance', require('./attendance'));
 router.use('/assignment', require('./assignment'));
@@ -79,5 +80,21 @@ router.get('/profileDetails', async (req, res) => {
     res.status(400).send({ error });
   }
 });
+
+router.post('/addLink', async (req, res) => {
+  try {
+    const uni_id = req.token_data.data.user_id;
+    const class_id = req.query.class;
+    const uid = uuidv4();
+    const details = Object.assign({}, req.body);
+    details.uid = uid;
+
+    const data = await facultyController.addNewLink(details, class_id, uni_id);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+})
 
 module.exports = router;
