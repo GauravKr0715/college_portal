@@ -39,6 +39,7 @@ const assignmentCSVURL = '/assignment/getCSVData';
 const TestCSVURL = '/test/getCSVData';
 
 const addLinkURL = '/addLink';
+const applyLinkURL = '/applyLink';
 
 export const getFacultyBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
@@ -247,6 +248,12 @@ export const getCSVDataForTest = (uid, type) => {
 
 export const addNewLink = (details, class_id) => {
   return axios.post(environment.apiUrl + base_url + addLinkURL + '?class=' + class_id, details, {
+    withCredentials: true
+  });
+}
+
+export const applyLinkToClass = (link, class_id) => {
+  return axios.put(environment.apiUrl + base_url + applyLinkURL + '?class=' + class_id, link, {
     withCredentials: true
   });
 }

@@ -266,6 +266,29 @@ const addNewLink = async (details, class_id, uni_id) => {
     logger.error(error);
     throw error;
   }
+};
+
+const applyLink = async (link, class_id, uni_id) => {
+  try {
+    const faculty_data = await faculty_repo.fetchOne({ uni_id });
+    faculty_data.classes = faculty_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = link;
+        return c;
+      } else {
+        return c;
+      }
+    });
+    await faculty_data.save();
+    return {
+      success: true,
+      message: 'Link applied successfully'
+    }
+
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -276,5 +299,6 @@ module.exports = {
   getClasses,
   getClassesForAttendance,
   getProfileDetails,
-  addNewLink
+  addNewLink,
+  applyLink
 }

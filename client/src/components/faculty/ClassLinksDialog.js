@@ -16,7 +16,7 @@ import TextField from "@mui/material/TextField";
 import LoadingOverlay from "react-loading-overlay";
 import Box from "@mui/material/Box";
 import "./new_assignment.css";
-import { addNewLink } from "../../services/faculty";
+import { addNewLink, applyLinkToClass } from "../../services/faculty";
 
 function ClassLinksDialog(props) {
   console.log(props.links);
@@ -59,13 +59,30 @@ function ClassLinksDialog(props) {
     setSubmitLoading(false);
   };
 
+  const selectLink = async (link) => {
+    try {
+      if (cla.link && cla.link.uid === link.uid) {
+
+      } else {
+        setSubmitLoading(true);
+        const data = await applyLinkToClass(link, cla.class_id);
+        props.openSnackBar(data.message);
+        props.onClose();
+      }
+    } catch (error) {
+      console.log(error);
+      props.openSnackBar("Some Error Occurred. Try Again.");
+      setSubmitLoading(false);
+    }
+  }
+
   return (
     <Dialog
       maxWidth="md"
       {...props}
       aria-labelledby="responsive-dialog-title"
       scroll="body"
-      onClose={() => {}}
+      onClose={() => { }}
     >
       {/* <DialogTitle
         sx={{
@@ -90,7 +107,7 @@ function ClassLinksDialog(props) {
             component={Paper}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              {props.links.map((link) => (
+              {props.links.map((link, idx) => (
                 <TableRow>
                   <TableCell component="th" scope="row">
                     <Box
@@ -104,6 +121,7 @@ function ClassLinksDialog(props) {
                           cursor: "pointer",
                         }}
                         className={"clickable-title multiline-head"}
+                        onClick={() => { selectLink(link) }}
                       >
                         {link.title}
                         <div className="small-data">{link.url}</div>
