@@ -40,6 +40,8 @@ import Paper from "@mui/material/Paper";
 import { getNotesDetails } from "../../services/faculty";
 import Menu from "@mui/material/Menu";
 import ConfirmDeleteNotesDialog from "./ConfirmDeleteNotesDialog";
+import UpdateNotesDialog from './UpdateNotesDialog';
+import FacultyAppBar from './FacultyAppBar';
 
 const drawerWidth = 240;
 
@@ -165,6 +167,13 @@ function NotesProfile(props) {
 
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
 
+  const onEditDialogClose = () => {
+    setEditDialog(false);
+    notesDetails();
+  };
+
+  const [editDialog, setEditDialog] = useState(false);
+
   const onDialogClose = () => {
     setDialogOpen(false);
     notesDetails();
@@ -206,54 +215,7 @@ function NotesProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                >
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <FacultyAppBar />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -325,14 +287,20 @@ function NotesProfile(props) {
                       },
                     }}
                   >
-                    <MenuItem key={"edit"}>{"Edit Assignment"}</MenuItem>
+                    <MenuItem key={"edit"}
+                      onClick={() => {
+                        setEditDialog(true);
+                        setMoreMenuAnchorEl(null);
+                      }}>
+                      {"Edit Notes"}</MenuItem>
                     <MenuItem
                       key={"delete"}
                       onClick={() => {
                         setDeleteConfirmDialog(true);
+                        setMoreMenuAnchorEl(null);
                       }}
                     >
-                      {"Delete Assignment"}
+                      {"Delete Notes"}
                     </MenuItem>
                   </Menu>
                 </div>
@@ -356,7 +324,7 @@ function NotesProfile(props) {
                         <div className="details-tab ">
                           {notes.subject}
                           {" • "}
-                          {notes.faculty_name}
+                          {notes.section}
                         </div>
                         <div className="details-tab ">
                           Created At:{" "}
@@ -370,7 +338,7 @@ function NotesProfile(props) {
                               {notes.files.map((file, idx) => (
                                 <div className="file-tab">
                                   <a
-                                    href={`http://localhost:5000/notess/${file}`}
+                                    href={`http://localhost:5000/notes/${file}`}
                                     target="_blank"
                                     rel="noreferrer"
                                   >
@@ -413,6 +381,16 @@ function NotesProfile(props) {
             fallbackURL={`${curr_url}/notes`}
           />
         )}
+        {
+          notes &&
+          <UpdateNotesDialog
+            open={editDialog}
+            onClose={onEditDialogClose}
+            openSnackBar={openSnackBar}
+            notes={notes}
+            notes_id={notes.uid}
+          />
+        }
       </LoadingOverlay>
     </>
   );

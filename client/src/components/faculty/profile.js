@@ -45,6 +45,7 @@ import {
 import { Link, useRouteMatch } from "react-router-dom";
 import Checkbox from "@mui/material/Checkbox";
 import LoadingOverlay from "react-loading-overlay";
+import FacultyAppBar from './FacultyAppBar';
 
 
 
@@ -392,57 +393,7 @@ function Attendance() {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              {/* <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
-            </Typography> */}
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                >
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <FacultyAppBar />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton

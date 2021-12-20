@@ -2,7 +2,11 @@
   padding: 16px !important;
 }
 
-.MuiPaper-root {
+/* .MuiPaper-root {
+  background-color: #263238 !important;
+} */
+
+.MuiDrawer-paper {
   background-color: #263238 !important;
 }
 

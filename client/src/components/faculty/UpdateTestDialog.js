@@ -4,95 +4,83 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
 import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LoadingOverlay from "react-loading-overlay";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import LoadingOverlay from "react-loading-overlay";
 import Box from "@mui/material/Box";
-import "./new_assignment.css";
+import "./update-assignment.css";
 import {
-  getClasses,
-  uploadNewTestWithoutAttach,
-  uploadNewTestWithAttach,
+  editTestWithoutAttach,
+  editTestWithAttach,
 } from "../../services/faculty";
+import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import { createMuiTheme } from "@material-ui/core";
 
-function NewTestDialog(props) {
-  const getClassesForFaculty = async () => {
-    try {
-      props.activateLoading();
-      const { data } = await getClasses();
-      setClasses(data.data.classes);
-    } catch (error) {
-      props.deactivateLoading();
-    }
-    props.deactivateLoading();
-  };
-
-  useEffect(() => {
-    getClassesForFaculty();
-  }, []);
+function UpdateTestDialog(props) {
+  useEffect(() => { }, []);
 
   const saveTest = async () => {
     try {
       setSubmitLoading(true);
       // props.activateLoading();
       setError(null);
-      if (class_id === null || title === null || title === "" || due_date === null || due_date === '' || total_marks === null || total_marks === '') {
+      if (title === null || title === "" || due_date === null || due_date === '' || total_marks === null || total_marks === '') {
         setError("Please fill all mandatory fields first");
       } else if (total_marks < 10 || total_marks > 100) {
         setError("Please enter marks in the proper range (10 - 100)");
       } else {
         if (document.getElementById("attachments").files.length) {
           var formData = new FormData();
-          for (const key of Object.keys(files)) {
-            formData.append("attachments", files[key]);
+          for (const key of Object.keys(new_files)) {
+            formData.append("new_attachments", new_files[key]);
           }
           formData.append("title", title);
-          formData.append("class_id", class_id);
-          formData.append("section", section);
-          formData.append("subject", subject);
           if (description !== "" && description !== null) {
             formData.append("description", description);
           }
-          formData.append("due_date", due_date);
-          formData.append("total_marks", total_marks);
-          console.log(formData);
-          const { data } = await uploadNewTestWithAttach(formData);
+          if (due_date !== "" && due_date !== null) {
+            formData.append("due_date", due_date);
+          }
+          if (total_marks !== "" && total_marks !== null) {
+            formData.append("total_marks", total_marks);
+          }
+          for (const file of old_files) {
+            formData.append("old_files", file);
+          }
+          const { data } = await editTestWithAttach(
+            formData,
+            props.test_id
+          );
           console.log(data);
-          setFiles(null);
-          setClassValue("");
+          setNewFiles(null);
           setDueDate(null);
           setDescription("");
-          setSubject(null);
-          setSection(null);
-          setClassID(null);
           setTitle("");
           props.openSnackBar(data.message);
         } else {
           let details = {};
           details.title = title;
-          details.class_id = class_id;
-          details.section = section;
-          details.subject = subject;
           if (description !== "" && description !== null) {
             details.description = description;
           }
-          details.due_date = due_date;
-          details.total_marks = total_marks;
+          if (due_date !== "" && due_date !== null) {
+            details.due_date = due_date;
+          }
+          if (total_marks !== "" && total_marks !== null) {
+            details.total_marks = total_marks;
+          }
+          details.old_files = old_files;
           console.log(details);
-          const { data } = await uploadNewTestWithoutAttach(details);
+          const { data } = await editTestWithoutAttach(
+            details,
+            props.test_id
+          );
           console.log(data);
-          setFiles(null);
-          setClassValue("");
+          setNewFiles(null);
           setDueDate(null);
           setDescription("");
-          setSubject(null);
-          setSection(null);
-          setClassID(null);
           setTitle("");
           props.openSnackBar(data.message);
         }
@@ -100,13 +88,13 @@ function NewTestDialog(props) {
       }
     } catch (error) {
       console.log(error);
-      props.openSnackBar('Some Error Occurred. Try Again.');
-      setSubmitLoading(false);
+      props.openSnackBar("Some Error Occurred. Try Again.");
       // props.deactivateLoading();
+      setSubmitLoading(false);
       // openSnackBar("Some error occured");
       // setLoading(false);
     }
-    // setFiles(null);
+    setNewFiles(null);
     // setClassValue("");
     // setDueDate(null);
     // setDescription("");
@@ -120,45 +108,62 @@ function NewTestDialog(props) {
   };
 
   const [error, setError] = useState(null);
-
-  const [classes, setClasses] = useState([
-    {
-      class_id: "F901",
-      subject_name: "Subject 1",
-      section: "F9",
-    },
-    {
-      class_id: "F902",
-      subject_name: "Subject 2",
-      section: "F9",
-    },
-  ]);
-  const [title, setTitle] = useState("");
-  const [class_id, setClassID] = useState(null);
-  const [section, setSection] = useState(null);
-  const [subject, setSubject] = useState(null);
-  const [description, setDescription] = useState("");
-  const [due_date, setDueDate] = useState(null);
-  const [total_marks, setTotalMarks] = useState(null);
-  const [files, setFiles] = useState(null);
-  const [classValue, setClassValue] = useState("");
+  const [title, setTitle] = useState(props.test.title);
+  const [description, setDescription] = useState(
+    props.test.description ? props.test.description : ""
+  );
+  const [due_date, setDueDate] = useState(new Date(props.test.due_date * 1000));
+  const [total_marks, setTotalMarks] = useState(props.test.total_marks);
+  const [old_files, setOldFiles] = useState(
+    props.test.files ? props.test.files : []
+  );
+  const [new_files, setNewFiles] = useState(null);
 
   const [submitLoading, setSubmitLoading] = useState(false);
 
-  const handleClassChange = (e) => {
-    setClassValue(e.target.value);
-    let selected_class = classes[e.target.value.split(":")[1]];
-    setClassID(selected_class.class_id);
-    setSection(selected_class.section);
-    setSubject(selected_class.subject_name);
-  };
+  const defaultMaterialTheme = createMuiTheme({
+    overrides: {
+      MuiPaper: {
+        backgroundColor: "#fff",
+      },
+      MuiPickersCalendarHeader: {
+        switchHeader: {
+          color: "#6A148E",
+          textTransform: "uppercase",
+        },
+        dayLabel: {
+          textTransform: "uppercase",
+        },
+      },
+      MuiPickersDay: {
+        day: {
+          color: "#707070",
+        },
+        daySelected: {
+          backgroundColor: "#6A148E",
+          "&:hover": {
+            backgroundColor: "#6A148E",
+          },
+        },
+        current: {
+          color: "#6A148E",
+        },
+      },
+      MuiSvgIcon: {
+        root: {
+          fill: "#6A148E",
+        },
+      },
+      MuiOutlinedInput: {
+        notchedOutline: {
+          borderColor: "rgba(0, 0, 0, 0.23) !important",
+        },
+      },
+    },
+  });
 
   return (
-    <LoadingOverlay
-      active={submitLoading}
-      spinner
-      text="Loading Test Sheet..."
-    >
+    <LoadingOverlay active={submitLoading} spinner text="Loading Test Sheet...">
       <Dialog
         maxWidth="md"
         {...props}
@@ -173,7 +178,11 @@ function NewTestDialog(props) {
           }}
           id="responsive-dialog-title"
         >
-          {"Add a New Test"}
+          {"Edit Test"}
+          {" • "}
+          {props.test.subject}
+          {" • "}
+          {props.test.section}
         </DialogTitle>
         <DialogContent
           sx={{
@@ -210,96 +219,67 @@ function NewTestDialog(props) {
                 <br />
               </>
             )}
-            <Box
-              component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                m: "auto",
-                width: "fit-content",
-                minWidth: "100%",
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <TextField
+            <ThemeProvider theme={defaultMaterialTheme}>
+              <Box
+                component="form"
                 sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  m: "auto",
+                  width: "fit-content",
+                  minWidth: "90%",
                   margin: "15px",
-                  flex: "1",
                 }}
-                id="class"
-                select
-                label="*Select Class"
-                value={classValue}
-                onChange={(e) => {
-                  handleClassChange(e);
-                }}
+                noValidate
+                autoComplete="off"
               >
-                {classes.map((option, idx) => (
-                  <MenuItem
-                    key={option.class_id}
-                    value={`${option.subject_name} [${option.section}]:${idx}`}
-                  >
-                    {`${option.subject_name} [${option.section}]`}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Box><Box
-              component="form"
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                m: "auto",
-                width: "fit-content",
-                minWidth: "90%",
-                margin: "0px 15px",
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateTimePicker
+                <LocalizationProvider
                   sx={{
                     margin: "15px",
                     backgroundColor: "#fff !important",
-                    flex: "1",
                   }}
-                  minDateTime={new Date()}
-                  showDaysOutsideCurrentMonth={true}
-                  label="Select Due Date"
-                  value={due_date}
-                  onChange={setDueDate}
-                  renderInput={(params) => (
-                    <TextField
-                      sx={{
-                        backgroundColor: "#fff !important",
-                        margin: "15px",
-                      }}
-                      {...params}
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-
-              <div>
-                <Button
-                  size="large"
-                  variant="outlined"
-                  sx={{
-                    fontWeight: "bolder",
-                  }}
-                  disabled={due_date === null}
-                  onClick={() => {
-                    setDueDate(null);
-                  }}
+                  dateAdapter={AdapterDateFns}
                 >
-                  Remove Due Date
-                </Button>
-              </div>
-            </Box>
+                  <DateTimePicker
+                    sx={{
+                      margin: "15px",
+                      backgroundColor: "#fff !important",
+                    }}
+                    minDateTime={new Date()}
+                    label="Select Due Date (optional)"
+                    value={due_date}
+                    onChange={setDueDate}
+                    renderInput={(params) => (
+                      <TextField
+                        sx={{
+                          backgroundColor: "#fff !important",
+                          margin: "15px",
+                        }}
+                        {...params}
+                      />
+                    )}
+                  />
+                </LocalizationProvider>
+
+                <div>
+                  <Button
+                    size="large"
+                    variant="outlined"
+                    sx={{
+                      fontWeight: "bolder",
+                    }}
+                    disabled={due_date === null}
+                    onClick={() => {
+                      setDueDate(null);
+                    }}
+                  >
+                    Remove Due Date
+                  </Button>
+                </div>
+              </Box>
+            </ThemeProvider>
             <Box
               component="form"
               sx={{
@@ -376,6 +356,33 @@ function NewTestDialog(props) {
               }}
               variant="outlined"
             />
+            <div className="files-list">
+              {old_files &&
+                old_files.map((file, idx) => (
+                  <div className="file-tab-update">
+                    <a
+                      style={{
+                        textDecoration: "none",
+                      }}
+                      href={`http://localhost:5000/tests/${file}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <div className="file-name">
+                        {file.split(props.test_id)[1].slice(1)}
+                      </div>
+                    </a>
+                    <div
+                      className="file-btn"
+                      onClick={() => {
+                        setOldFiles(old_files.filter((file, i) => i !== idx));
+                      }}
+                    >
+                      <span class="material-icons">close</span>
+                    </div>
+                  </div>
+                ))}
+            </div>
             <div
               style={{
                 position: "relative",
@@ -383,9 +390,12 @@ function NewTestDialog(props) {
                 height: "50px",
               }}
             >
-              {files ? (
+              {new_files ? (
                 <Button
                   variant="contained"
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
                   style={{
                     position: "absolute",
                     top: "0",
@@ -401,6 +411,9 @@ function NewTestDialog(props) {
               ) : (
                 <Button
                   variant="contained"
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
                   style={{
                     position: "absolute",
                     top: "0",
@@ -432,8 +445,8 @@ function NewTestDialog(props) {
                 id="attachments"
                 multiple
                 onChange={(e) => {
-                  setFiles(e.target.files);
-                  console.log(files);
+                  setNewFiles(e.target.files);
+                  console.log(new_files);
                 }}
               />
             </div>
@@ -444,11 +457,21 @@ function NewTestDialog(props) {
             backgroundColor: "#fff !important",
           }}
         >
-          <Button autoFocus onClick={props.onClose}>
+          <Button
+            sx={{ fontWeight: "bolder" }}
+            autoFocus
+            onClick={props.onClose}
+          >
             Cancel
           </Button>
-          <Button disabled={submitLoading} variant="contained" onClick={saveTest} autoFocus>
-            Add Test
+          <Button
+            disabled={submitLoading}
+            variant="contained"
+            onClick={saveTest}
+            autoFocus
+            sx={{ fontWeight: "bolder" }}
+          >
+            Save
           </Button>
         </DialogActions>
       </Dialog>
@@ -456,4 +479,4 @@ function NewTestDialog(props) {
   );
 }
 
-export default NewTestDialog;
+export default UpdateTestDialog;

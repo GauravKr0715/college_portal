@@ -36,6 +36,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import StudentAppBar from './StudentAppBar';
 import "./attendance.css";
 // import moment from "moment";
 import {
@@ -49,17 +50,17 @@ import LoadingOverlay from "react-loading-overlay";
 
 
 
-function createData(name, calories, fat, carbs, protein,six,seven ,eight) {
-  return { name, calories, fat, carbs, protein ,six,seven, eight};
+function createData(name, calories, fat, carbs, protein, six, seven, eight) {
+  return { name, calories, fat, carbs, protein, six, seven, eight };
 }
 
 const rows = [
-  createData('Monday', "ADBA","ACN","","ST","CNS","GROUP B CNS","GROUP A ST"),
-  createData('Tuesday', "","","","","","",""),
-  createData('Wednesday', "","","","","","",""),
-  createData('Thursday', "","","","","","",""),
-  createData('Friday', "","","","","","",""),
-  createData('Saturday', "","","","","","",""),
+  createData('Monday', "ADBA", "ACN", "", "ST", "CNS", "GROUP B CNS", "GROUP A ST"),
+  createData('Tuesday', "", "", "", "", "", "", ""),
+  createData('Wednesday', "", "", "", "", "", "", ""),
+  createData('Thursday', "", "", "", "", "", "", ""),
+  createData('Friday', "", "", "", "", "", "", ""),
+  createData('Saturday', "", "", "", "", "", "", ""),
 
 ];
 
@@ -435,57 +436,7 @@ function Attendance() {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              {/* <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
-            </Typography> */}
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                >
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <StudentAppBar />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton

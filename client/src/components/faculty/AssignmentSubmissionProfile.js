@@ -38,6 +38,9 @@ import Checkbox from "@mui/material/Checkbox";
 import moment from "moment";
 import Paper from "@mui/material/Paper";
 import { getAssignmentSubmissionDetails } from "../../services/faculty";
+import Menu from "@mui/material/Menu";
+import ScoreAssignmentDialog from './ScoreAssignmentDialog';
+import FacultyAppBar from './FacultyAppBar';
 
 const drawerWidth = 240;
 
@@ -148,6 +151,22 @@ function AssignmentProfile(props) {
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [moreMenuanchorEl, setMoreMenuAnchorEl] = React.useState(null);
+  const moreMenuOpen = Boolean(moreMenuanchorEl);
+
+  const moreMenuHandleClick = (e) => {
+    setMoreMenuAnchorEl(e.currentTarget);
+  };
+  const moreMenuHandleClose = () => {
+    setMoreMenuAnchorEl(null);
+  };
+
+  const onScoreDialogClose = () => {
+    setScoreDialog(false);
+    assignmentSubmissionDetails();
+  };
+
+  const [scoreDialog, setScoreDialog] = useState(false);
 
   const onDialogClose = () => {
     setDialogOpen(false);
@@ -191,54 +210,8 @@ function AssignmentProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                >
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <FacultyAppBar />
+
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -293,7 +266,7 @@ function AssignmentProfile(props) {
                       <div className="details-tab ">
                         {assignment.subject}
                         {" • "}
-                        {assignment.faculty_name}
+                        {assignment.section}
                       </div>
                       {result && (
                         <div className="details-tab ">
@@ -344,9 +317,70 @@ function AssignmentProfile(props) {
                 </div>
               )}
               <div className="stu-ass-pro-bottom-container">
+                {
+                  assignment && assignment.total_marks && (
+                    <div className="menu-icon">
+                      <IconButton
+                        aria-label="more"
+                        id="long-button"
+                        aria-controls="long-menu"
+                        aria-haspopup="true"
+                        aria-expanded={moreMenuOpen ? "true" : undefined}
+                        onClick={moreMenuHandleClick}
+                      >
+                        <span class="material-icons" style={{ color: "#000" }}>
+                          more_vert
+                        </span>
+                      </IconButton>
+                      <Menu
+                        id="long-menu"
+                        MenuListProps={{
+                          "aria-labelledby": "long-button",
+                        }}
+                        anchorEl={moreMenuanchorEl}
+                        open={moreMenuOpen}
+                        onClose={moreMenuHandleClose}
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                        PaperProps={{
+                          style: {
+                            maxHeight: 48 * 4.5,
+                            width: "20ch",
+                          },
+                        }}
+                      >
+                        <MenuItem
+                          key={"edit"}
+                          onClick={() => {
+                            setScoreDialog(true);
+                            setMoreMenuAnchorEl(null);
+                          }}
+                        >
+                          {"Score Assignment"}</MenuItem>
+                      </Menu>
+                    </div>
+                  )
+                }
+
                 {submission ? (
                   <div className="stu-ass-details-container">
                     <div className="response-header">Submitted Response</div>
+                    {
+                      assignment && assignment.total_marks ? (
+                        <div className="details-tab right-aligned">
+                          <div className="details-bold ass-head-head total-marks-container">
+                            {submission.marks_scored ? submission.marks_scored : '--'}
+                          </div>
+                          {`/ ${assignment.total_marks} scored`}
+                        </div>
+                      ) : null
+                    }
                     {submission.response && (
                       <div className="details-tab ">
                         Response:{" "}
@@ -410,6 +444,18 @@ function AssignmentProfile(props) {
             </React.Fragment>
           }
         />
+        {
+          assignment && assignment.total_marks && submission && (
+            <ScoreAssignmentDialog
+              open={scoreDialog}
+              onClose={onScoreDialogClose}
+              openSnackBar={openSnackBar}
+              assignment={assignment}
+              submission={submission}
+              submission_id={submission.uid}
+            />
+          )
+        }
       </LoadingOverlay>
     </>
   );

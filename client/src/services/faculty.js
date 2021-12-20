@@ -13,10 +13,16 @@ const testSheetURL = '/test/all';
 const notesSheetURL = '/notes/all';
 const postAssignmentWithAttachURL = '/assignment/addWithAttach';
 const postAssignmentWithoutAttachURL = '/assignment/addWithoutAttach';
+const editAssignmentWithAttachURL = '/assignment/editWithAttach';
+const editAssignmentWithoutAttachURL = '/assignment/editWithoutAttach';
 const postTestWithAttachURL = '/test/addWithAttach';
 const postTestWithoutAttachURL = '/test/addWithoutAttach';
+const editTestWithAttachURL = '/test/editWithAttach';
+const editTestWithoutAttachURL = '/test/editWithoutAttach';
 const postNotesWithAttachURL = '/notes/addWithAttach';
 const postNotesWithoutAttachURL = '/notes/addWithoutAttach';
+const editNotesWithAttachURL = '/notes/editWithAttach';
+const editNotesWithoutAttachURL = '/notes/editWithoutAttach';
 const assignmentDetailsURL = '/assignment/details';
 const testDetailsURL = '/test/details';
 const notesDetailsURL = '/notes/details';
@@ -25,6 +31,12 @@ const testSubmissionDetailsURL = '/test/submissionDetails';
 const deleteAssignmentURL = '/assignment/';
 const deleteTestURL = '/test/';
 const deleteNotesURL = '/notes/';
+
+const scoreAssignmentSubmissionURL = '/assignment/scoreSubmission';
+const scoreTestSubmissionURL = '/test/scoreSubmission';
+
+const assignmentCSVURL = '/assignment/getCSVData';
+const TestCSVURL = '/test/getCSVData';
 
 export const getFacultyBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
@@ -87,6 +99,20 @@ export const uploadNewAssignmentWithAttach = (details) => {
   });
 }
 
+export const editAssignmentWithoutAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editAssignmentWithoutAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const editAssignmentWithAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editAssignmentWithAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
 export const uploadNewTestWithoutAttach = (details) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + postTestWithoutAttachURL + '?uid=' + uuidv4(), details, {
@@ -101,6 +127,20 @@ export const uploadNewTestWithAttach = (details) => {
   });
 }
 
+export const editTestWithoutAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editTestWithoutAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const editTestWithAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editTestWithAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
 export const uploadNewNotesWithoutAttach = (details) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + postNotesWithoutAttachURL + '?uid=' + uuidv4(), details, {
@@ -111,6 +151,20 @@ export const uploadNewNotesWithoutAttach = (details) => {
 export const uploadNewNotesWithAttach = (details) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + postNotesWithAttachURL + '?uid=' + uuidv4(), details, {
+    withCredentials: true
+  });
+}
+
+export const editNotesWithoutAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editNotesWithoutAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const editNotesWithAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editNotesWithAttachURL + '?uid=' + uid, details, {
     withCredentials: true
   });
 }
@@ -159,6 +213,32 @@ export const deleteTestDetails = (test_id) => {
 
 export const deleteNotesDetails = (test_id) => {
   return axios.delete(environment.apiUrl + base_url + deleteNotesURL + '?id=' + test_id, {
+    withCredentials: true
+  });
+}
+
+export const scoreAssignmentSubmission = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + scoreAssignmentSubmissionURL + '?id=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const scoreTestSubmission = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + scoreTestSubmissionURL + '?id=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const getCSVDataForAssignment = (uid, type) => {
+  return axios.get(environment.apiUrl + base_url + assignmentCSVURL + '?id=' + uid + '&type=' + type, {
+    withCredentials: true
+  });
+}
+
+export const getCSVDataForTest = (uid, type) => {
+  return axios.get(environment.apiUrl + base_url + TestCSVURL + '?id=' + uid + '&type=' + type, {
     withCredentials: true
   });
 }

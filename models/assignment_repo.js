@@ -10,6 +10,14 @@ module.exports = {
     }
   },
 
+  updateOne: async (details, condition) => {
+    try {
+      return await Assignment.findOneAndUpdate(condition, details);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getAll: async (condition) => {
     try {
       return await Assignment.find(condition);

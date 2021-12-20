@@ -13,9 +13,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import FormControl from "@mui/material/FormControl";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
@@ -39,7 +36,10 @@ import moment from "moment";
 import Paper from "@mui/material/Paper";
 import { getTestDetails } from "../../services/faculty";
 import ConfirmDeleteTestDialog from "./ConfirmDeleteTestDialog";
+import UpdateTestDialog from './UpdateTestDialog';
+import CSVTestDialog from "./CSVTestDialog";
 import Menu from "@mui/material/Menu";
+import FacultyAppBar from './FacultyAppBar';
 
 const drawerWidth = 240;
 
@@ -167,10 +167,24 @@ function TestProfile(props) {
   };
   const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
 
+  const onEditDialogClose = () => {
+    setEditDialog(false);
+    testDetails();
+  };
+
+  const [editDialog, setEditDialog] = useState(false);
+
   const onDialogClose = () => {
     setDialogOpen(false);
     testDetails();
   };
+
+  const onCSVDialogClose = () => {
+    setCSVDialog(false);
+    // assignmentDetails();
+  };
+
+  const [CSVDialog, setCSVDialog] = useState(false);
 
   const testDetails = async () => {
     try {
@@ -209,54 +223,7 @@ function TestProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show 4 new mails"
-                  color="inherit"
-                >
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  aria-label="show 17 new notifications"
-                  color="inherit"
-                >
-                  <Badge badgeContent={17} color="error">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <FacultyAppBar />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -293,6 +260,28 @@ function TestProfile(props) {
             <div className="student-ass-profile-main-container">
               <>
                 <div className="menu-icon">
+                <Button
+                sx={{
+                  maxWidth: "fit-content",
+                  marginRight: "10px",
+                  fontWeight: "bolder",
+                }}
+                variant="contained"
+                onClick={() => {
+                  setCSVDialog(true);
+                }}
+              >
+                <span
+                  class="material-icons"
+                  style={{
+                    color: "#fff",
+                    marginRight: "5px",
+                  }}
+                >
+                  cloud_download
+                </span>
+                CSV
+              </Button>
                   <IconButton
                     aria-label="more"
                     id="long-button"
@@ -328,11 +317,18 @@ function TestProfile(props) {
                       },
                     }}
                   >
-                    <MenuItem key={"edit"}>{"Edit Test"}</MenuItem>
+                    <MenuItem
+                      key={"edit"}
+                      onClick={() => {
+                        setEditDialog(true);
+                        setMoreMenuAnchorEl(null);
+                      }}
+                    >{"Edit Test"}</MenuItem>
                     <MenuItem
                       key={"delete"}
                       onClick={() => {
                         setDeleteConfirmDialog(true);
+                        setMoreMenuAnchorEl(null);
                       }}
                     >
                       {"Delete Test"}
@@ -359,7 +355,9 @@ function TestProfile(props) {
                         <div className="details-tab ">
                           {test.subject}
                           {" • "}
-                          {test.faculty_name}
+                          {test.section}
+                          {" • "}
+                          {`${test.total_marks} marks`}
                         </div>
                         <div className="details-tab ">
                           Created At:{" "}
@@ -430,6 +428,14 @@ function TestProfile(props) {
                                 fontSize: "1rem !important",
                               }}
                             >
+                              Marks Scored
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                fontWeight: "bold !important",
+                                fontSize: "1rem !important",
+                              }}
+                            >
                               Last Edit Date
                             </TableCell>
                           </TableRow>
@@ -456,6 +462,11 @@ function TestProfile(props) {
                                   className={`stu-pro-cell-status ${submission.status_class}`}
                                 >
                                   {submission.time_status}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  {submission.marks_scored ? `${submission.marks_scored}` : `--NA--`}
                                 </div>
                               </TableCell>
                               <TableCell>
@@ -497,6 +508,27 @@ function TestProfile(props) {
             title={test.title}
             id={test.uid}
             fallbackURL={`${curr_url}/tests`}
+          />
+        )}
+        {
+          test &&
+          <UpdateTestDialog
+            open={editDialog}
+            onClose={onEditDialogClose}
+            openSnackBar={openSnackBar}
+            test={test}
+            test_id={test.uid}
+          />
+        }
+
+        {test && submissions && (
+          <CSVTestDialog
+            open={CSVDialog}
+            onClose={onCSVDialogClose}
+            openSnackBar={openSnackBar}
+            test_id={test.uid}
+            test_title={test.title}
+            no_of_submissions={submissions.length}
           />
         )}
       </LoadingOverlay>

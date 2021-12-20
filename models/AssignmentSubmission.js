@@ -24,6 +24,10 @@ const assignmentSubmissionSchema = mongoose.Schema({
     type: [String],
     default: null
   },
+  marks_scored: {
+    type: String,
+    default: null
+  },
   createdAt: {
     type: String,
     required: true

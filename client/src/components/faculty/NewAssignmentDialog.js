@@ -49,6 +49,8 @@ function NewAssignmentDialog(props) {
       setError(null);
       if (class_id === null || title === null || title === "") {
         setError("Please fill all mandatory fields first");
+      } else if (total_marks < 10 || total_marks > 100) {
+        setError("Please enter marks in the proper range (10 - 100)");
       } else {
         if (document.getElementById("attachments").files.length) {
           var formData = new FormData();
@@ -64,6 +66,9 @@ function NewAssignmentDialog(props) {
           }
           if (due_date !== "" && due_date !== null) {
             formData.append("due_date", due_date);
+          }
+          if (total_marks !== "" && total_marks !== null) {
+            formData.append("total_marks", total_marks);
           }
           console.log(formData);
           const { data } = await uploadNewAssignmentWithAttach(formData);
@@ -89,6 +94,9 @@ function NewAssignmentDialog(props) {
           if (due_date !== "" && due_date !== null) {
             details.due_date = due_date;
           }
+          if (total_marks !== "" && total_marks !== null) {
+            details.total_marks = total_marks;
+          }
           console.log(details);
           const { data } = await uploadNewAssignmentWithoutAttach(details);
           console.log(data);
@@ -102,8 +110,8 @@ function NewAssignmentDialog(props) {
           setTitle("");
           props.openSnackBar(data.message);
         }
+        props.onClose();
       }
-      props.onClose();
     } catch (error) {
       console.log(error);
       props.openSnackBar('Some Error Occurred. Try Again.');
@@ -145,6 +153,7 @@ function NewAssignmentDialog(props) {
   const [subject, setSubject] = useState(null);
   const [description, setDescription] = useState("");
   const [due_date, setDueDate] = useState(null);
+  const [total_marks, setTotalMarks] = useState("");
   const [files, setFiles] = useState(null);
   const [classValue, setClassValue] = useState("");
   console.log(due_date);
@@ -217,41 +226,43 @@ function NewAssignmentDialog(props) {
                 <br />
               </>
             )}
+            <TextField
+              sx={{
+                margin: "15px",
+                flex: "1",
+              }}
+              id="class"
+              select
+              label="*Select Class"
+              value={classValue}
+              onChange={(e) => {
+                handleClassChange(e);
+              }}
+            >
+              {classes.map((option, idx) => (
+                <MenuItem
+                  key={option.class_id}
+                  value={`${option.subject_name} [${option.section}]:${idx}`}
+                >
+                  {`${option.subject_name} [${option.section}]`}
+                </MenuItem>
+              ))}
+            </TextField>
             <Box
               component="form"
               sx={{
                 display: "flex",
                 flexDirection: "row",
-                justifyContent: "center",
+                justifyContent: "flex-end",
+                alignItems: "center",
                 m: "auto",
                 width: "fit-content",
-                minWidth: "100%",
+                minWidth: "90%",
+                margin: "0px 15px",
               }}
               noValidate
               autoComplete="off"
             >
-              <TextField
-                sx={{
-                  margin: "15px",
-                  flex: "1",
-                }}
-                id="class"
-                select
-                label="*Select Class"
-                value={classValue}
-                onChange={(e) => {
-                  handleClassChange(e);
-                }}
-              >
-                {classes.map((option, idx) => (
-                  <MenuItem
-                    key={option.class_id}
-                    value={`${option.subject_name} [${option.section}]:${idx}`}
-                  >
-                    {`${option.subject_name} [${option.section}]`}
-                  </MenuItem>
-                ))}
-              </TextField>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DateTimePicker
                   sx={{
@@ -259,6 +270,8 @@ function NewAssignmentDialog(props) {
                     backgroundColor: "#fff !important",
                     flex: "1",
                   }}
+                  minDateTime={new Date()}
+                  showDaysOutsideCurrentMonth={true}
                   label="Select Due Date (optional)"
                   value={due_date}
                   onChange={setDueDate}
@@ -273,6 +286,72 @@ function NewAssignmentDialog(props) {
                   )}
                 />
               </LocalizationProvider>
+
+              <div>
+                <Button
+                  size="large"
+                  variant="outlined"
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
+                  disabled={due_date === null}
+                  onClick={() => {
+                    setDueDate(null);
+                  }}
+                >
+                  Remove Due Date
+                </Button>
+              </div>
+            </Box>
+            <Box
+              component="form"
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                m: "auto",
+                width: "fit-content",
+                minWidth: "90%",
+                margin: "0px 15px",
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="marks_scored"
+                label="Total Marks (Optional)"
+                type="number"
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: 10, max: 100 }}
+                sx={{
+                  backgroundColor: "#fff !important",
+                  margin: "15px",
+                  minWidth: '30%'
+                }}
+                value={total_marks}
+                onChange={(e) => {
+                  setTotalMarks(e.target.value);
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+
+              <div>
+                <Button
+                  size="large"
+                  variant="outlined"
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
+                  disabled={total_marks === null || total_marks === ''}
+                  onClick={() => {
+                    setTotalMarks("");
+                  }}
+                >
+                  Remove Marks
+                </Button>
+              </div>
             </Box>
             <TextField
               sx={{
@@ -368,10 +447,12 @@ function NewAssignmentDialog(props) {
             backgroundColor: "#fff !important",
           }}
         >
-          <Button autoFocus onClick={props.onClose}>
+          <Button
+            sx={{ fontWeight: "bolder" }} autoFocus onClick={props.onClose}>
             Cancel
           </Button>
-          <Button disabled={submitLoading} variant="contained" onClick={saveAssignment} autoFocus>
+          <Button
+            sx={{ fontWeight: "bolder" }} disabled={submitLoading} variant="contained" onClick={saveAssignment} autoFocus>
             Add Assignment
           </Button>
         </DialogActions>

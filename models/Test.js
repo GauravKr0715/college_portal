@@ -40,8 +40,16 @@ const testSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  total_marks: {
+    type: String,
+    required: true
+  },
   files: {
     type: [String],
+    default: null
+  },
+  last_edit_date: {
+    type: String,
     default: null
   }
 });

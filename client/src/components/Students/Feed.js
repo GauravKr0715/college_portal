@@ -25,6 +25,10 @@ import "./feed.css";
 import moment from "moment";
 import { getStudentBasicDetails } from "../../services/student";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Logout from '@mui/icons-material/Logout';
+import { logoutStudent } from '../../services/authentication';
 
 const drawerWidth = 240;
 
@@ -456,6 +460,14 @@ function Feed() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const profileOpen = Boolean(anchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const [Student_details, setStudentDetails] = useState(null);
 
@@ -475,14 +487,19 @@ function Feed() {
     setOpen(true);
   };
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
   const menuId = "primary-search-account-menu";
+
+  const studentLogout = async () => {
+    try {
+      await logoutStudent();
+      window.location.href = '/';
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -509,7 +526,7 @@ function Feed() {
               <div className="floating-container">
                 <div className="inner-container">
                   {moment().format("dddd") !== "Sunday"
-                    ? time_table[days[moment().subtract(1, 'days').format("dddd")]].map(
+                    ? time_table[days[moment().format("dddd")]].map(
                       (slot, idx) =>
                         slot.slot_id[3] === "2" ? (
                           <>
@@ -636,6 +653,37 @@ function Feed() {
               >
                 <AccountCircle />
               </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={profileOpen}
+                onClose={handleProfileMenuClose}
+                onClick={handleProfileMenuClose}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    '& .MuiList-root': {
+                      color: '#000 !important',
+                      fontWeight: '700'
+                    },
+                    '& .MuiMenu-paper': {
+                      backgroundColor: '#fff'
+                    },
+                    '& .MuiMenu-list': {
+                      backgroundColor: '#fff',
+                      color: '#000'
+                    }
+                  }
+                }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              >
+                <MenuItem onClick={studentLogout}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
+              </Menu>
             </Box>
           </Toolbar>
         </AppBar>

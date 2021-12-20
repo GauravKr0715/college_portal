@@ -26,7 +26,14 @@ import moment from "moment";
 import { getFacultyBasicDetails } from "../../services/faculty";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import Button from "@mui/material/Button";
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Logout from '@mui/icons-material/Logout';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createMuiTheme } from "@material-ui/core";
 // import ClassLinksDialog from './ClassLinksDialog';
+import { logoutFaculty } from '../../services/authentication';
 
 const drawerWidth = 240;
 
@@ -465,6 +472,14 @@ function Feed() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const profileOpen = Boolean(anchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const [faculty_details, setFacultyDetails] = useState(null);
 
@@ -492,14 +507,19 @@ function Feed() {
     setOpen(true);
   };
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleDrawerClose = () => {
     setOpen(false);
   };
   const menuId = "primary-search-account-menu";
+
+  const facultyLogout = async () => {
+    try {
+      await logoutFaculty();
+      window.location.href = '/';
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -526,7 +546,7 @@ function Feed() {
               <div className="floating-container">
                 <div className="inner-container">
                   {moment().format("dddd") !== "Sunday"
-                    ? time_table[days[moment().subtract(1, 'days').format("dddd")]].map(
+                    ? time_table[days[moment().format("dddd")]].map(
                       (slot, idx) =>
                         slot.slot_id[3] === "2" ? (
                           <>
@@ -653,6 +673,37 @@ function Feed() {
               >
                 <AccountCircle />
               </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={profileOpen}
+                onClose={handleProfileMenuClose}
+                onClick={handleProfileMenuClose}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    '& .MuiList-root': {
+                      color: '#000 !important',
+                      fontWeight: '700'
+                    },
+                    '& .MuiMenu-paper': {
+                      backgroundColor: '#fff'
+                    },
+                    '& .MuiMenu-list': {
+                      backgroundColor: '#fff',
+                      color: '#000'
+                    }
+                  }
+                }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              >
+                <MenuItem onClick={facultyLogout}>
+                  <ListItemIcon>
+                    <Logout fontSize="small" />
+                  </ListItemIcon>
+                  Logout
+                </MenuItem>
+              </Menu>
             </Box>
           </Toolbar>
         </AppBar>

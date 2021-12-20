@@ -5,7 +5,7 @@ const section_repo = require('../models/section_repo');
 const student_repo = require('../models/student_repo');
 const logger = require('../helpers/logger');
 const moment = require('moment');
-
+const jsonexport = require('jsonexport');
 const getAllByFaculty = async (faculty_id) => {
   try {
     let data = await test_repo.getAll("-id", { faculty_id });
@@ -41,6 +41,42 @@ const addTest = async (details, uni_id) => {
       success: true,
       message: 'Test added successfully'
     }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
+const editTest = async (details, uid) => {
+  try {
+    if (details.files) {
+      // files is an array
+      if (details.old_files) {
+        if (typeof details.old_files === 'string') {
+          details.files = [...details.files, details.old_files];
+        } else {
+          details.files = [...details.files, ...details.old_files];
+        }
+      }
+    } else {
+      // make a files array with somthing
+      if (details.old_files) {
+        details.files = details.old_files;
+      }
+    }
+
+    delete (details.old_files);
+
+    console.log(details);
+    await test_repo.updateOne(details, { uid });
+    return {
+      success: true,
+      message: 'Test edited successfully'
+    };
   } catch (error) {
     logger.error(error);
 
@@ -216,6 +252,8 @@ const getTestDetailsForFaculty = async (uid) => {
 
     console.log(submission_data);
 
+    submission_data.sort((a, b) => b.createdAt - a.createdAt);
+
     return {
       success: true,
       test_data,
@@ -281,13 +319,119 @@ const deleteOneByUID = async (uid) => {
   }
 };
 
+const scoreTestSubmission = async (uid, details) => {
+  try {
+    await test_submission_repo.updateOne(details, { uid });
+    return {
+      success: true,
+      message: 'Test Scored successfully'
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+};
+
+const getCSVData = async (uid, type) => {
+  try {
+    let final_result = [];
+    if (type == 1) {
+      const test_data = await test_repo.getOneCertainFields("section due_date total_marks", { uid });
+      const students_data = await student_repo.fetchAllByCondition({ section: test_data.section });
+      const inter_array = students_data.map(async student => {
+        const submission_data = await test_submission_repo.fetchOneCertainFields("student_id student_name marks_scored last_edit_date", {
+          test_id: uid,
+          student_id: student.roll_no
+        });
+        let student_obj = {};
+        student_obj['Roll No'] = `"${student.roll_no}"`;
+        student_obj['Name'] = student.full_name;
+        if (submission_data) {
+          // there is a submission
+          student_obj['Submission Status'] = 'Completed';
+          if (test_data.total_marks) {
+            student_obj['Marks Given'] = submission_data.marks_scored ? submission_data.marks_scored : 'NA';
+          }
+        } else {
+          // there is no submission
+          student_obj['Submission Status'] = 'Pending';
+          if (test_data.total_marks) {
+            student_obj['Marks Given'] = 'NA';
+          }
+        }
+        final_result.push(student_obj);
+      });
+      await Promise.all(inter_array);
+    } else if (type == 2) {
+      const test_data = await test_repo.getOneCertainFields("section due_date total_marks", { uid });
+      let submission_data = await test_submission_repo.getAllWithCertainFields("-id", { test_id: uid });
+      submission_data = submission_data.map(submission => {
+        let student_obj = {};
+        student_obj['Roll No'] = `"${submission.student_id}"`;
+        student_obj['Name'] = submission.student_name;
+        if (test_data.total_marks) {
+          student_obj['Marks Given'] = submission.marks_scored ? submission.marks_scored : 'NA';
+        }
+        final_result.push(student_obj);
+      });
+    } else {
+      const test_data = await test_repo.getOneCertainFields("section due_date total_marks", { uid });
+      const students_data = await student_repo.fetchAllByCondition({ section: test_data.section });
+      const inter_array = students_data.map(async student => {
+        const submission_data = await test_submission_repo.fetchOneCertainFields("student_id student_name marks_scored last_edit_date", {
+          test_id: uid,
+          student_id: student.roll_no
+        });
+        if (!submission_data) {
+          // there is no submission
+          let student_obj = {};
+          student_obj['Roll No'] = `"${student.roll_no}"`;
+          student_obj['Name'] = student.full_name;
+          final_result.push(student_obj);
+        }
+      });
+      await Promise.all(inter_array);
+    }
+    final_result.sort((a, b) => a['Roll No'].substring(1, 4) - b['Roll No'].substring(1, 4));
+    const resolved_data = await new Promise((resolve, reject) => {
+      jsonexport(final_result, function (err, csv) {
+        if (err) {
+          logger.error(err);
+          return reject(err);
+        }
+        return resolve(csv);
+      });
+    });
+    return {
+      success: 'true',
+      message: 'CSV Downloaded successfully',
+      csv_data: resolved_data
+    }
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      success: false,
+      message: 'Some error occured'
+    }
+  }
+}
+
 module.exports = {
   getAllByFaculty,
   addTest,
+  editTest,
   getAllForStudent,
   getTestDetailsForStudent,
   addTestSubmission,
   getTestDetailsForFaculty,
   getTestSubmissionDetailsForFaculty,
-  deleteOneByUID
+  deleteOneByUID,
+  scoreTestSubmission,
+  getCSVData
+
 }
