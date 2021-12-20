@@ -14,6 +14,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import Menu from '@mui/material/Menu';
 import Logout from '@mui/icons-material/Logout';
 import { logoutFaculty } from '../../services/authentication';
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 const drawerWidth = 240;
 
@@ -25,18 +26,10 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
 }));
 
-function FacultyAppBar() {
-  const [open, setOpen] = React.useState(false);
+function FacultyAppBar(props) {
+  const [open, setOpen] = React.useState(props.open);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const profileOpen = Boolean(anchorEl);
 
@@ -49,9 +42,9 @@ function FacultyAppBar() {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  // const handleDrawerOpen = () => {
+  //   setOpen(true);
+  // };
 
   const facultyLogout = async () => {
     try {
@@ -62,21 +55,47 @@ function FacultyAppBar() {
     }
   }
 
+  console.log(props.open);
+
   return (
     <AppBar position="fixed" open={open}>
       <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
-          sx={{
-            marginRight: "36px",
-            ...(open && { display: "none" }),
-          }}
-        >
-          <MenuIcon />
-        </IconButton>
+        {
+          !open ? (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={() => {
+                props.handleDrawerOpen();
+                setOpen(true);
+              }}
+              edge="start"
+              sx={{
+                marginRight: "36px",
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+          ) : (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={() => {
+                props.handleDrawerClose();
+                setOpen(false);
+              }}
+              edge="start"
+              sx={{
+                marginRight: "36px",
+                ...(!open && { display: "none" }),
+              }}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+          )
+        }
+
         {/* <Typography variant="h6" noWrap component="div">
               Mini variant drawer
             </Typography> */}
