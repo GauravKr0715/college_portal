@@ -85,7 +85,7 @@ function CSVAssignmentDialog(props) {
           }}
         >
           <FormControlLabel value="1" control={<Radio />} label="All Students" />
-          <FormControlLabel value="2" control={<Radio />} label="Students with Submission" />
+          <FormControlLabel value="2" control={<Radio disabled={props.no_of_submissions == 0} />} label="Students with Submission" />
           <FormControlLabel value="3" control={<Radio />} label="Students without Submission" />
         </RadioGroup>
       </DialogContent>

@@ -49,7 +49,6 @@ import LoadingOverlay from "react-loading-overlay";
 
 
 
-
 function createData(name, calories, fat, carbs, protein, six, seven, eight) {
   return { name, calories, fat, carbs, protein, six, seven, eight };
 }
