@@ -18,12 +18,12 @@
     
 }
 
-.desp{
+/* .desp{
     position:absolute;
     top:30%;
     left:37%;
     border-radius:6px !important;
-}
+} */
 .cont{
    
     border-radius:10px !important;
@@ -41,6 +41,12 @@
     padding: 0.8rem 1.5rem 0 1.5rem;
     /* border-bottom: 2px solid rgb(216, 216, 216) ; */
 }
+.table .th{
+    font-family: 'Barlow', sans-serif;
+    font-weight:15rem;
+    font-size: 1.4rem;
+    color: rgb(3, 20, 70);
+}
 .cont label{
     font-family: 'Barlow', sans-serif;
     font-weight:15rem;
@@ -52,6 +58,13 @@
     font-size: 1.4rem;
     text-align: right;
    
+}
+.h{
+    font-family: 'Barlow', sans-serif;
+    font-size: 3rem;
+    text-align: center;
+    font-weight: bold;
+
 }
 .sugar1{
     display: flex !important;

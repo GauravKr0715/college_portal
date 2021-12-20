@@ -1,6 +1,7 @@
 import React, { useState, useEffect,useHistory } from "react";
 import "./profile.css"
 import { styled, useTheme } from "@mui/material/styles";
+import {getprofileDetails } from '../../services/student'
 import Box from "@mui/material/Box";
 import Container from '@mui/material/Container';
 import MuiDrawer from "@mui/material/Drawer";
@@ -259,6 +260,73 @@ function Attendance() {
     attendanceSheet();
   }, []);
 
+  const [Sclass,setSclass]=useState([])
+
+  const StudentClasses = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getprofileDetails();
+      setSclass(data.result.classes)
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      openSnackBar("Some error occured");
+      setLoading(false);
+    }
+
+    setLoading(false);
+  };
+
+  
+  const[profileValue,setProfileValue]=useState([])
+
+  const ProfileValues = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getprofileDetails();
+       setProfileValue([{"Name":"Enrollment No:",
+       "Value":data.result.roll_no
+     },
+     {"Name":"Name:",
+       "Value":data.result.full_name
+     },
+     {"Name":"Email ID:",
+       "Value":data.result.email
+     },
+     {"Name":"Contact No:",
+       "Value":data.result.mobile
+     },
+     {"Name":"Course:",
+       "Value":data.result.course
+     },
+      {"Name":"Section:",
+       "Value":data.result.section
+     },
+     {"Name":"Year of Passing:",
+       "Value":data.result.yop
+     },
+    
+    
+    ]); 
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      openSnackBar("Some error occured");
+      setLoading(false);
+    }
+
+    setLoading(false);
+  };
+ 
+
+  useEffect(() => {
+    ProfileValues();
+  }, []);
+
+  useEffect(() => {
+    StudentClasses();
+  }, []);
+
   useEffect(() => {}, [classes]);
 
   const [check, setCheck] = useState(false);
@@ -357,31 +425,7 @@ function Attendance() {
     setSnackbar(false);
   };
 
-  const[profileValue,setProfileValue]=useState([
-    {"Name":"Enrollment No:",
-      "Value":"05715603118"
-    },
-    {"Name":"Name:",
-      "Value":"Akshaya"
-    },
-    {"Name":"Email ID:",
-      "Value":"abc@gmail.com"
-    },
-    {"Name":"Contact No:",
-      "Value":"9818556669"
-    },
-    {"Name":"Course:",
-      "Value":"Btech-IT"
-    },
-    {"Name":"Year of Passing:",
-      "Value":"2022"
-    },
-    {"Name":"Section:",
-      "Value":"F-9"
-    },])
-
-/*  */
-
+  
   return (
     <>
       <LoadingOverlay
@@ -474,50 +518,86 @@ function Attendance() {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <DrawerHeader />
-            <CssBaseline />
-            <Container maxWidth="sm">
-               <Box sx={{ bgcolor: 'white', height: '90vh' ,marginTop:6}} />
-               <div className="desp">             
-               <table className="table">
-               
-              {  profileValue.map((name)=>(
-               /*  <div className="cont">
-                 <label htmlFor="">{name.Name}&nbsp;&nbsp;</label>
-                 <div className="sugar1"><p>{name.Value}</p></div>
-                 </div> */
-                 <tr className="cont">
-                 <td><label htmlFor="" >{name.Name}&nbsp;&nbsp;</label></td>
-                 <td><div className="sugar1"><p>{name.Value}</p></div></td>
-                 </tr>
-              )
-                 )}
-                
-                 </table>
-                      
-            
-               </div>
-               
-            </Container>
-            <img
-            src={"https://th.bing.com/th/id/OIP.0777WTk6jNF_2SEh632a4QHaIM?pid=ImgDet&rs=1"}
-            id="pro"
-            className="img"
-            accept="image/*"
-        />
-        <input
-                        type="file"
-                        className="file"
-                        id="input"
-                        accept="image/*"
-                        
-                    />
- 
-      
+          <DrawerHeader />
+          <CssBaseline />
+          <Container maxWidth="sm">
+             <Box sx={{ bgcolor: 'white', height: '90vh',width:'75vh' }} >
+
+                          <h2 className='h'>Profile</h2>
+             <table className="table">
+             
+           
+                        {  profileValue.map((data)=>(
+                                      
+                          <tr className="cont">
+                          <td><label htmlFor="" >{data.Name}&nbsp;&nbsp;</label></td>
+                          <td><div className="sugar1"><p>{data.Value}</p></div></td>
+                          </tr>
+                        )
+                          )} 
+                       
               
+               </table>
+
+               
+               
+             
+             </Box>
+          </Container>
+          <Container>
+          
+                              <h2 className='h'>My Classes</h2>
+                       <br />
+                
+                  <Table  aria-label="simple table">
+                  <TableHead>
+                  <TableRow>
+                  <TableCell  sx={{
+                            fontWeight: "bold !important",
+                            fontSize: "1rem !important",
+                           
+                          }}>Subject Id</TableCell>
+                  <TableCell  sx={{
+                            fontWeight: "bold !important",
+                            fontSize: "1rem !important",
+                          }}>Subject Name</TableCell>
+                  <TableCell  sx={{
+                            fontWeight: "bold !important",
+                            fontSize: "1rem !important",
+                          }}>Subject Type</TableCell>
+                  <TableCell  sx={{
+                            fontWeight: "bold !important",
+                            fontSize: "1rem !important",
+                          }} >Faculty Name</TableCell>
+                  </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {Sclass.map(data => (
+                  <TableRow >
+                  <TableCell component="th" scope="row">
+                  {data.subject_id}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                  {data.subject_name}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                  {(data.subject_type=== 1)? "Theory":(data.subject_type=== 2)? "Lab": "Tutorial"}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                  {data.faculty_name}
+                  </TableCell>
+                  </TableRow>
+                  ))}
+                  </TableBody>
+                  </Table>
+
+           
+          </Container>
+  
             
-            </Box>
-        </Box>
+                    </Box>  
+          
+          </Box>
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           open={snackbar}

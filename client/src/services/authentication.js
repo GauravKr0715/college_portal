@@ -42,7 +42,7 @@ export const validateAdminSession = () => {
 }
 
 export const loginAdmin = (userID, password) => {
-  return axios.post(environment.apiUrl + base_url + StudentLoginURL, { roll_no: userID, password: password }, {
+  return axios.post(environment.apiUrl + base_url + AdminLoginURL, { uni_id: userID, password: password }, {
     withCredentials: true
   })
 }

@@ -6,6 +6,7 @@ import Slide from "./components/Slide"
 
 import StudentLogin from './components/Login/S_Login';
 import FacultyLogin from './components/Login/F_Login';
+import AdminLogin from './components/Login/A_Login';
 
 
 import FacultyHome from './components/Faculty/Home';
@@ -35,6 +36,7 @@ import StudentNotes from './components/Students/Notes';
 import StudentNotesProfile from './components/Students/NotesProfile';
 import StudentTT from "./components/Students/Timetable"
 
+import AdminHome from './components/Admin/Home';
 import SectionCreate from './components/Admin/Section/SectionCreate';
 import SectionTable from './components/Admin/Section/SectionTable';
 import SectionFinal from "./components/Admin/Section/SectionFinal";
@@ -191,6 +193,15 @@ function App() {
         <Route path="/admin"
         render={({ match: { url } }) => (
           <>
+          <Route path={`${url}/login`} exact >
+          {/* <Authorization /> */}
+          <AdminLogin />
+        </Route>
+        <Route path={`${url}/`} exact >
+          {/* <Authorization /> */}
+          <AdminHome />
+        </Route>
+           
             <Route path={`${url}/SectionCreate`} exact >
               {/* <Authorization /> */}
               <SectionCreate />

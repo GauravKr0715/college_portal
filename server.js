@@ -32,6 +32,7 @@ app.use('/assignment_submissions', express.static(__dirname + '/assignment_submi
 app.use('/notes', express.static(__dirname + '/notes'));
 app.use('/tests', express.static(__dirname + '/tests'));
 app.use('/test_submissions', express.static(__dirname + '/test_submissions'));
+app.use('/static', express.static(__dirname + '/static'));
 
 // feeding local middlewares
 app.use('/api/v1', routes);

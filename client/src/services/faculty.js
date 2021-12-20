@@ -3,7 +3,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 const base_url = 'api/v1/faculty';
-
+const profileDetailsURL = '/profileDetails';
 const basicDetailsURL = '/basicDetails';
 const getClassesURL = '/classes';
 const attendanceSheetURL = '/attendance/classes';
@@ -40,6 +40,11 @@ export const getClasses = () => {
 
 export const getAttendanceSheet = () => {
   return axios.get(environment.apiUrl + base_url + attendanceSheetURL, {
+    withCredentials: true
+  })
+}
+export const getProfileDetails = () => {
+  return axios.get(environment.apiUrl + base_url + profileDetailsURL, {
     withCredentials: true
   })
 }

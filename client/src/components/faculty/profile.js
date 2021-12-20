@@ -26,7 +26,6 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Typography from '@material-ui/core/Typography';
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -37,6 +36,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import "./attendance.css";
+import {getProfileDetails , getClasses} from '../../services/faculty'
 // import moment from "moment";
 import {
   getAttendanceSheet,
@@ -241,10 +241,70 @@ function Attendance() {
     setLoading(false);
   };
 
+  const [Fclass,setFclass]=useState([])
+
+  const FacultyClasses = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getClasses();
+      setFclass(data.data.classes)
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      openSnackBar("Some error occured");
+      setLoading(false);
+    }
+
+    setLoading(false);
+  };
+
+  
+  const[profileValue,setProfileValue]=useState([])
+
+  const ProfileValues = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getProfileDetails();
+       setProfileValue([{"Name":"Unique_id:",
+       "Value":data.data.uni_id
+     },
+     {"Name":"Name:",
+       "Value":data.data.full_name
+     },
+     {"Name":"Email ID:",
+       "Value":data.data.email
+     },
+     {"Name":"Contact No:",
+       "Value":data.data.mobile
+     },
+     {"Name":"Department:",
+       "Value":data.data.dept
+     },
+     {"Name":"Year of Joining:",
+       "Value":data.data.yoj
+     },
+    
+    ]); 
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+      openSnackBar("Some error occured");
+      setLoading(false);
+    }
+
+    setLoading(false);
+  };
   useEffect(() => {
     attendanceSheet();
   }, []);
 
+  useEffect(() => {
+    ProfileValues();
+  }, []);
+
+  useEffect(() => {
+    FacultyClasses();
+  }, []);
   useEffect(() => {}, [classes]);
 
   const [check, setCheck] = useState(false);
@@ -294,31 +354,7 @@ function Attendance() {
         }
       });
     });
-    // classes[selected_class_idx].all_students = new_array;
-
-    // classes[selected_class_idx].all_students = classes[
-    //   selected_class_idx
-    // ].all_students.map((student) => {
-    //   if (student.roll_no === r_no) {
-    //     return {
-    //       ...student,
-    //       is_present: state,
-    //     };
-    //   } else {
-    //     return student;
-    //   }
-    // });
-    // if (state) {
-    //   // added to list
-    //   classes[selected_class_idx].present_students.push(r_no);
-    // } else {
-    //   // removed from list
-    //   classes[selected_class_idx].present_students = classes[
-    //     selected_class_idx
-    //   ].present_students.filter((student) => student.roll_no !== r_no);
-    // }
-
-    // setClasses(classes);
+    
     console.log(classes[selected_class_idx]);
   };
 
@@ -343,26 +379,7 @@ function Attendance() {
     setSnackbar(false);
   };
 
-  const[profileValue,setProfileValue]=useState([
-    {"Name":"Unique Id:",
-      "Value":"adgitm02703"
-    },
-    {"Name":"Name:",
-      "Value":"Faculty 6"
-    },
-    {"Name":"Email ID:",
-      "Value":"faculty6@gmail.com"
-    },
-    {"Name":"Contact No:",
-      "Value":"9818556669"
-    },
-    {"Name":"Department:",
-      "Value":"027"
-    },
-    {"Name":"Year of Joining:",
-      "Value":"2004"
-    },
-   ])
+  
 
 /*  */
 
@@ -461,9 +478,80 @@ function Attendance() {
             <DrawerHeader />
             <CssBaseline />
             <Container maxWidth="sm">
-            <Typography component="div" style={{ backgroundColor: '', height: '100vh' }} />
-           </Container>
+               <Box sx={{ bgcolor: 'white', height: '75vh',width:'60vh' }} >
+                            <h2 className='h'>Profile</h2>
+               <table className="table">
+               
+             
+                          {  profileValue.map((data)=>(
+                                        
+                            <tr className="cont">
+                            <td><label htmlFor="" >{data.Name}&nbsp;&nbsp;</label></td>
+                            <td><div className="sugar1"><p>{data.Value}</p></div></td>
+                            </tr>
+                          )
+                            )} 
+                         
+                
+                 </table>
 
+                 
+                 
+               
+               </Box>
+            </Container>
+            <Container>
+                                <h2 className='h'>My Classes</h2>
+                         <br />
+                  
+                    <Table  aria-label="simple table">
+                    <TableHead>
+                    <TableRow>
+                    <TableCell  sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                             
+                            }}>Subject Id</TableCell>
+                    <TableCell  sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}>Subject Name</TableCell>
+                    <TableCell  sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}>Subject Type</TableCell>
+                    <TableCell  sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }} >Section</TableCell>
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {Fclass.map(data => (
+                    <TableRow >
+                    <TableCell component="th" scope="row">
+                    {data.subject_id}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                    {data.subject_name}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                    {(data.subject_type=== 1)? "Theory":(data.subject_type=== 2)? "Lab": "Tutorial"}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                    {data.section}
+                    </TableCell>
+                    </TableRow>
+                    ))}
+                    </TableBody>
+                    </Table>
+
+             
+            </Container>
+ 
+      
+              
+            
             </Box>
         </Box>
         <Snackbar

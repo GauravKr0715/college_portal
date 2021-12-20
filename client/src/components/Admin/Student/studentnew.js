@@ -36,6 +36,7 @@ import Typography from '@mui/material/Typography';
 import { Link, useRouteMatch } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
 import Paper from "@mui/material/Paper";
+import { environment } from '../../../environments/environment';
 
 const style = {
   position: 'absolute',
@@ -196,7 +197,7 @@ function Studentnew() {
  */
     const saveFile = () => {
 FileSaver.saveAs(
-  process.env.PUBLIC_URL + "/resources/sample2.csv",
+  environment.apiUrl + "static/sampleStudent.csv",
   "csv-file-format.csv"
 );
 }

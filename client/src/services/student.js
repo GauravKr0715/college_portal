@@ -3,7 +3,8 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
 const base_url = 'api/v1/student';
-
+const profileDetailsURL = '/profileDetails';
+const getClassesURL = '/classes'
 const basicDetailsURL = '/basicDetails';
 const attendanceReportURL = '/attendance/report';
 const assignmentSheetURL = '/assignment/all';
@@ -89,6 +90,18 @@ export const uploadNewTestSubmissionWithoutAttach = (details, uid) => {
 export const uploadNewTestSubmissionWithAttach = (details, uid) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + postTestSubmissionWithAttach + '?uid=' + uuidv4(), details, {
+    withCredentials: true
+  });
+}
+
+export const getprofileDetails = () => {
+  return axios.get(environment.apiUrl + base_url + profileDetailsURL, {
+    withCredentials: true
+  })
+}
+
+export const getClasses = () => {
+  return axios.get(environment.apiUrl + base_url + getClassesURL, {
     withCredentials: true
   });
 }

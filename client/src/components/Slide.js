@@ -61,7 +61,7 @@ function Slide() {
                             src={icon3}
                             alt=" "
                         />
-                        <Link to="/AdminLogin" className="a">
+                        <Link to="/admin/" className="a">
                             <h3>
                                 Admin
                             </h3>

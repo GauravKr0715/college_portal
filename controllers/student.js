@@ -173,16 +173,42 @@ const getBasicDetails = async (roll_no) => {
   }
 }
 
+const getClasses = async (roll_no) => {
+  try {
+    const data = await student_repo.fetchOneCertainFields("classes", { roll_no });
+    return {
+      success: true,
+      message: 'Classes retrieved successfully',
+      data
+    };
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
 const getProfileDetails = async (roll_no) => {
   try {
-    const data = await student_repo.fetchOneCertainFields("roll_no full_name email mobile course yop section", { roll_no });
+    const details = await student_repo.fetchOneCertainFields("roll_no full_name email mobile course yop section", { roll_no });
+    const data = await section_repo.fetchCertainFieldsByCondition("classes", { name:details.section });
     console.log(roll_no);
     console.log(data);
+    let result = {};
+    result.roll_no=details.roll_no
+    result.full_name=details.full_name
+    result.section=details.section
+    result.email=details.email
+    result.mobile=details.mobile
+    result.course=details.course
+    result.yop=details.yop
+    
+    result.classes=data.classes
+
+    
 
     return {
       success: true,
       message: 'Student data retrieved successfully',
-      data
+      result
     }
   } catch (error) {
     logger.error(error);
@@ -197,5 +223,6 @@ module.exports = {
   validateUser,
   addSubjects,
   getBasicDetails,
+  getClasses,
   getProfileDetails
 }
