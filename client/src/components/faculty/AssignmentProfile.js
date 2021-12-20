@@ -530,13 +530,14 @@ function AssignmentProfile(props) {
             assignment_id={assignment.uid}
           />
         )}
-        {assignment && (
+        {assignment && submissions && (
           <CSVAssignmentDialog
             open={CSVDialog}
             onClose={onCSVDialogClose}
             openSnackBar={openSnackBar}
             assignment_id={assignment.uid}
             assignment_title={assignment.title}
+            no_of_submissions={submissions.length}
           />
         )}
       </LoadingOverlay>
