@@ -7,6 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import MailIcon from "@mui/icons-material/Mail";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -25,18 +26,11 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
+  
 }));
 
-function StudentAppBar() {
-  const [open, setOpen] = React.useState(false);
+function StudentAppBar(props) {
+  const [open, setOpen] = React.useState(props.open);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const profileOpen = Boolean(anchorEl);
 
@@ -49,9 +43,9 @@ function StudentAppBar() {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleDrawerOpen = () => {
+  /* const handleDrawerOpen = () => {
     setOpen(true);
-  };
+  }; */
 
   const studentLogout = async () => {
     try {
@@ -65,21 +59,43 @@ function StudentAppBar() {
   return (
     <AppBar position="fixed" open={open}>
       <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
-          sx={{
-            marginRight: "36px",
-            ...(open && { display: "none" }),
-          }}
-        >
-          <MenuIcon />
-        </IconButton>
-        {/* <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
-            </Typography> */}
+      {
+        !open ? (
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={() => {
+              props.handleDrawerOpen();
+              setOpen(true);
+            }}
+            edge="start"
+            sx={{
+              marginRight: "36px",
+              ...(open && { display: "none" }),
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+        ) : (
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={() => {
+              props.handleDrawerClose();
+              setOpen(false);
+            }}
+            edge="start"
+            sx={{
+              marginRight: "36px",
+              ...(!open && { display: "none" }),
+            }}
+          >
+            <ChevronLeftIcon />
+          </IconButton>
+        )
+      }
+     
+       
         <Box sx={{ flexGrow: 1 }}></Box>
         <Box sx={{ display: { xs: "none", md: "flex" } }}>
           <IconButton
