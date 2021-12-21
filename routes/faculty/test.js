@@ -58,7 +58,7 @@ router.post('/addWithAttach', upload.array('attachments', 6), async (req, res) =
     details.files = req.files.map(file => file.filename);
     details.createdAt = Math.floor(Date.now() / 1000);
     details.last_edit_date = Math.floor(Date.now() / 1000);
-    details.due_date = new Date(details.due_date).toISOString();
+    details.due_date = Math.floor(new Date(details.due_date).getTime() / 1000);
     console.log(details);
     const uni_id = req.token_data.data.user_id;
     await testController.addTest(details, uni_id);
@@ -87,7 +87,7 @@ router.post('/addWithoutAttach', async (req, res) => {
     details.uid = req.query.uid;
     details.createdAt = Math.floor(Date.now() / 1000);
     details.last_edit_date = Math.floor(Date.now() / 1000);
-    details.due_date = new Date(details.due_date).toISOString();
+    details.due_date = Math.floor(new Date(details.due_date).getTime() / 1000);
 
     const data = await testController.addTest(details, uni_id);
     // console.log(details);

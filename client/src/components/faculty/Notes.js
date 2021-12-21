@@ -279,6 +279,9 @@ function Notes() {
                       onClick={() => {
                         setDialogOpen(true);
                       }}
+                      sx={{
+                        fontWeight: "bolder",
+                      }}
                       height="auto"
                     >
                       <span class="material-icons">add</span> New Notes

@@ -283,7 +283,7 @@ function NotesProfile(props) {
                     PaperProps={{
                       style: {
                         maxHeight: 48 * 4.5,
-                        width: "20ch",
+                        width: "fit-content",
                       },
                     }}
                   >
@@ -342,8 +342,11 @@ function NotesProfile(props) {
                                     target="_blank"
                                     rel="noreferrer"
                                   >
-                                    <Button variant="contained">{`Attachment #${idx + 1
-                                      }`}</Button>
+                                    <Button
+                                      sx={{
+                                        fontWeight: "bolder",
+                                      }} variant="contained">{`Attachment #${idx + 1
+                                        }`}</Button>
                                   </a>
                                 </div>
                               ))}

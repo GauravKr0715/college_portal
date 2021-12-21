@@ -397,6 +397,9 @@ function NewAssignmentDialog(props) {
                     width: "50%",
                     cursor: "pointer",
                   }}
+                  sx={{
+                    fontWeight: 'bolder'
+                  }}
                 >
                   {document.getElementById("attachments").files.length} file(s)
                   selected
@@ -411,6 +414,9 @@ function NewAssignmentDialog(props) {
                     height: "50px",
                     width: "50%",
                     cursor: "pointer",
+                  }}
+                  sx={{
+                    fontWeight: 'bolder'
                   }}
                 >
                   Select Attachments

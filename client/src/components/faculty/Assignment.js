@@ -280,6 +280,9 @@ function Assignment() {
                         setDialogOpen(true);
                       }}
                       height="auto"
+                      sx={{
+                        fontWeight: 'bolder'
+                      }}
                     >
                       <span class="material-icons">add</span> New Assignment
                     </Button>
