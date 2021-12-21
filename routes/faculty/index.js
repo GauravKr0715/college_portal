@@ -111,4 +111,17 @@ router.put('/applyLink', async (req, res) => {
   }
 });
 
+router.put('/removeLink', async (req, res) => {
+  try {
+    const uni_id = req.token_data.data.user_id;
+    const class_id = req.query.class;
+
+    const data = await facultyController.removeLinkFromClass(class_id, uni_id);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 module.exports = router;

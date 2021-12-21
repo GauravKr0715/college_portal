@@ -1,6 +1,7 @@
 const faculty_repo = require('../models/faculty_repo');
 const student_repo = require('../models/student_repo');
 const attendance_repo = require('../models/attendance_repo');
+const section_repo = require('../models/section_repo');
 const logger = require('../helpers/logger');
 const util = require('../helpers/utils');
 const bcrypt = require('bcryptjs');
@@ -257,6 +258,18 @@ const addNewLink = async (details, class_id, uni_id) => {
       }
     });
     await faculty_data.save();
+
+    const section_data = await section_repo.fetchOne({ 'classes.class_id': class_id });
+    section_data.classes = section_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = details;
+        return c;
+      } else {
+        return c;
+      }
+    });
+
+    await section_data.save();
     return {
       success: true,
       message: 'Link added successfully'
@@ -280,9 +293,56 @@ const applyLink = async (link, class_id, uni_id) => {
       }
     });
     await faculty_data.save();
+
+    const section_data = await section_repo.fetchOne({ 'classes.class_id': class_id });
+    section_data.classes = section_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = link;
+        return c;
+      } else {
+        return c;
+      }
+    });
+
+    await section_data.save();
     return {
       success: true,
       message: 'Link applied successfully'
+    }
+
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
+
+const removeLinkFromClass = async (class_id, uni_id) => {
+  try {
+    const faculty_data = await faculty_repo.fetchOne({ uni_id });
+    faculty_data.classes = faculty_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = null;
+        return c;
+      } else {
+        return c;
+      }
+    });
+    await faculty_data.save();
+
+    const section_data = await section_repo.fetchOne({ 'classes.class_id': class_id });
+    section_data.classes = section_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = null;
+        return c;
+      } else {
+        return c;
+      }
+    });
+
+    await section_data.save();
+    return {
+      success: true,
+      message: 'Link removed successfully'
     }
 
   } catch (error) {
@@ -300,5 +360,6 @@ module.exports = {
   getClassesForAttendance,
   getProfileDetails,
   addNewLink,
-  applyLink
+  applyLink,
+  removeLinkFromClass
 }

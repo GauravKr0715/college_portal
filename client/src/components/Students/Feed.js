@@ -26,6 +26,7 @@ import moment from "moment";
 import { getStudentBasicDetails } from "../../services/student";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import Menu from '@mui/material/Menu';
+import Button from "@mui/material/Button";
 import MenuItem from '@mui/material/MenuItem';
 import Logout from '@mui/icons-material/Logout';
 import { logoutStudent } from '../../services/authentication';
@@ -526,6 +527,60 @@ function Feed() {
               <div className="floating-container">
                 <div className="inner-container">
                   {moment().format("dddd") !== "Sunday"
+                    ? todays_time_table.map((slot, idx) =>
+                      slot.slot_id[3] === "2" ? (
+                        <>
+                          <div
+                            className="slot"
+                            onClick={() => {
+                              openSlotDrawer(slot, idx);
+                            }}
+                          >
+                            <div className="slot_time">{slot_times[idx]}</div>
+                            <div className="slot_sub">
+                              {slot.subject_name}
+                            </div>
+                            <div className="slot-sec">
+                              {slot.faculty_name !== "ABCXYZ"
+                                ? slot.faculty_name
+                                : "NA"}
+                            </div>
+                          </div>
+                          <div className="slot lunch">
+                            <div className="slot_time">
+                              {lunch_details.time}
+                            </div>
+                            <div className="slot_sub">
+                              {lunch_details.name}
+                            </div>
+                            <div className="slot-sec">
+                              {lunch_details.faculty_name}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div
+                          className="slot"
+                          onClick={() => {
+                            openSlotDrawer(slot, idx);
+                          }}
+                        >
+                          <div className="slot_time">{slot_times[idx]}</div>
+                          <div className="slot_sub">{slot.subject_name}</div>
+                          <div className="slot-sec">
+                            {slot.section !== "ABCXYZ" ? slot.faculty_name : "NA"}
+                          </div>
+                        </div>
+                      )
+                    )
+                    : holiday_time_table.map((slot, idx) => (
+                      <div className="slot">
+                        <div className="slot_time">{slot_times[idx]}</div>
+                        <div className="slot_sub">{slot.subject_name}</div>
+                        <div className="slot-sec">{slot.section}</div>
+                      </div>
+                    ))}
+                  {/* {moment().format("dddd") !== "Sunday"
                     ? time_table[days[moment().format("dddd")]].map(
                       (slot, idx) =>
                         slot.slot_id[3] === "2" ? (
@@ -585,7 +640,7 @@ function Feed() {
                         <div className="slot_sub">{slot.subject_name}</div>
                         <div className="slot-sec">{slot.faculty_name}</div>
                       </div>
-                    ))}
+                    ))} */}
                   {/* {
                     moment().format("dddd") !== 'Sunday' ? (
                       time_table[days[moment().format("dddd")]].map((slot, idx) => (
@@ -798,7 +853,30 @@ function Feed() {
                   Class Link:&nbsp;&nbsp;&nbsp;
                   <div className="drawer-value">
                     {selectedSlot.link
-                      ? selectedSlot.link.title
+                      ? (
+                        <a
+                          href={`https://${selectedSlot.link.url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Button
+                            variant="outlined"
+                            sx={{
+                              backgroundColor: "#fff",
+                              borderColor: "#fff",
+                              fontWeight: "bolder",
+                              color: "#000",
+                              "&:hover": {
+                                backgroundColor: "#c2bbbb",
+                                borderColor: "#000",
+                              },
+                            }}
+                            height="auto"
+                          >
+                            {selectedSlot.link.title}
+                          </Button>
+                        </a>
+                      )
                       : "Link Not available"}
                   </div>
                 </div>

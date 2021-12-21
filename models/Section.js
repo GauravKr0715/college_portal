@@ -17,7 +17,12 @@ const sectionSchema = mongoose.Schema({
     subject_name: String,
     subject_type: Number,
     faculty_id: String,
-    faculty_name: String
+    faculty_name: String,
+    link: {
+      uid: String,
+      title: String,
+      url: String
+    }
   }],
   time_table: [[{
     slot_id: String,

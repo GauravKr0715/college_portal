@@ -23,7 +23,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
 import "./feed.css";
 import moment from "moment";
-import { getFacultyBasicDetails } from "../../services/faculty";
+import { getFacultyBasicDetails, removeLink } from "../../services/faculty";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
@@ -32,6 +32,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Logout from "@mui/icons-material/Logout";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createMuiTheme } from "@material-ui/core";
+import EditIcon from "@mui/icons-material/Edit";
+import Icon from "@mui/material/Icon";
 import ClassLinksDialog from "./ClassLinksDialog";
 import { logoutFaculty } from "../../services/authentication";
 
@@ -515,6 +517,23 @@ function Feed() {
     }
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const removeLinkFromClass = async () => {
+    try {
+      setLoading(true);
+      const data = await removeLink(selectedSlot.class_id);
+      facultyBasicDetails();
+      openSnackBar(data.msg);
+      toggleSlotDrawer();
+    } catch (error) {
+      console.log(error);
+      openSnackBar("Some error occured");
+      setLoading(false);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
       <Box sx={{ display: "flex" }}>
@@ -925,6 +944,57 @@ function Feed() {
                               {selectedSlot.link.title}
                             </Button>
                           </a>
+                          <div className="row-btns">
+                            <Button
+                              disableElevation
+                              variant="contained"
+                              onClick={() => {
+                                setDialogOpen(true);
+                              }}
+                              height="auto"
+                              sx={{
+                                maxWidth: "fit-content",
+                                fontSize: "12px",
+                                padding: "6px 12px",
+                                margin: "5px 0px",
+                              }}
+                            >
+                              <Icon
+                                fontSize="small"
+                                sx={{
+                                  marginRight: "5px",
+                                }}
+                              >
+                                edit
+                              </Icon>{" "}
+                              Change
+                            </Button>
+                            <Button
+                              disableElevation
+                              variant="contained"
+                              disabled={loading}
+                              onClick={() => {
+                                removeLinkFromClass();
+                              }}
+                              height="auto"
+                              sx={{
+                                maxWidth: "fit-content",
+                                fontSize: "12px",
+                                padding: "6px 12px",
+                                margin: "5px 0px 5px 5px",
+                              }}
+                            >
+                              <Icon
+                                fontSize="small"
+                                sx={{
+                                  marginRight: "5px",
+                                }}
+                              >
+                                link_off
+                              </Icon>{" "}
+                              Remove
+                            </Button>
+                          </div>
                         </>
                       ) : (
                         <Button

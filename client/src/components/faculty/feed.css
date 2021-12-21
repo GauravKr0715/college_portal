@@ -132,3 +132,14 @@ a:hover {
   display: inline;
   color: #fff;
 }
+
+.row-btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.row-btns Button {
+  max-width: fit-content;
+}
