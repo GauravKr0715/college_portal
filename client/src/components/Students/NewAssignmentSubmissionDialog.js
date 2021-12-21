@@ -189,12 +189,18 @@ function NewAssignmentDialog(props) {
                     width: "50%",
                     cursor: "pointer",
                   }}
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
                 >
                   {document.getElementById("attachments").files.length} file(s)
                   selected
                 </Button>
               ) : (
                 <Button
+                  sx={{
+                    fontWeight: "bolder",
+                  }}
                   variant="contained"
                   style={{
                     position: "absolute",
@@ -239,10 +245,16 @@ function NewAssignmentDialog(props) {
             backgroundColor: "#fff !important",
           }}
         >
-          <Button autoFocus onClick={props.onClose}>
+          <Button
+            sx={{
+              fontWeight: "bolder",
+            }} autoFocus onClick={props.onClose}>
             Cancel
           </Button>
-          <Button disabled={submitLoading} variant="contained" onClick={saveAssignmentSubmission} autoFocus>
+          <Button
+            sx={{
+              fontWeight: "bolder",
+            }} disabled={submitLoading} variant="contained" onClick={saveAssignmentSubmission} autoFocus>
             Add Response
           </Button>
         </DialogActions>

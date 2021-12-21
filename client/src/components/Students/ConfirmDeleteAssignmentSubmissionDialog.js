@@ -62,10 +62,16 @@ function ConfirmDeleteAssignmentDialog(props) {
           backgroundColor: "#fff !important",
         }}
       >
-        <Button autoFocus onClick={props.onClose}>
+        <Button
+          sx={{
+            fontWeight: "bolder",
+          }} autoFocus onClick={props.onClose}>
           Cancel
         </Button>
-        <Button disabled={submitLoading} variant="contained" onClick={deleteAssignmentSubmission} autoFocus>
+        <Button
+          sx={{
+            fontWeight: "bolder",
+          }} disabled={submitLoading} variant="contained" onClick={deleteAssignmentSubmission} autoFocus>
           Delete
         </Button>
       </DialogActions>

@@ -420,6 +420,9 @@ function Attendance() {
                         postAttendance(classes[selected_class_idx]);
                       }}
                       height="auto"
+                      sx={{
+                        fontWeight: 'bolder'
+                      }}
                     >
                       Update Attendance
                     </Button>

@@ -236,8 +236,11 @@ function NotesProfile(props) {
                                   target="_blank"
                                   rel="noreferrer"
                                 >
-                                  <Button variant="contained">{`Attachment #${idx + 1
-                                    }`}</Button>
+                                  <Button
+                                    sx={{
+                                      fontWeight: "bolder",
+                                    }} variant="contained">{`Attachment #${idx + 1
+                                      }`}</Button>
                                 </a>
                               </div>
                             ))}

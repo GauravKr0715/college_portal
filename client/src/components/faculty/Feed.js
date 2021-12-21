@@ -594,37 +594,8 @@ function Feed() {
                 <div className="inner-container">
                   {moment().format("dddd") !== "Sunday"
                     ? todays_time_table.map((slot, idx) =>
-                        slot.slot_id[3] === "2" ? (
-                          <>
-                            <div
-                              className="slot"
-                              onClick={() => {
-                                openSlotDrawer(slot, idx);
-                              }}
-                            >
-                              <div className="slot_time">{slot_times[idx]}</div>
-                              <div className="slot_sub">
-                                {slot.subject_name}
-                              </div>
-                              <div className="slot-sec">
-                                {slot.section !== "ABCXYZ"
-                                  ? slot.section
-                                  : "NA"}
-                              </div>
-                            </div>
-                            <div className="slot lunch">
-                              <div className="slot_time">
-                                {lunch_details.time}
-                              </div>
-                              <div className="slot_sub">
-                                {lunch_details.name}
-                              </div>
-                              <div className="slot-sec">
-                                {lunch_details.section}
-                              </div>
-                            </div>
-                          </>
-                        ) : (
+                      slot.slot_id[3] === "2" ? (
+                        <>
                           <div
                             className="slot"
                             onClick={() => {
@@ -632,20 +603,49 @@ function Feed() {
                             }}
                           >
                             <div className="slot_time">{slot_times[idx]}</div>
-                            <div className="slot_sub">{slot.subject_name}</div>
+                            <div className="slot_sub">
+                              {slot.subject_name}
+                            </div>
                             <div className="slot-sec">
-                              {slot.section !== "ABCXYZ" ? slot.section : "NA"}
+                              {slot.section !== "ABCXYZ"
+                                ? slot.section
+                                : "NA"}
                             </div>
                           </div>
-                        )
-                      )
-                    : holiday_time_table.map((slot, idx) => (
-                        <div className="slot">
+                          <div className="slot lunch">
+                            <div className="slot_time">
+                              {lunch_details.time}
+                            </div>
+                            <div className="slot_sub">
+                              {lunch_details.name}
+                            </div>
+                            <div className="slot-sec">
+                              {lunch_details.section}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div
+                          className="slot"
+                          onClick={() => {
+                            openSlotDrawer(slot, idx);
+                          }}
+                        >
                           <div className="slot_time">{slot_times[idx]}</div>
                           <div className="slot_sub">{slot.subject_name}</div>
-                          <div className="slot-sec">{slot.section}</div>
+                          <div className="slot-sec">
+                            {slot.section !== "ABCXYZ" ? slot.section : "NA"}
+                          </div>
                         </div>
-                      ))}
+                      )
+                    )
+                    : holiday_time_table.map((slot, idx) => (
+                      <div className="slot">
+                        <div className="slot_time">{slot_times[idx]}</div>
+                        <div className="slot_sub">{slot.subject_name}</div>
+                        <div className="slot-sec">{slot.section}</div>
+                      </div>
+                    ))}
                   {/* {
                     moment().format("dddd") !== "Sunday"
                     ? time_table[days[moment().format("dddd")]].map(
@@ -957,6 +957,7 @@ function Feed() {
                                 fontSize: "12px",
                                 padding: "6px 12px",
                                 margin: "5px 0px",
+                                fontWeight: 'bolder'
                               }}
                             >
                               <Icon
@@ -982,6 +983,7 @@ function Feed() {
                                 fontSize: "12px",
                                 padding: "6px 12px",
                                 margin: "5px 0px 5px 5px",
+                                fontWeight: 'bolder'
                               }}
                             >
                               <Icon
@@ -1003,6 +1005,9 @@ function Feed() {
                             setDialogOpen(true);
                           }}
                           height="auto"
+                          sx={{
+                            fontWeight: 'bolder'
+                          }}
                         >
                           <span class="material-icons">add</span> New Link
                         </Button>

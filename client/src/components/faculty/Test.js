@@ -272,6 +272,9 @@ function Test() {
                     spinner
                   >
                     <Button
+                      sx={{
+                        fontWeight: "bolder",
+                      }}
                       variant="contained"
                       onClick={() => {
                         setDialogOpen(true);
