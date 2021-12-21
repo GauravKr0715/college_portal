@@ -384,7 +384,7 @@ function AssignmentProfile(props) {
                     >
                       <MenuItem
                         key={"edit"}
-                        onClick={() => {
+                        onClick={() => { 
                           setEditDialog(true);
                           setMoreMenuAnchorEl(null);
                         }}
