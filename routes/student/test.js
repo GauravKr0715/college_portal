@@ -103,4 +103,52 @@ router.post('/submitWithoutAttach', async (req, res) => {
   }
 });
 
+router.put('/editWithAttach', upload.array('new_attachments', 6), async (req, res) => {
+  try {
+    let details = Object.assign({}, req.body);
+    const uid = req.query.uid;
+    details.files = req.files.map(file => file.filename);
+    details.last_edit_date = Math.floor(Date.now() / 1000);
+    console.log(details);
+    const data = await testController.editTestSubmission(details, uid);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({
+      error,
+      success: false
+    });
+  }
+});
+
+router.put('/editWithoutAttach', async (req, res) => {
+  try {
+    const uid = req.query.uid;
+    let details = Object.assign({}, req.body);
+    details.last_edit_date = Math.floor(Date.now() / 1000);
+    console.log(details);
+    const data = await testController.editTestSubmission(details, uid);
+    // console.log(details);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({
+      error,
+      success: false
+    });
+  }
+});
+
+router.delete('/', async (req, res) => {
+  try {
+    const uid = req.query.id;
+    const data = await testController.deleteOneSubmissionByUID(uid);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 module.exports = router;

@@ -21,6 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MailIcon from "@mui/icons-material/Mail";
 import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
 import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
@@ -40,6 +41,8 @@ import Paper from "@mui/material/Paper";
 import NewAssignmentSubmissionDialog from "./NewAssignmentSubmissionDialog";
 import { getAssignmentDetails } from "../../services/student";
 import StudentAppBar from './StudentAppBar';
+import ConfirmDeleteAssignmentSubmissionDialog from "./ConfirmDeleteAssignmentSubmissionDialog";
+import UpdateAssignmentSubmissionDialog from "./UpdateAssignmentSubmissionDialog";
 
 const drawerWidth = 240;
 
@@ -169,6 +172,29 @@ function AssignmentProfile(props) {
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [moreMenuanchorEl, setMoreMenuAnchorEl] = React.useState(null);
+  const moreMenuOpen = Boolean(moreMenuanchorEl);
+
+  const moreMenuHandleClick = (e) => {
+    setMoreMenuAnchorEl(e.currentTarget);
+  };
+  const moreMenuHandleClose = () => {
+    setMoreMenuAnchorEl(null);
+  };
+
+  const onDeleteConfirmDialogClose = () => {
+    setDeleteConfirmDialog(false);
+    assignmentDetails();
+  };
+
+  const [deleteConfirmDialog, setDeleteConfirmDialog] = useState(false);
+
+  const onEditDialogClose = () => {
+    setEditDialog(false);
+    assignmentDetails();
+  };
+
+  const [editDialog, setEditDialog] = useState(false);
 
   const onDialogClose = () => {
     setDialogOpen(false);
@@ -318,65 +344,124 @@ function AssignmentProfile(props) {
                 </div>
               )}
               <div className="stu-ass-pro-bottom-container">
-                {submission ? (
-                  <div className="stu-ass-details-container">
-                    <div className="response-header">Your Response</div>
-                    {submission.response && (
-                      <div className="details-tab ">
-                        Response:{" "}
-                        <div className="details-bold ass-head-head ">
-                          {submission.response}
-                        </div>
-                      </div>
-                    )}
-                    {submission.files && (
-                      <div className="details-tab ">
-                        <div className="files-outer-tab">
-                          {submission.files.map((file, idx) => (
-                            <div className="file-tab">
-                              <a
-                                href={`http://localhost:5000/assignment_submissions/${file}`}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                <Button variant="contained">{`Attachment #${idx + 1
-                                  }`}</Button>
-                              </a>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    <div className="details-tab ">
-                      Submission Date:{" "}
-                      <div className="details-bold ass-head-head ">
-                        {moment(submission.createdAt * 1000).format("llll")}
-                      </div>
-                    </div>
-                    <div className="details-tab ">
-                      Last Edit Date:{" "}
-                      <div className="details-bold ass-head-head ">
-                        {moment(submission.last_edit_date * 1000).format(
-                          "llll"
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="no-class">
-                    You have no submission yet.
-                    <div className="submission-btn">
-                      <Button
-                        variant="contained"
+                <>
+
+                  <div className="menu-icon">
+                    <IconButton
+                      aria-label="more"
+                      id="long-button"
+                      aria-controls="long-menu"
+                      aria-haspopup="true"
+                      aria-expanded={moreMenuOpen ? "true" : undefined}
+                      onClick={moreMenuHandleClick}
+                    >
+                      <span class="material-icons" style={{ color: "#000" }}>
+                        more_vert
+                      </span>
+                    </IconButton>
+                    <Menu
+                      id="long-menu"
+                      MenuListProps={{
+                        "aria-labelledby": "long-button",
+                      }}
+                      anchorEl={moreMenuanchorEl}
+                      open={moreMenuOpen}
+                      onClose={moreMenuHandleClose}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      PaperProps={{
+                        style: {
+                          maxHeight: 48 * 4.5,
+                          width: "20ch",
+                        },
+                      }}
+                    >
+                      <MenuItem
+                        key={"edit"}
                         onClick={() => {
-                          setDialogOpen(true);
+                          setEditDialog(true);
+                          setMoreMenuAnchorEl(null);
                         }}
                       >
-                        Add Response
-                      </Button>
-                    </div>
+                        {"Edit Assignment Submission"}
+                      </MenuItem>
+                      <MenuItem
+                        key={"delete"}
+                        onClick={() => {
+                          setDeleteConfirmDialog(true);
+                          setMoreMenuAnchorEl(null);
+                        }}
+                      >
+                        {"Delete Assignment Submission"}
+                      </MenuItem>
+                    </Menu>
                   </div>
-                )}
+                  {submission ? (
+                    <div className="stu-ass-details-container">
+                      <div className="response-header">Your Response</div>
+                      {submission.response && (
+                        <div className="details-tab ">
+                          Response:{" "}
+                          <div className="details-bold ass-head-head ">
+                            {submission.response}
+                          </div>
+                        </div>
+                      )}
+                      {submission.files && (
+                        <div className="details-tab ">
+                          <div className="files-outer-tab">
+                            {submission.files.map((file, idx) => (
+                              <div className="file-tab">
+                                <a
+                                  href={`http://localhost:5000/assignment_submissions/${file}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  <Button variant="contained">{`Attachment #${idx + 1
+                                    }`}</Button>
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div className="details-tab ">
+                        Submission Date:{" "}
+                        <div className="details-bold ass-head-head ">
+                          {moment(submission.createdAt * 1000).format("llll")}
+                        </div>
+                      </div>
+                      <div className="details-tab ">
+                        Last Edit Date:{" "}
+                        <div className="details-bold ass-head-head ">
+                          {moment(submission.last_edit_date * 1000).format(
+                            "llll"
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="no-class">
+                      You have no submission yet.
+                      <div className="submission-btn">
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            setDialogOpen(true);
+                          }}
+                        >
+                          Add Response
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </>
               </div>
             </div>
           </Box>
@@ -400,6 +485,26 @@ function AssignmentProfile(props) {
             onClose={onDialogClose}
             openSnackBar={openSnackBar}
             uid={assignment.uid}
+          />
+        )}
+        {assignment && submission && (
+          <ConfirmDeleteAssignmentSubmissionDialog
+            open={deleteConfirmDialog}
+            onClose={onDeleteConfirmDialogClose}
+            openSnackBar={openSnackBar}
+            title={assignment.title}
+            id={submission.uid}
+            fallbackURL={`${curr_url}/assignments`}
+          />
+        )}
+        {assignment && submission && (
+          <UpdateAssignmentSubmissionDialog
+            open={editDialog}
+            onClose={onEditDialogClose}
+            openSnackBar={openSnackBar}
+            assignment={assignment}
+            submission={submission}
+            submission_id={submission.uid}
           />
         )}
       </LoadingOverlay>

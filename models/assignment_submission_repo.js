@@ -40,5 +40,13 @@ module.exports = {
     } catch (error) {
       throw error;
     }
+  },
+
+  delete: async (condition) => {
+    try {
+      return await AssignmentSubmission.findOneAndDelete(condition);
+    } catch (error) {
+      throw error;
+    }
   }
 }
