@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs');
 const csv = require('csvtojson');
 const util = require('../helpers/utils');
 const { registerValidation, loginValidation } = require("../validators/studentValidator");
+const moment = require('moment');
 const { json } = require('express');
+const { default_time_table, days_map } = require('../global/data');
 
 const addDetails = async (details) => {
   try {
@@ -157,14 +159,36 @@ const addSubjects = async (details, condition) => {
 const getBasicDetails = async (roll_no) => {
   try {
     let student_data = await student_repo.fetchOneCertainFields("roll_no full_name section ", { roll_no });
-    let section_data= await section_repo.fetchCertainFieldsByCondition("time_table classes " , {name:student_data.section})
+    let section_data = await section_repo.fetchCertainFieldsByCondition("time_table classes ", { name: student_data.section })
 
     let result = {};
-    result.roll_no=student_data.roll_no
-    result.full_name=student_data.full_name
-    result.section=student_data.section
-    result.time_table=section_data.time_table
-    result.classes=section_data.classes
+    result.roll_no = student_data.roll_no
+    result.full_name = student_data.full_name
+    result.section = student_data.section
+    result.time_table = section_data.time_table
+    result.classes = section_data.classes
+    let todays_time_table = [];
+    let class_ids = section_data.classes.map(c => c.class_id);
+    let day_idx = days_map[moment().subtract(1, 'days').format("dddd")];
+
+    if (moment().format('dddd') !== 'Sunday') {
+      for (let i = 0; i < section_data.time_table[day_idx].length; i++) {
+        let current_slot = section_data.time_table[day_idx][i]._doc;
+        current_slot = {
+          ...current_slot,
+          link: null
+        };
+        // console.log(current_slot);
+        if (class_ids.includes(current_slot.class_id) && section_data.classes.filter(c => c.class_id === current_slot.class_id)[0].link.uid !== undefined) {
+          current_slot = {
+            ...current_slot,
+            link: section_data.classes.filter(c => c.class_id === current_slot.class_id)[0].link
+          };
+        }
+        todays_time_table.push(current_slot);
+      }
+    }
+    result.todays_time_table = todays_time_table;
 
     return result;
   } catch (error) {
@@ -189,21 +213,21 @@ const getClasses = async (roll_no) => {
 const getProfileDetails = async (roll_no) => {
   try {
     const details = await student_repo.fetchOneCertainFields("roll_no full_name email mobile course yop section", { roll_no });
-    const data = await section_repo.fetchCertainFieldsByCondition("classes", { name:details.section });
+    const data = await section_repo.fetchCertainFieldsByCondition("classes", { name: details.section });
     console.log(roll_no);
     console.log(data);
     let result = {};
-    result.roll_no=details.roll_no
-    result.full_name=details.full_name
-    result.section=details.section
-    result.email=details.email
-    result.mobile=details.mobile
-    result.course=details.course
-    result.yop=details.yop
-    
-    result.classes=data.classes
+    result.roll_no = details.roll_no
+    result.full_name = details.full_name
+    result.section = details.section
+    result.email = details.email
+    result.mobile = details.mobile
+    result.course = details.course
+    result.yop = details.yop
 
-    
+    result.classes = data.classes
+
+
 
     return {
       success: true,

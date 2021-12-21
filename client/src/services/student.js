@@ -18,6 +18,13 @@ const postAssignmentSubmissionWithAttach = '/assignment/submitWithAttach';
 const postTestSubmissionWithoutAttach = '/test/submitWithoutAttach';
 const postTestSubmissionWithAttach = '/test/submitWithAttach';
 
+const deleteAssignmentSubmissionURL = '/assignment/';
+const deleteTestSubmissionURL = '/test/';
+const editAssignmentSubmissionWithAttachURL = '/assignment/editWithAttach';
+const editAssignmentSubmissionWithoutAttachURL = '/assignment/editWithoutAttach';
+const editTestSubmissionWithAttachURL = '/test/editWithAttach';
+const editTestSubmissionWithoutAttachURL = '/test/editWithoutAttach';
+
 export const getStudentBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
     withCredentials: true
@@ -102,6 +109,46 @@ export const getprofileDetails = () => {
 
 export const getClasses = () => {
   return axios.get(environment.apiUrl + base_url + getClassesURL, {
+    withCredentials: true
+  });
+}
+
+export const deleteAssignmentSubmissionDetails = (submission_id) => {
+  return axios.delete(environment.apiUrl + base_url + deleteAssignmentSubmissionURL + '?id=' + submission_id, {
+    withCredentials: true
+  });
+}
+
+export const deleteTestSubmissionDetails = (submission_id) => {
+  return axios.delete(environment.apiUrl + base_url + deleteTestSubmissionURL + '?id=' + submission_id, {
+    withCredentials: true
+  });
+}
+
+export const editAssignmentSubmissionWithoutAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editAssignmentSubmissionWithoutAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const editAssignmentSubmissionWithAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editAssignmentSubmissionWithAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const editTestSubmissionWithoutAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editTestSubmissionWithoutAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const editTestSubmissionWithAttach = (details, uid) => {
+  console.log(details);
+  return axios.put(environment.apiUrl + base_url + editTestSubmissionWithAttachURL + '?uid=' + uid, details, {
     withCredentials: true
   });
 }

@@ -10,6 +10,14 @@ module.exports = {
     }
   },
 
+  fetchOne: async (condition) => {
+    try {
+      return await Section.findOne(condition);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   update: async (details, condition) => {
     try {
       const updated_data = await Section.updateOne(condition, {

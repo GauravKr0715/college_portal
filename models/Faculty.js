@@ -37,6 +37,7 @@ const facultySchema = mongoose.Schema({
     subject_type: Number,
     section: String,
     link: {
+      uid: String,
       title: String,
       url: String
     }
@@ -50,6 +51,7 @@ const facultySchema = mongoose.Schema({
     section: String
   }]],
   links: [{
+    uid: String,
     title: String,
     url: String
   }],

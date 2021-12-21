@@ -1,6 +1,7 @@
 const faculty_repo = require('../models/faculty_repo');
 const student_repo = require('../models/student_repo');
 const attendance_repo = require('../models/attendance_repo');
+const section_repo = require('../models/section_repo');
 const logger = require('../helpers/logger');
 const util = require('../helpers/utils');
 const bcrypt = require('bcryptjs');
@@ -44,7 +45,7 @@ const getBasicDetails = async (uni_id) => {
     final_result.links = data.links;
     let todays_time_table = [];
     let class_ids = data.classes.map(c => c.class_id);
-    let day_idx = days_map[moment().subtract(5, 'days').format("dddd")];
+    let day_idx = days_map[moment().subtract(1, 'days').format("dddd")];
 
     if (moment().format('dddd') !== 'Sunday') {
       for (let i = 0; i < data.time_table[day_idx].length; i++) {
@@ -53,8 +54,8 @@ const getBasicDetails = async (uni_id) => {
           ...current_slot,
           link: null
         };
-        if (class_ids.includes(current_slot.class_id)) {
-          console.log(data.classes.filter(c => c.class_id === current_slot.class_id)[0]);
+        // console.log(current_slot);
+        if (class_ids.includes(current_slot.class_id) && data.classes.filter(c => c.class_id === current_slot.class_id)[0].link.uid !== undefined) {
           current_slot = {
             ...current_slot,
             link: data.classes.filter(c => c.class_id === current_slot.class_id)[0].link
@@ -99,6 +100,8 @@ const getBasicDetails = async (uni_id) => {
     //   result.todays_time_table = todays_time_table;
     // }
     // console.log(result);
+
+    console.log(final_result);
 
     return {
       success: true,
@@ -171,7 +174,7 @@ const getClassesForAttendance = async (uni_id) => {
     const faculty_details = await faculty_repo.fetchOneCertainFields("time_table classes -_id", { uni_id });
 
     // let day_idx = days_map[moment().subtract(3, 'days').format("dddd")];
-    let day_idx = days_map[moment().subtract(1, 'days').format("dddd")];
+    let day_idx = days_map[moment().format("dddd")];
     let todays_time_table = faculty_details.time_table[day_idx];
     // console.log(todays_time_table);
     let final_data = [];
@@ -186,7 +189,7 @@ const getClassesForAttendance = async (uni_id) => {
           section: c.section
         });
         // let todays_date = moment().subtract(3, 'days').format('DD-MM-yyyy');
-        let todays_date = moment().subtract(2, 'days').format('DD-MM-yyyy');
+        let todays_date = moment().format('DD-MM-yyyy');
         let present_students = await attendance_repo.fetchOneAndConditions(
           { date: todays_date, class_id: c.class_id });
         // console.log(present_students);
@@ -242,6 +245,112 @@ const getProfileDetails = async (uni_id) => {
   }
 }
 
+const addNewLink = async (details, class_id, uni_id) => {
+  try {
+    const faculty_data = await faculty_repo.fetchOne({ uni_id });
+    faculty_data.links.push(details);
+    faculty_data.classes = faculty_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = details;
+        return c;
+      } else {
+        return c;
+      }
+    });
+    await faculty_data.save();
+
+    const section_data = await section_repo.fetchOne({ 'classes.class_id': class_id });
+    section_data.classes = section_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = details;
+        return c;
+      } else {
+        return c;
+      }
+    });
+
+    await section_data.save();
+    return {
+      success: true,
+      message: 'Link added successfully'
+    }
+
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
+
+const applyLink = async (link, class_id, uni_id) => {
+  try {
+    const faculty_data = await faculty_repo.fetchOne({ uni_id });
+    faculty_data.classes = faculty_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = link;
+        return c;
+      } else {
+        return c;
+      }
+    });
+    await faculty_data.save();
+
+    const section_data = await section_repo.fetchOne({ 'classes.class_id': class_id });
+    section_data.classes = section_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = link;
+        return c;
+      } else {
+        return c;
+      }
+    });
+
+    await section_data.save();
+    return {
+      success: true,
+      message: 'Link applied successfully'
+    }
+
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
+
+const removeLinkFromClass = async (class_id, uni_id) => {
+  try {
+    const faculty_data = await faculty_repo.fetchOne({ uni_id });
+    faculty_data.classes = faculty_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = null;
+        return c;
+      } else {
+        return c;
+      }
+    });
+    await faculty_data.save();
+
+    const section_data = await section_repo.fetchOne({ 'classes.class_id': class_id });
+    section_data.classes = section_data.classes.map(c => {
+      if (c.class_id === class_id) {
+        c.link = null;
+        return c;
+      } else {
+        return c;
+      }
+    });
+
+    await section_data.save();
+    return {
+      success: true,
+      message: 'Link removed successfully'
+    }
+
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+}
+
 module.exports = {
   addDetails,
   getBasicDetails,
@@ -249,5 +358,8 @@ module.exports = {
   validateUser,
   getClasses,
   getClassesForAttendance,
-  getProfileDetails
+  getProfileDetails,
+  addNewLink,
+  applyLink,
+  removeLinkFromClass
 }
