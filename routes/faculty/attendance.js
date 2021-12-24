@@ -30,4 +30,15 @@ router.post('/add', async (req, res) => {
   }
 });
 
+router.get('/getCSVData', async (req, res) => {
+  try {
+    const class_id = req.query.class;
+    const data = await attendanceController.getCSVData(class_id);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 module.exports = router;
