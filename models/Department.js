@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const deptSchema = mongoose.Schema({
+  uid: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -9,6 +13,9 @@ const deptSchema = mongoose.Schema({
     required: true
   },
   head_id: {
+    type: String
+  },
+  head_name: {
     type: String
   },
   subjects: {

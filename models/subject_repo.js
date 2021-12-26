@@ -10,6 +10,22 @@ module.exports = {
     }
   },
 
+  getAll: async () => {
+    try {
+      return await Subject.find();
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getAllWithCondition: async (condition) => {
+    try {
+      return await Subject.find(condition);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   update: async (details, condition) => {
     try {
       const updated_data = await Subject.updateOne(condition, {

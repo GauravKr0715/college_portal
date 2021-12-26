@@ -21,6 +21,14 @@ module.exports = {
     }
   },
 
+  getAll: async () => {
+    try {
+      return await Department.find();
+    } catch (error) {
+      throw error;
+    }
+  },
+
   updateSubjects: async (details, condition) => {
     try {
       const updated_data = await Department.updateOne(condition, {

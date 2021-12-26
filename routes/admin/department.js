@@ -2,14 +2,26 @@ const router = require('express').Router();
 const auth = require('../../middlewares/auth');
 const logger = require('../../helpers/logger');
 const department_controller = require('../../controllers/department');
+const uuidv4 = require('uuid').v4;
 
-// router.use('/', auth.adminTokenValidate);
+router.use('/', auth.tokenValidate);
 
 router.post('/add', async (req, res) => {
   try {
     let details = Object.assign({}, req.body);
-
+    details.uid = uuidv4();
     const data = await department_controller.addDetails(details);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
+router.get('/all', async (req, res) => {
+  try {
+    const data = await department_controller.getAllForAdmin();
+
     return res.send(data);
   } catch (error) {
     logger.error(error);

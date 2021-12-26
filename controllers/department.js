@@ -14,6 +14,21 @@ const addDetails = async (details) => {
     logger.error(error);
     throw error;
   }
+};
+
+const getAllForAdmin = async () => {
+  try {
+    const data = await department_repo.getAll();
+
+    return {
+      success: true,
+      message: 'Departments retrieved successfully',
+      data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 const updateDetails = async (details, condition) => {
@@ -29,7 +44,7 @@ const updateDetails = async (details, condition) => {
     logger.error(error);
     throw error;
   }
-}
+};
 
 const addSubjects = async (details, condition) => {
   try {
@@ -44,10 +59,11 @@ const addSubjects = async (details, condition) => {
     logger.error(error);
     throw error;
   }
-}
+};
 
 module.exports = {
   addDetails,
+  getAllForAdmin,
   updateDetails,
   addSubjects
 }

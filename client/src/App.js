@@ -41,7 +41,9 @@ import SectionCreate from './components/Admin/Section/SectionCreate';
 import SectionTable from './components/Admin/Section/SectionTable';
 import SectionFinal from "./components/Admin/Section/SectionFinal";
 import StudentAdminNew from "./components/Admin/Student/studentnew"
-import FacultyAdminNew from "./components/Admin/Faculty/facultynew"
+import FacultyAdminNew from "./components/Admin/Faculty/facultynew";
+import AdminDepartments from './components/Admin/Departments';
+import AdminSubjects from './components/Admin/Subjects';
 
 
 
@@ -190,55 +192,63 @@ function App() {
             )}>
           </Route>
 
-        <Route path="/admin"
-        render={({ match: { url } }) => (
-          <>
-          <Route path={`${url}/login`} exact >
-          {/* <Authorization /> */}
-          <AdminLogin />
-        </Route>
-        <Route path={`${url}/`} exact >
-          {/* <Authorization /> */}
-          <AdminHome />
-        </Route>
-           
-            <Route path={`${url}/SectionCreate`} exact >
-              {/* <Authorization /> */}
-              <SectionCreate />
-            </Route>
-            <Route path={`${url}/SectionTable`} exact >
-              {/* <Authorization /> */}
-              <SectionTable />
-            </Route>
-            <Route path={`${url}/SectionFinal`} exact >
-              {/* <Authorization /> */}
-              <SectionFinal />
-            </Route>
-          
-            <Route path={`${url}/studentnew`} exact >
-                {/* <Authorization /> */}
-                <StudentAdminNew />
-              </Route>
-             
-              <Route path={`${url}/facultynew`} exact >
-              {/* <Authorization /> */}
-              <FacultyAdminNew />
-            </Route>
-          </>
-        )}>
-      </Route>
+          <Route path="/admin"
+            render={({ match: { url } }) => (
+              <>
+                <Route path={`${url}/login`} exact >
+                  {/* <Authorization /> */}
+                  <AdminLogin />
+                </Route>
+                <Route path={`${url}/`} exact >
+                  {/* <Authorization /> */}
+                  <AdminHome />
+                </Route>
+                <Route path={`${url}/departments`} exact >
+                  {/* <Authorization /> */}
+                  <AdminDepartments />
+                </Route>
+                <Route path={`${url}/subjects`} exact >
+                  {/* <Authorization /> */}
+                  <AdminSubjects />
+                </Route>
 
-          
+                <Route path={`${url}/SectionCreate`} exact >
+                  {/* <Authorization /> */}
+                  <SectionCreate />
+                </Route>
+                <Route path={`${url}/SectionTable`} exact >
+                  {/* <Authorization /> */}
+                  <SectionTable />
+                </Route>
+                <Route path={`${url}/SectionFinal`} exact >
+                  {/* <Authorization /> */}
+                  <SectionFinal />
+                </Route>
+
+                <Route path={`${url}/studentnew`} exact >
+                  {/* <Authorization /> */}
+                  <StudentAdminNew />
+                </Route>
+
+                <Route path={`${url}/facultynew`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyAdminNew />
+                </Route>
+              </>
+            )}>
+          </Route>
+
+
           <Route path="/StudentLogin" component={StudentLogin} />
           <Route path="/faculty/login" component={FacultyLogin} />
-          
+
           <Route path="/faculty/" component={FacultyHome} />
           <Route path="/student/" component={StudentHome} />
 
           <Route path="/SectionCreate" component={SectionCreate} />
           <Route path="/SectionTable" component={SectionTable} />
           <Route path="/SectionFinal" exact component={SectionFinal} />
-         
+
 
           <Route path="/FacultyTT" exact component={FacultyTT} />
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
+import FileSaver from 'file-saver';
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import MenuItem from "@mui/material/MenuItem";
@@ -11,11 +12,15 @@ import Badge from "@mui/material/Badge";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MuiAppBar from "@mui/material/AppBar";
+import Stack from '@mui/material/Stack';
+import Button from "@mui/material/Button";
 import Menu from '@mui/material/Menu';
 import Logout from '@mui/icons-material/Logout';
-import { logoutFaculty } from '../../services/authentication';
+import { logoutAdmin } from '../../services/authentication';
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { environment } from '../../environments/environment';
 
+const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -27,7 +32,7 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-function FacultyAppBar(props) {
+function AdminAppBar(props) {
   const [open, setOpen] = React.useState(props.open);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const profileOpen = Boolean(anchorEl);
@@ -45,9 +50,16 @@ function FacultyAppBar(props) {
   //   setOpen(true);
   // };
 
-  const facultyLogout = async () => {
+  const saveFile = () => {
+    FileSaver.saveAs(
+      environment.apiUrl + `static/${props.button.path}`,
+      "csv-file-format.csv"
+    );
+  }
+
+  const adminLogout = async () => {
     try {
-      await logoutFaculty();
+      await logoutAdmin();
       window.location.href = '/';
     } catch (error) {
       console.log(error);
@@ -100,24 +112,14 @@ function FacultyAppBar(props) {
             </Typography> */}
         <Box sx={{ flexGrow: 1 }}></Box>
         <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          <IconButton
-            size="large"
-            aria-label="show 4 new mails"
-            color="inherit"
-          >
-            <Badge badgeContent={4} color="error">
-              <MailIcon />
-            </Badge>
-          </IconButton>
-          <IconButton
-            size="large"
-            aria-label="show 17 new notifications"
-            color="inherit"
-          >
-            <Badge badgeContent={17} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
+          {
+            props.button && (
+              <Stack spacing={2} direction="row">
+                <Button variant="outlined" style={{ backgroundColor: "white", fontWeight: "bold" }} onClick={saveFile} className="filebtn">{props.button.title}</Button>
+
+              </Stack>
+            )
+          }
           <IconButton
             size="large"
             edge="end"
@@ -153,7 +155,7 @@ function FacultyAppBar(props) {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <MenuItem onClick={facultyLogout}>
+            <MenuItem onClick={adminLogout}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>
@@ -166,4 +168,4 @@ function FacultyAppBar(props) {
   )
 }
 
-export default FacultyAppBar
+export default AdminAppBar

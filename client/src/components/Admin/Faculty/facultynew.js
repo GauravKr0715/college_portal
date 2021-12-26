@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import "./facultynew.css"
 import Container from '@mui/material/Container';
 import FileSaver from 'file-saver';
@@ -7,37 +7,26 @@ import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
-import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import { sidebar_admin } from "../../../environments/sidebar_admin";
-import Stack from '@mui/material/Stack';
 import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import { Link, useRouteMatch } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
-import Paper from "@mui/material/Paper";
 import { environment } from '../../../environments/environment';
+import AdminAppBar from '../AdminAppBar';
 
 const style = {
   position: 'absolute',
@@ -240,37 +229,12 @@ function Studentnew() {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          /* <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              {/* <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
-            </Typography> */}
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-
-                <CssBaseline />
-
-                <Stack spacing={2} direction="row">
-
-                  <Button variant="outlined" style={{ backgroundColor: "white", fontWeight: "bold" }} onClick={saveFile} className="filebtn">Get CSV File format</Button>
-
-                </Stack>
-
-              </Box>
-            </Toolbar>
-          </AppBar> */
+          <AdminAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} button={
+            {
+              title: 'Get CSV File format',
+              path: 'sampleFaculty.csv'
+            }
+          } />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton

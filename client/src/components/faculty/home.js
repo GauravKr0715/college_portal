@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { validateFacultySession } from '../../services/authentication';
 import Loader from '../Misc/Loader';
 

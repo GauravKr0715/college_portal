@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import "./studentnew.css"
 import Container from '@mui/material/Container';
 import FileSaver from 'file-saver';
+import TextField from '@mui/material/TextField';
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -27,7 +27,7 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { sidebar_admin } from "../../../environments/sidebar_admin";
+import { sidebar_admin } from '../../environments/sidebar_admin';
 import Stack from '@mui/material/Stack';
 import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
@@ -36,7 +36,15 @@ import Typography from '@mui/material/Typography';
 import { Link, useRouteMatch } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
 import Paper from "@mui/material/Paper";
-import { environment } from '../../../environments/environment';
+import AdminAppBar from './AdminAppBar';
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { getDepartments } from '../../services/admin';
+import NewDepartmentDialog from './NewDepartmentDialog';
 
 const style = {
   position: 'absolute',
@@ -126,7 +134,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Studentnew() {
+function Departments() {
 
   const [opened, setOpened] = React.useState(false);
   const handleOpened = () => setOpened(true);
@@ -175,69 +183,35 @@ function Studentnew() {
   };
   const [loading, setLoading] = useState(false);
   const [submitLoad, setSubmitLoad] = useState(false);
+  const [departments, setDepartments] = useState([]);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const onDialogClose = () => {
     setDialogOpen(false);
-    subjectsSheet();
+    allDepartments();
   }
 
-  /* const postAttendance = async (details) => {
+  const allDepartments = async () => {
     try {
       setLoading(true);
-      setSubmitLoad(true);
-      const { data } = await postAttendanceSheet(details);
+      const { data } = await getDepartments();
       console.log(data);
-      openSnackBar(data.message);
+      setDepartments(data.data);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
       setLoading(false);
-      setSubmitLoad(false);
     }
 
     setLoading(false);
-    setSubmitLoad(false);
-  };
-
- */
-  const saveFile = () => {
-    FileSaver.saveAs(
-      environment.apiUrl + "static/sampleStudent.csv",
-      "csv-file-format.csv"
-    );
   }
 
-  const [profileValue, setProfileValue] = useState([
-    {
-      "Name": "Enrollment No:",
-      "Value": ""
-    },
-    {
-      "Name": "Name:",
-      "Value": ""
-    },
-    {
-      "Name": "Email ID:",
-      "Value": ""
-    },
-    {
-      "Name": "Contact No:",
-      "Value": ""
-    },
-    {
-      "Name": "Course:",
-      "Value": ""
-    },
-    {
-      "Name": "YoP:",
-      "Value": ""
-    },
-    {
-      "Name": "Section:",
-      "Value": ""
-    },])
+  useEffect(() => {
+    allDepartments();
+  }, []);
+
+
   return (
     <>
       <LoadingOverlay
@@ -247,37 +221,7 @@ function Studentnew() {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          /* <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              {/* <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
-            </Typography> */}
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-
-                <CssBaseline />
-
-                <Stack spacing={2} direction="row">
-
-                  <Button variant="outlined" style={{ backgroundColor: "white", fontWeight: "bold" }} onClick={saveFile} className="filebtn">Get CSV File format</Button>
-
-                </Stack>
-
-              </Box>
-            </Toolbar>
-          </AppBar> */
+          <AdminAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -310,22 +254,90 @@ function Studentnew() {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <div className="start">
-              <CssBaseline />
-              <Container maxWidth="sm">
-                <Box sx={{ bgcolor: 'white !important', height: '80vh', marginTop: "6rem", }} >
-                  <div className="newflex">
-                    <Button onClick={handleOpened} variant="contained" sx={{ width: '10rem', height: '5rem', fontSize: '1.3rem', fontWeight: 'bold' }}>New ➕</Button>
-                    <br></br>
-                    <p style={{ fontSize: '1.6rem', fontWeight: "bold" }}>OR</p><br />
-                    <Button variant="contained" sx={{ width: '10rem', height: '5rem', fontSize: '1.3rem', fontWeight: 'bold' }} /* onclick={{()=>{return <>
-                    <input id="csvFileInput" type="file" accept=".csv"/>
-                    </>
-                }} */>Bulk Import</Button>
-
-                  </div>
-                </Box>
-              </Container>
+            <DrawerHeader />
+            <div className="admin-container">
+              <div className="admin-options-container">
+                <div className="updator">
+                  <StyledLoader
+                    active={submitLoad}
+                    classNamePrefix="MyLoader_"
+                    spinner
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        setDialogOpen(true);
+                      }}
+                      height="auto"
+                      sx={{
+                        fontWeight: 'bolder'
+                      }}
+                    >
+                      <span class="material-icons">add</span> New Department
+                    </Button>
+                  </StyledLoader>
+                </div>
+              </div>
+              <div className="list-container">
+                {departments.length > 0 ? (
+                  <TableContainer
+                    sx={{
+                      backgroundColor: "#fff !important",
+                    }}
+                    component={Paper}
+                  >
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Code
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Name
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontWeight: "bold !important",
+                              fontSize: "1rem !important",
+                            }}
+                          >
+                            Head of Dept.
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {departments.map((dept) => (
+                          <TableRow key={dept.uid}>
+                            <TableCell component="th" scope="row">
+                              <Link
+                                to={`${curr_url}/departments/${dept.uid}`}
+                              >
+                                <div className={"clickable-title"}>
+                                  {dept.code}
+                                </div>
+                              </Link>
+                            </TableCell>
+                            <TableCell>{dept.name}</TableCell>
+                            <TableCell>{dept.head_name ? dept.head_name : '--NA--'}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <div className="no-class">No Departments to show... </div>
+                )}
+              </div>
             </div>
           </Box>
         </Box>
@@ -342,7 +354,7 @@ function Studentnew() {
             </React.Fragment>
           }
         />
-        <NewSubjectDialog
+        <NewDepartmentDialog
           open={dialogOpen}
           onClose={onDialogClose}
           openSnackBar={openSnackBar}
@@ -352,4 +364,4 @@ function Studentnew() {
   );
 }
 
-export default Studentnew
+export default Departments

@@ -1,0 +1,48 @@
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 85vh;
+  /* justify-content: center; */
+  align-items: center;
+  /* margin-left: auto; */
+  /* margin: auto; */
+  width: auto;
+}
+
+.admin-options-container {
+  min-width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 30px;
+}
+
+.admin-options-container .selector {
+  width: 40%;
+}
+
+.admin-options-container .updator {
+  width: 40%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-options-container .updator button {
+  font-size: 15px;
+  font-weight: bold;
+  height: 100%;
+}
+
+.list-container {
+  /* background-color: #fff; */
+  padding: 16px;
+  min-width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.no-class {
+  font-weight: bolder;
+  font-size: 20px;
+}
