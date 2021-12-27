@@ -16,8 +16,7 @@ const studentRegisterSchema = joi.object({
     .email({ minDomainSegments: 2 }),
 
   mobile: joi.string()
-    .pattern(new RegExp('^[0-9]*$'))
-    .required(),
+    .pattern(new RegExp('^[0-9]*$')),
 
   course: joi.string()
     .required(),

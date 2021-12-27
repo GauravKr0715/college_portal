@@ -40,8 +40,8 @@ import AdminHome from './components/Admin/Home';
 import SectionCreate from './components/Admin/Section/SectionCreate';
 import SectionTable from './components/Admin/Section/SectionTable';
 import SectionFinal from "./components/Admin/Section/SectionFinal";
-import StudentAdminNew from "./components/Admin/Student/studentnew"
-import FacultyAdminNew from "./components/Admin/Faculty/facultynew";
+import AdminStudents from "./components/Admin/Student";
+import AdminFaculty from "./components/Admin/Faculty";
 import AdminDepartments from './components/Admin/Departments';
 import AdminSubjects from './components/Admin/Subjects';
 
@@ -225,14 +225,14 @@ function App() {
                   <SectionFinal />
                 </Route>
 
-                <Route path={`${url}/studentnew`} exact >
+                <Route path={`${url}/students`} exact >
                   {/* <Authorization /> */}
-                  <StudentAdminNew />
+                  <AdminStudents />
                 </Route>
 
-                <Route path={`${url}/facultynew`} exact >
+                <Route path={`${url}/faculties`} exact >
                   {/* <Authorization /> */}
-                  <FacultyAdminNew />
+                  <AdminFaculty />
                 </Route>
               </>
             )}>

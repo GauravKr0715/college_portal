@@ -32,4 +32,30 @@ export const faculty_sidebar_data = [
     icon: 'question_answer',
     link: '/queries'
   },
-]
+];
+
+export const admin_sidebar_data = [
+  {
+    text: 'Departments',
+    icon: 'corporate_fare',
+    link: '/departments'
+  },
+  {
+    text: 'Subjects',
+    icon: 'menu_book',
+    link: '/subjects'
+  }, {
+    text: 'Faculties',
+    icon: 'person',
+    link: '/faculties'
+  },
+  {
+    text: 'Students',
+    icon: 'groups',
+    link: '/students'
+  }, {
+    text: 'Sections',
+    icon: 'meeting_room',
+    link: '/SectionCreate'
+  }
+];

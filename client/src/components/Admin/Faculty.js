@@ -1,42 +1,32 @@
-import React, { useState, useEffect } from 'react'
-import "./studentnew.css"
+import React, { useState } from 'react'
+import "./facultynew.css"
 import Container from '@mui/material/Container';
 import FileSaver from 'file-saver';
+import TextField from '@mui/material/TextField';
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
-import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import { sidebar_admin } from "../../../environments/sidebar_admin";
-import Stack from '@mui/material/Stack';
+import { admin_sidebar_data } from "../../environments/sidebar_data";
 import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
 import { Link, useRouteMatch } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
-import Paper from "@mui/material/Paper";
-import { environment } from '../../../environments/environment';
+import { environment } from '../../environments/environment';
+import AdminAppBar from './AdminAppBar';
 
 const style = {
   position: 'absolute',
@@ -176,13 +166,6 @@ function Studentnew() {
   const [loading, setLoading] = useState(false);
   const [submitLoad, setSubmitLoad] = useState(false);
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-
-  const onDialogClose = () => {
-    setDialogOpen(false);
-    subjectsSheet();
-  }
-
   /* const postAttendance = async (details) => {
     try {
       setLoading(true);
@@ -204,14 +187,14 @@ function Studentnew() {
  */
   const saveFile = () => {
     FileSaver.saveAs(
-      environment.apiUrl + "static/sampleStudent.csv",
+      environment.apiUrl + "static/sampleFaculty.csv",
       "csv-file-format.csv"
     );
   }
 
   const [profileValue, setProfileValue] = useState([
     {
-      "Name": "Enrollment No:",
+      "Name": "Unique Id:",
       "Value": ""
     },
     {
@@ -227,17 +210,16 @@ function Studentnew() {
       "Value": ""
     },
     {
-      "Name": "Course:",
+      "Name": "Department:",
       "Value": ""
     },
     {
-      "Name": "YoP:",
+      "Name": "YoJ:",
       "Value": ""
     },
-    {
-      "Name": "Section:",
-      "Value": ""
-    },])
+  ])
+
+
   return (
     <>
       <LoadingOverlay
@@ -247,37 +229,12 @@ function Studentnew() {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          /* <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{
-                  marginRight: "36px",
-                  ...(open && { display: "none" }),
-                }}
-              >
-                <MenuIcon />
-              </IconButton>
-              {/* <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
-            </Typography> */}
-              <Box sx={{ flexGrow: 1 }}></Box>
-              <Box sx={{ display: { xs: "none", md: "flex" } }}>
-
-                <CssBaseline />
-
-                <Stack spacing={2} direction="row">
-
-                  <Button variant="outlined" style={{ backgroundColor: "white", fontWeight: "bold" }} onClick={saveFile} className="filebtn">Get CSV File format</Button>
-
-                </Stack>
-
-              </Box>
-            </Toolbar>
-          </AppBar> */
+          <AdminAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} button={
+            {
+              title: 'Get CSV File format',
+              path: 'sampleFaculty.csv'
+            }
+          } />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -294,7 +251,7 @@ function Studentnew() {
             </DrawerHeader>
             {/* <Divider /> */}
             <List>
-              {sidebar_admin.map((section, idx) => (
+              {admin_sidebar_data.map((section, idx) => (
                 <Link to={`${curr_url}${section.link}`}>
                   <ListItem button key={section.text}>
                     <ListItemIcon>
@@ -316,12 +273,52 @@ function Studentnew() {
                 <Box sx={{ bgcolor: 'white !important', height: '80vh', marginTop: "6rem", }} >
                   <div className="newflex">
                     <Button onClick={handleOpened} variant="contained" sx={{ width: '10rem', height: '5rem', fontSize: '1.3rem', fontWeight: 'bold' }}>New ➕</Button>
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={opened}
+                      onClose={handleClosed}
+                      closeAfterTransition
+                      BackdropComponent={Backdrop}
+                      BackdropProps={{
+                        timeout: 500,
+                      }}
+                    >
+                      <Fade in={opened}>
+                        <Box sx={style}>
+                          <Typography id="transition-modal-title" variant="h4" component="h3">
+                            Fill the details
+                          </Typography>
+                          <Box sx={{ bgcolor: 'white ', height: '69vh' }} ><br />
+                            <Box
+                              component="form"
+                              sx={{
+                                '& > :not(style)': { m: 1, width: '25ch', marginLeft: '3.5rem' },
+                              }}
+                              noValidate
+                              autoComplete="off"
+                            >
+
+                              {profileValue.map((name) => (
+
+
+                                <TextField id="standard-basic" label={name.Name} variant="outlined" color='action' margin='normal' sx={{ width: '12rem' }} />
+
+                              )
+                              )}
+                            </Box>
+
+
+                            <br />
+                            <Button variant="contained" color='primary' sx={{ marginLeft: '7rem' }} >Save</Button>
+
+                          </Box>
+                        </Box>
+                      </Fade>
+                    </Modal>
                     <br></br>
                     <p style={{ fontSize: '1.6rem', fontWeight: "bold" }}>OR</p><br />
-                    <Button variant="contained" sx={{ width: '10rem', height: '5rem', fontSize: '1.3rem', fontWeight: 'bold' }} /* onclick={{()=>{return <>
-                    <input id="csvFileInput" type="file" accept=".csv"/>
-                    </>
-                }} */>Bulk Import</Button>
+                    <Button variant="contained" sx={{ width: '10rem', height: '5rem', fontSize: '1.3rem', fontWeight: 'bold' }}  >Bulk Import</Button>
 
                   </div>
                 </Box>
@@ -341,11 +338,6 @@ function Studentnew() {
               </SnackBarButton>
             </React.Fragment>
           }
-        />
-        <NewSubjectDialog
-          open={dialogOpen}
-          onClose={onDialogClose}
-          openSnackBar={openSnackBar}
         />
       </LoadingOverlay>
     </>

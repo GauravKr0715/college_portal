@@ -27,7 +27,7 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import { sidebar_admin } from '../../environments/sidebar_admin';
+import { admin_sidebar_data } from '../../environments/sidebar_data';
 import Stack from '@mui/material/Stack';
 import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
@@ -238,7 +238,7 @@ function Departments() {
             </DrawerHeader>
             {/* <Divider /> */}
             <List>
-              {sidebar_admin.map((section, idx) => (
+              {admin_sidebar_data.map((section, idx) => (
                 <Link to={`${curr_url}${section.link}`}>
                   <ListItem button key={section.text}>
                     <ListItemIcon>

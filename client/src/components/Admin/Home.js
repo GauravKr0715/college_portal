@@ -8,7 +8,7 @@ const StudentHome = () => {
     const { data } = await validateAdminSession();
     console.log(data);
     if (data.verified) {
-      window.location.href = `/admin/studentnew`;
+      window.location.href = `/admin/students`;
     } else {
       window.location.href = `/admin/login`;
     }

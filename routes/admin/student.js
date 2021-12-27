@@ -4,6 +4,18 @@ const multer = require('multer');
 const studentController = require('../../controllers/student');
 const { studentRegisterValidation, studentLoginValidation } = require("../../validators/studentValidator");
 
+router.get('/search', async (req, res) => {
+  try {
+    const query = req.query.id;
+    const data = await studentController.getStudentByID(query);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 router.post('/register', async (req, res) => {
   const body = Object.assign({}, req.body);
   try {

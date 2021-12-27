@@ -30,6 +30,26 @@ export const GlobalVariables = {
     },
   ],
 
+  courses_list: [
+    'BTECH',
+    'BBA',
+    'MBA'
+  ],
+
+  years_list: [
+    '2015',
+    '2016',
+    '2017',
+    '2018',
+    '2019',
+    '2020',
+    '2021',
+    '2022',
+    '2023',
+    '2024',
+    '2025',
+  ],
+
   semesters: [
     {
       key: 'First',

@@ -23,12 +23,12 @@ const addDetails = async (details) => {
     details.display_password = Math.random().toString(36).slice(-8);
     const salt = await bcrypt.genSalt(15);
     details.password = await bcrypt.hash(details.display_password, salt);
-
+    details.createdAt = Math.floor(Date.now() / 1000);
     const data = await student_repo.add(details);
 
     return {
       success: true,
-      message: 'Added Successfully',
+      message: 'Student Added Successfully',
       data
     }
   } catch (error) {
@@ -240,6 +240,28 @@ const getProfileDetails = async (roll_no) => {
   }
 }
 
+const getStudentByID = async (roll_no) => {
+  try {
+    const student_data = await student_repo.fetchOneCertainFields("roll_no full_name section", {
+      roll_no
+    });
+    if (student_data) {
+      return {
+        success: true,
+        message: 'Data retrived succeffully',
+        student_data
+      }
+    }
+    return {
+      success: false,
+      message: 'No student found. Try again with different ID',
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+}
+
 module.exports = {
   addDetails,
   saveAllStudents,
@@ -248,5 +270,6 @@ module.exports = {
   addSubjects,
   getBasicDetails,
   getClasses,
-  getProfileDetails
+  getProfileDetails,
+  getStudentByID
 }

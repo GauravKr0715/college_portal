@@ -28,7 +28,7 @@ import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 
-import { sidebar_admin } from "../../../environments/sidebar_admin";
+import { admin_sidebar_data } from "../../../environments/sidebar_data";
 import { Link, useRouteMatch } from "react-router-dom";
 
 import LoadingOverlay from "react-loading-overlay";
@@ -116,7 +116,7 @@ function Studentnew() {
    const handleClose = () => {
      setOpens(false);
    };
-     
+
    const handleOpen = () => {
      setOpens(true);
    };
@@ -173,9 +173,9 @@ function Studentnew() {
        "class3"
    ]);
 
-  
+
     const[today,setDays]=useState(["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"])
-       
+
     const [Tnames,setTnames]=useState([
    [{
       Subject:"ADBA",
@@ -235,7 +235,7 @@ const getClassString = (slot) => {
   };
   const menuId = "primary-search-account-menu";
 
-  
+
   const [select_label, setSelectLabel] = useState("");
   const [selected_class, setSelectedClass] = useState("");
   const [selected_class_idx, setSelectedClassIdx] = useState(-1);
@@ -315,8 +315,8 @@ const getClassString = (slot) => {
             </Typography> */}
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-  
-            
+
+
               </Box>
             </Toolbar>
           </AppBar> */
@@ -336,7 +336,7 @@ const getClassString = (slot) => {
             </DrawerHeader>
             {/* <Divider /> */}
             <List>
-              {sidebar_admin.map((section, idx) => (
+              {admin_sidebar_data.map((section, idx) => (
                 <Link to={`${curr_url}${section.link}`}>
                   <ListItem button key={section.text}>
                     <ListItemIcon>
@@ -352,8 +352,8 @@ const getClassString = (slot) => {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-           
-          
+
+
         <div className="dyns">
         <table className="table">
           <thead>
@@ -368,7 +368,7 @@ const getClassString = (slot) => {
             <th><h4>02:15-03:10</h4></th>
          </tr>
          </thead>
-          
+
           <tbody>
           {
                time_table.map((day, idx) => (
@@ -383,25 +383,25 @@ const getClassString = (slot) => {
                         }}>
                          <h5>Add ➕</h5>
                         </td>
-                        
+
                      ))
                   }
                   </tr>
                ))
             }
-</tbody> 
-         
-         
-        
+</tbody>
+
+
+
         </table>
         <div className="ta">
         <div className="btn-1"><Link to="/admin/SectionCreate" style={{textDecoration:"none",color:"beige"}} >Back</Link></div>
         <div className="btn-2"><Link to="/admin/SectionFinal" style={{textDecoration:"none",color:"beige"}} >Next</Link></div>
         </div>
-     
+
      </div>
-     
-     
+
+
    <ClassModal open={opens}
    onClose={() => handleClose()}/>
      </Box>

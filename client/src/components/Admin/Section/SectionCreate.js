@@ -26,7 +26,7 @@ import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 
-import { sidebar_admin } from "../../../environments/sidebar_admin";
+import { admin_sidebar_data } from "../../../environments/sidebar_data";
 import { Link, useRouteMatch } from "react-router-dom";
 
 import LoadingOverlay from "react-loading-overlay";
@@ -129,7 +129,7 @@ function Studentnew() {
   };
   const menuId = "primary-search-account-menu";
 
-  
+
   const [select_label, setSelectLabel] = useState("");
   const [selected_class, setSelectedClass] = useState("");
   const [selected_class_idx, setSelectedClassIdx] = useState(-1);
@@ -161,7 +161,7 @@ function Studentnew() {
     }
 
     const yearList = allYears.map((x) => {return(<option key={x}>{x}</option>)});
-  
+
   return (
     <>
       <LoadingOverlay
@@ -190,9 +190,9 @@ function Studentnew() {
             </Typography> */}
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-  
-    
-            
+
+
+
               </Box>
             </Toolbar>
           </AppBar> */
@@ -212,7 +212,7 @@ function Studentnew() {
             </DrawerHeader>
             {/* <Divider /> */}
             <List>
-              {sidebar_admin.map((section, idx) => (
+              {admin_sidebar_data.map((section, idx) => (
                 <Link to={`${curr_url}${section.link}`}>
                   <ListItem button key={section.text}>
                     <ListItemIcon>
@@ -228,7 +228,7 @@ function Studentnew() {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          
+
           <div className="option">
 
           <div className="ones">
@@ -240,16 +240,16 @@ function Studentnew() {
 
           <div className="twos">
               <label htmlFor="year">Year:  </label>
-              <select>  
+              <select>
                  <option value = "Ist Year"> Ist Year
-                   </option>  
-                 <option value = "IInd Year"> IInd Year   
-                   </option>  
-                 <option value = "IIIrd Year"> IIIrd Year  
-                   </option>  
-                 <option value = "IVth Year"> IVth Year  
-                   </option>  
-              </select>  
+                   </option>
+                 <option value = "IInd Year"> IInd Year
+                   </option>
+                 <option value = "IIIrd Year"> IIIrd Year
+                   </option>
+                 <option value = "IVth Year"> IVth Year
+                   </option>
+              </select>
           </div>
 
 
@@ -260,31 +260,31 @@ function Studentnew() {
 
           <div className="fours">
           <label htmlFor="Branch">Branch: </label>
-          <select>  
+          <select>
                  <option value = "CSE"> CSE
-                   </option>  
+                   </option>
                  <option value = "IT">  IT
-                   </option>  
+                   </option>
                  <option value = "ECE"> ECE
-                   </option>  
-                 <option value = "EEE"> EEE  
-                   </option>  
-                   <option value = "MECH"> MECH 
+                   </option>
+                 <option value = "EEE"> EEE
+                   </option>
+                   <option value = "MECH"> MECH
                    </option>
                    <option value = "CIVIL"> CIVIL
                    </option>
-                   <option value = "BBA"> BBA 
+                   <option value = "BBA"> BBA
                    </option>
-                   <option value = "MBA"> MBA  
+                   <option value = "MBA"> MBA
                    </option>
               </select>
           </div>
           </div>
 
           <div className="dyn">
-            
+
               <Dynamic/>
-                      
+
           </div>
 
           <div className="nextone"><Link to="/admin/SectionTable" style={{textDecoration:"none",color:"beige"}} >Next</Link></div>
