@@ -181,11 +181,11 @@ function Student() {
         if (data.success) {
           setStudentDetails(data.student_data);
           setStudentDetailsError(null);
+          setQuery("");
         } else {
           setStudentDetailsError(data.message);
           setStudentDetails(null);
         }
-        setQuery("");
       }
     } catch (error) {
       console.log(error);
@@ -335,19 +335,47 @@ function Student() {
                   {student_details && (
                     <TableRow key={query}>
                       <TableCell component="th" scope="row">
-                        <Link
-                          to={`${curr_url}/students/${student_details.roll_no}`}
-                        >
-                          <div className={"clickable-title multiline-head"}>
-                            {student_details.full_name}
-                            <div className="small-data">
-                              {student_details.roll_no}
-                              {student_details.section
-                                ? ` • ${student_details.section}`
-                                : null}
-                            </div>
+                        <div className={"clickable-title multiline-head"}>
+                          {student_details.full_name}
+                          <div className="small-data">
+                            {student_details.roll_no}
+                            {student_details.section
+                              ? ` • ${student_details.section}`
+                              : null}
                           </div>
-                        </Link>
+                        </div>
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <div className={"clickable-title multiline-head"}>
+                          {student_details.email}
+                          <div className="small-data">
+                            Email ID
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <div className={"clickable-title multiline-head"}>
+                          {student_details.mobile ? student_details.mobile : 'N/A'}
+                          <div className="small-data">
+                            Mobile Number
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <div className={"clickable-title multiline-head"}>
+                          {student_details.course}
+                          <div className="small-data">
+                            Course
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        <div className={"clickable-title multiline-head"}>
+                          {student_details.yop}
+                          <div className="small-data">
+                            Year of Passing
+                          </div>
+                        </div>
                       </TableCell>
                     </TableRow>
                   )}

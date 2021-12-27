@@ -242,7 +242,7 @@ const getProfileDetails = async (roll_no) => {
 
 const getStudentByID = async (roll_no) => {
   try {
-    const student_data = await student_repo.fetchOneCertainFields("roll_no full_name section", {
+    const student_data = await student_repo.fetchOneCertainFields("roll_no full_name section email mobile course yop", {
       roll_no
     });
     if (student_data) {

@@ -21,6 +21,14 @@ module.exports = {
     }
   },
 
+  fetchOneCertainFields: async (field_string, condition) => {
+    try {
+      return await Department.findOne(condition).select(field_string);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getAll: async () => {
     try {
       return await Department.find();
