@@ -25,6 +25,8 @@ import FacultyTestProfile from './components/Faculty/TestProfile';
 import FacultyTestSubmissionProfile from './components/Faculty/TestSubmissionProfile';
 import FacultyNotes from './components/Faculty/Notes';
 import FacultyNotesProfile from './components/Faculty/NotesProfile';
+import FacultyAnnouncement from './components/Faculty/Announcement'
+
 import StudentHome from './components/Students/Home';
 import StudentFeed from './components/Students/Feed';
 import StudentAttendance from './components/Students/Attendance';
@@ -131,6 +133,10 @@ function App() {
                   {/* <Authorization /> */}
                   <FacultyProfile />
                 </Route>
+                <Route path={`${url}/announcement`} exact >
+                {/* <Authorization /> */}
+                <FacultyAnnouncement />
+              </Route>
               </>
             )}>
           </Route>

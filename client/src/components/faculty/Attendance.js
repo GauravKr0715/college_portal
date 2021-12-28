@@ -250,25 +250,34 @@ function Attendance() {
 
   const handleStudentAllCheck = (e) => {
     const state = e.target.checked;
-    alert(state);
+    /* alert(state); */
     setCheck(state);
     setClasses((c) => {
       return c.map((cl, idx) => {
-        if (idx !== selected_class_idx) {
+       /*  if (idx !== selected_class_idx) {
+          alert(state)
+          console.log(state)
           return cl;
+         
         } else {
+           */
           return {
             ...cl,
             all_students: cl.all_students.map((student) => {
               return {
+               
                 ...student,
                 is_present: state,
               };
             }),
+            
           };
-        }
-      });
-    });
+        })
+        console.log(c)
+      }
+       
+      );
+    
   };
 
   const handleStudentIndCheck = (event, r_no) => {

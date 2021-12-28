@@ -174,7 +174,7 @@ const getClassesForAttendance = async (uni_id) => {
     const faculty_details = await faculty_repo.fetchOneCertainFields("time_table classes -_id", { uni_id });
 
     // let day_idx = days_map[moment().subtract(3, 'days').format("dddd")];
-    let day_idx = days_map[moment().format("dddd")];
+    let day_idx = days_map[moment().subtract(2, 'days').format("dddd")];
     let todays_time_table = faculty_details.time_table[day_idx];
     // console.log(todays_time_table);
     let final_data = [];
@@ -189,7 +189,7 @@ const getClassesForAttendance = async (uni_id) => {
           section: c.section
         });
         // let todays_date = moment().subtract(3, 'days').format('DD-MM-yyyy');
-        let todays_date = moment().format('DD-MM-yyyy');
+        let todays_date = moment().subtract(2, 'days').format("dddd");
         let present_students = await attendance_repo.fetchOneAndConditions(
           { date: todays_date, class_id: c.class_id });
         // console.log(present_students);
