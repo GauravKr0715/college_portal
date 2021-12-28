@@ -56,6 +56,6 @@ export const admin_sidebar_data = [
   }, {
     text: 'Sections',
     icon: 'meeting_room',
-    link: '/SectionCreate'
+    link: '/sections'
   }
 ];

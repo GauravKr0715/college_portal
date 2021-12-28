@@ -85,6 +85,25 @@ export const GlobalVariables = {
     '2021',
   ],
 
+  years: [
+    {
+      key: 'First Year',
+      value: 1
+    },
+    {
+      key: 'Second Year',
+      value: 2
+    },
+    {
+      key: 'Third Year',
+      value: 3
+    },
+    {
+      key: 'Fourth Year',
+      value: 4
+    }
+  ],
+
   semesters: [
     {
       key: 'First',
@@ -125,7 +144,7 @@ export const GlobalVariables = {
       return 'st'
     else if (number === 2)
       return 'nd'
-    else if (number === 4)
+    else if (number === 3)
       return 'rd'
     else return 'th'
   }

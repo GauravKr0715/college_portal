@@ -21,7 +21,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { admin_sidebar_data } from "../../environments/sidebar_data";
 // import "./attendance.css";
 // import './assignment.css';
-import { getSubjectsWithDepartmentID, getDepartments } from "../../services/admin";
+import { getSectionsWithDepartmentID, getDepartments } from "../../services/admin";
 import { Link, useRouteMatch } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -34,7 +34,7 @@ import Paper from "@mui/material/Paper";
 // import NewSubjectDialog from "./NewSubjectDialog";
 import AdminAppBar from './AdminAppBar';
 import { GlobalVariables } from '../../environments/global_data';
-import NewSubjectDialog from './NewSubjectDialog';
+import NewSectionDialog from './NewSectionDialog';
 
 const drawerWidth = 240;
 
@@ -112,7 +112,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Subject() {
+function Section() {
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
@@ -143,37 +143,41 @@ function Subject() {
 
   const [select_label, setSelectLabel] = useState("");
 
-  const [selected_semester, setSelectedSemester] = useState(0);
+  const [selected_year, setSelectedYear] = useState(0);
 
-  const handleSemesterChange = (e) => {
-    setSelectedSemester(e.target.value);
+  const handleYearChange = (e) => {
+    setSelectedYear(e.target.value);
     if (e.target.value === 0) {
-      setFilteredSubjects(allSubjects)
+      setFilteredSections(allSections)
     } else {
-      setFilteredSubjects(allSubjects.filter(sub => sub.sem === e.target.value));
+      setFilteredSections(allSections.filter(sec => sec.year == e.target.value));
     }
   }
   // const [selected_class, setSelectedClass] = useState("");
   // const [selected_class_idx, setSelectedClassIdx] = useState(-1);
 
   const handleDepartmentChange = (event) => {
-    setFilteredSubjects(allSubjects.filter(subject => subject.dept === event.target.value));
+    setFilteredSections(allSections.filter(sec => sec.dept === event.target.value));
     setSelectLabel(event.target.value);
-    subjectsSheet(event.target.value);
+    sectionsSheet(event.target.value);
   };
 
   const [snackbar, setSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
-  const [allSubjects, setAllSubjects] = useState([]);
-  const [filteredSubjects, setFilteredSubjects] = useState([]);
+  const [allSections, setAllSections] = useState([]);
+  const [filtered_sections, setFilteredSections] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [selected_department, setSelectedDepartment] = useState(null);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const onDialogClose = () => {
     setDialogOpen(false);
-    subjectsSheet();
+    getDepartmentList();
+    setAllSections([]);
+    setFilteredSections([]);
+    setSelectLabel("");
   }
 
   const getDepartmentList = async () => {
@@ -189,13 +193,13 @@ function Subject() {
     setLoading(false);
   }
 
-  const subjectsSheet = async (dept_id) => {
+  const sectionsSheet = async (dept_id) => {
     try {
       setLoading(true);
-      const { data } = await getSubjectsWithDepartmentID(dept_id);
-      setAllSubjects(data.final_result.subjects_data);
-      setFilteredSubjects(data.final_result.subjects_data);
-      setSelectedSemester(0);
+      const { data } = await getSectionsWithDepartmentID(dept_id);
+      setAllSections(data.final_result.sections_data);
+      setFilteredSections(data.final_result.sections_data);
+      setSelectedYear(0);
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -207,7 +211,7 @@ function Subject() {
 
   useEffect(() => {
     getDepartmentList();
-    // subjectsSheet();
+    // sectionsSheet();
   }, []);
 
   const openSnackBar = (msg) => {
@@ -223,7 +227,7 @@ function Subject() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Subjects Sheet..."
+        text="Loading Sections..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -304,7 +308,7 @@ function Subject() {
                         fontWeight: 'bolder'
                       }}
                     >
-                      <span class="material-icons">add</span> New Subject
+                      <span class="material-icons">add</span> New Section
                     </Button>
                   </StyledLoader>
                 </div>
@@ -315,24 +319,24 @@ function Subject() {
                     fullWidth
                   >
                     <InputLabel id="class_select_label">
-                      Select Semester
+                      Select Year
                     </InputLabel>
                     <Select
                       labelId="class_select_label"
                       id="class_select"
-                      value={selected_semester}
-                      label="Select Department"
-                      onChange={handleSemesterChange}
+                      value={selected_year}
+                      label="Select Year"
+                      onChange={handleYearChange}
                       disabled={loading}
                     >
                       <MenuItem
                         value={0}>
                         All
                       </MenuItem>
-                      {GlobalVariables.semesters.map((sem) => (
+                      {GlobalVariables.years.map((year) => (
                         <MenuItem
-                          value={sem.value}
-                        >{`${sem.key}`}</MenuItem>
+                          value={year.value}
+                        >{`${year.key}`}</MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -342,7 +346,7 @@ function Subject() {
               <div className="list-container">
                 {
                   departments && select_label !== "" ?
-                    filteredSubjects.length > 0 ? (
+                    filtered_sections.length > 0 ? (
                       <TableContainer
                         sx={{
                           backgroundColor: "#fff !important",
@@ -366,7 +370,7 @@ function Subject() {
                                   fontSize: "1rem !important",
                                 }}
                               >
-                                Subject Code
+                                Year
                               </TableCell>
                               <TableCell
                                 sx={{
@@ -374,33 +378,30 @@ function Subject() {
                                   fontSize: "1rem !important",
                                 }}
                               >
-                                Subject Type
+                                Cordinator Name
                               </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {filteredSubjects.map((subject) => (
-                              <TableRow key={subject.uid}>
+                            {filtered_sections.map((section) => (
+                              <TableRow key={section.uid}>
                                 <TableCell component="th" scope="row">
                                   <Link
-                                    to={`${curr_url}/subjects/${subject.uid}`}
+                                    to={`${curr_url}/sections/${section.uid}`}
                                   >
                                     <div
                                       className={"clickable-title multiline-head"}
                                     >
-                                      {subject.name}
-                                      <div className="small-data">
-                                        {subject.sem}{`${GlobalVariables.getProperSuffix(subject.sem)} sem`}
-                                      </div>
+                                      {section.name}
                                     </div>
                                   </Link>
                                 </TableCell>
                                 <TableCell>
-                                  {subject.code}
+                                  {section.year}{`${GlobalVariables.getProperSuffix(section.year)} year`}
 
                                 </TableCell>
                                 <TableCell>
-                                  {GlobalVariables.subject_types[subject.type]}
+                                  {section.coordinator_name ? section.coordinator_name : 'N/A'}
                                 </TableCell>
                               </TableRow>
                             ))}
@@ -408,7 +409,7 @@ function Subject() {
                         </Table>
                       </TableContainer>
                     ) : (
-                      <div className="no-class">No Subjects to show... </div>
+                      <div className="no-class">No Sections to show... </div>
                     ) : (
                       <div className="no-class">Select a department first... </div>
                     )}
@@ -429,7 +430,7 @@ function Subject() {
             </React.Fragment>
           }
         />
-        <NewSubjectDialog
+        <NewSectionDialog
           open={dialogOpen}
           onClose={onDialogClose}
           openSnackBar={openSnackBar}
@@ -439,4 +440,4 @@ function Subject() {
   );
 }
 
-export default Subject;
+export default Section;

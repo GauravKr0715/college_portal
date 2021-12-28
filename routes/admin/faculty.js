@@ -1,8 +1,11 @@
 const router = require('express').Router();
 const logger = require('../../helpers/logger');
+const auth = require('../../middlewares/auth');
 const multer = require('multer');
 const facultyController = require('../../controllers/faculty');
 const { facultyRegisterValidation, facultyLoginValidation } = require("../../validators/facultyValidator");
+
+router.use('/', auth.tokenValidate);
 
 router.get('/search', async (req, res) => {
   try {

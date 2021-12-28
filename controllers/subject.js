@@ -39,7 +39,7 @@ const getAllForAdmin = async (dept) => {
     logger.error(error);
     throw error;
   }
-}
+};
 
 const updateDetails = async (details, condition) => {
   try {

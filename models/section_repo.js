@@ -1,10 +1,18 @@
 const Section = require('./Section');
 
 module.exports = {
-  addBasicDetails: async (details) => {
+  add: async (details) => {
     try {
       const saved_data = await new Section(details).save();
       return saved_data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getAllWithCondition: async (condition) => {
+    try {
+      return await Section.find(condition);
     } catch (error) {
       throw error;
     }
