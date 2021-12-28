@@ -4,7 +4,10 @@ const logger = require('../../helpers/logger');
 const adminController = require('../../controllers/admin');
 const Cookies = require('cookies');
 
-
+router.use('/student', require('./student'));
+router.use('/faculty', require('./faculty'));
+router.use('/department', require('./department'));
+router.use('/subject', require('./subject'));
 
 router.post('/login', async (req, res) => {
   const data = Object.assign({}, req.body);

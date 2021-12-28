@@ -3,7 +3,6 @@ import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
 import InputLabel from "@mui/material/InputLabel";
@@ -12,24 +11,20 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
-import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
 import "./attendance.css";
 // import moment from "moment";
 import {
   getAttendanceSheet,
   postAttendanceSheet,
+  getClasses
 } from "../../services/faculty";
 import { Link, useRouteMatch } from "react-router-dom";
 import Table from "@mui/material/Table";
@@ -44,6 +39,7 @@ import Paper from "@mui/material/Paper";
 import Menu from '@mui/material/Menu';
 import Logout from '@mui/icons-material/Logout';
 import FacultyAppBar from './FacultyAppBar';
+import CSVAttendanceDialog from './CSVAttendanceDialog';
 
 const drawerWidth = 240;
 
@@ -147,62 +143,9 @@ function Attendance() {
   };
   const menuId = "primary-search-account-menu";
 
-  const [classes, setClasses] = useState([
-    {
-      class_id: "F901",
-      subject_name: "Subject 1",
-      section: "F9",
-      all_students: [
-        {
-          roll_no: "101",
-          name: "Gaurav Kumar",
-          is_present: false,
-        },
-        {
-          roll_no: "102",
-          name: "R. Akshaya",
-          is_present: false,
-        },
-        {
-          roll_no: "103",
-          name: "Akshay Jain",
-          is_present: false,
-        },
-        {
-          roll_no: "104",
-          name: "Pooja",
-          is_present: false,
-        },
-      ],
-    },
-    {
-      class_id: "F902",
-      subject_name: "Subject 2",
-      section: "F9",
-      all_students: [
-        {
-          roll_no: "101",
-          name: "Gaurav Kumar",
-          is_present: false,
-        },
-        {
-          roll_no: "102",
-          name: "R. Akshaya",
-          is_present: false,
-        },
-        {
-          roll_no: "103",
-          name: "Akshay Jain",
-          is_present: false,
-        },
-        {
-          roll_no: "104",
-          name: "Pooja",
-          is_present: false,
-        },
-      ],
-    },
-  ]);
+  const [classes, setClasses] = useState([]);
+  const [allClasses, setAllClasses] = useState(null);
+  console.log(allClasses);
 
   const [loading, setLoading] = useState(false);
   const [submitLoad, setSubmitLoad] = useState(false);
@@ -229,6 +172,9 @@ function Attendance() {
     try {
       setLoading(true);
       const { data } = await getAttendanceSheet();
+      const classes_data = await getClasses();
+      console.log(classes_data);
+      setAllClasses(classes_data.data.data.classes);
       setClasses(data);
       console.log(data);
     } catch (error) {
@@ -350,6 +296,15 @@ function Attendance() {
   const closeSnackBar = () => {
     setSnackbar(false);
   };
+
+
+  const onCSVDialogClose = () => {
+    setCSVDialog(false);
+    // assignmentDetails();
+  };
+
+  const [CSVDialog, setCSVDialog] = useState(false);
+
   return (
     <>
       <LoadingOverlay
@@ -423,6 +378,33 @@ function Attendance() {
                     classNamePrefix="MyLoader_"
                     spinner
                   >
+                    {
+                      allClasses && (
+                        <Button
+                          sx={{
+                            maxWidth: "fit-content",
+                            marginRight: "10px",
+                            fontWeight: "bolder",
+                          }}
+                          variant="contained"
+                          onClick={() => {
+                            setCSVDialog(true);
+                          }}
+                          disabled={!allClasses.length}
+                        >
+                          <span
+                            class="material-icons"
+                            style={{
+                              color: "#fff",
+                              marginRight: "5px",
+                            }}
+                          >
+                            cloud_download
+                          </span>
+                          CSV
+                        </Button>
+                      )
+                    }
                     <Button
                       variant="contained"
                       onClick={() => {
@@ -544,6 +526,14 @@ function Attendance() {
             </React.Fragment>
           }
         />
+        {allClasses && allClasses.length && (
+          <CSVAttendanceDialog
+            open={CSVDialog}
+            onClose={onCSVDialogClose}
+            openSnackBar={openSnackBar}
+            classes={allClasses}
+          />
+        )}
       </LoadingOverlay>
     </>
   );

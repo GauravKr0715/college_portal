@@ -1,4 +1,4 @@
-import React , {useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import "./SectionCreate.css"
 
 import Container from '@mui/material/Container';
@@ -26,7 +26,7 @@ import Badge from "@mui/material/Badge";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 
-import { sidebar_admin } from "../../../environments/sidebar_admin";
+import { admin_sidebar_data } from "../../../environments/sidebar_data";
 import { Link, useRouteMatch } from "react-router-dom";
 
 import LoadingOverlay from "react-loading-overlay";
@@ -109,7 +109,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 function Studentnew() {
-    let { url, path } = useRouteMatch();
+  let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
@@ -129,7 +129,7 @@ function Studentnew() {
   };
   const menuId = "primary-search-account-menu";
 
-  
+
   const [select_label, setSelectLabel] = useState("");
   const [selected_class, setSelectedClass] = useState("");
   const [selected_class_idx, setSelectedClassIdx] = useState(-1);
@@ -151,36 +151,36 @@ function Studentnew() {
     setSnackbar(false);
   };
   const [selectedStudents, setSelectedStudents] = useState([]);
-    useEffect(() => {
+  useEffect(() => {
 
-    }, [selectedStudents]);
+  }, [selectedStudents]);
 
-    const [students, setStudents] = useState([
-        {
-            id: 101,
-            name: 'Akshaya',
-            isSelected: false
-        },
-        {
-            id: 102,
-            name: 'Gaurav',
-            isSelected: false
-        },
-        {
-            id: 103,
-            name: 'Akshay',
-            isSelected: false
-        },
-        {
-            id: 104,
-            name: 'Pooja',
-            isSelected: false
-        },
-    ]);
-    const checkIfStudentExists = (given_id) => {
-        return selectedStudents.some(s => s.id == given_id);
-    }
-    const[Name,setName]=useState("false")
+  const [students, setStudents] = useState([
+    {
+      id: 101,
+      name: 'Akshaya',
+      isSelected: false
+    },
+    {
+      id: 102,
+      name: 'Gaurav',
+      isSelected: false
+    },
+    {
+      id: 103,
+      name: 'Akshay',
+      isSelected: false
+    },
+    {
+      id: 104,
+      name: 'Pooja',
+      isSelected: false
+    },
+  ]);
+  const checkIfStudentExists = (given_id) => {
+    return selectedStudents.some(s => s.id == given_id);
+  }
+  const [Name, setName] = useState("false")
   return (
     <>
       <LoadingOverlay
@@ -209,8 +209,8 @@ function Studentnew() {
             </Typography> */}
               <Box sx={{ flexGrow: 1 }}></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
-  
-            
+
+
               </Box>
             </Toolbar>
           </AppBar> */
@@ -230,7 +230,7 @@ function Studentnew() {
             </DrawerHeader>
             {/* <Divider /> */}
             <List>
-              {sidebar_admin.map((section, idx) => (
+              {admin_sidebar_data.map((section, idx) => (
                 <Link to={`${curr_url}${section.link}`}>
                   <ListItem button key={section.text}>
                     <ListItemIcon>
@@ -246,77 +246,77 @@ function Studentnew() {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-           
-          <div className="frames">
-          <div className="ta">
-             <div className="btn-1"><Link to="/admin/SectionTable" style={{textDecoration:"none",color:"beige"}} >Back</Link></div>
-             <div className="btn-2"><Link to="" style={{textDecoration:"none",color:"beige"}} >Save</Link></div>
-             </div>
-             </div>
-  
-          <div className="frame">
-          <div className="frame-1">
-             <div className="check">
-               <input type="checkbox" id="ch" />
-  
-              <input type="text" placeholder="Starting Roll no...." id="S" />
-              <input type="text" placeholder="Starting Roll no...." id="E" />
-  
-             
-             </div>
-             <div className="space">
-             <ul>
-             {
-                 students && students.map((student) => (
-                  <li> <input type="checkbox" id="ch" checked={student.isSelected} onChange={(e)=>{
-                      if(e.target.checked) {
-                          // add this student to the selected list
-                          let new_array = [...selectedStudents, student];
-                          setSelectedStudents(new_array)
-                          student.isSelected = true;
-                      } else {
-                          // remove this studenet from the selected list
-                          let new_array = selectedStudents.filter(s => s.id != student.id);
-                          setSelectedStudents(new_array);
-                          student.isSelected = false;
-                      }
-                  }}/>   <p>{student.name}</p></li>
-                  ))
-              }
-       
-             </ul>
-             
-             </div>
-          </div>
-          <div className="frame-2">
-          <div className="f">
-          <br></br>
-          <ul style={{listStyle:"none" }}>
-          {
-              selectedStudents && selectedStudents.map((student) => (                
-               <li >
-               <div style={{ display:"flex", flexDirection:"row"}} className="div">
-                 <p>{student.name}</p>
-               
-               <button onClick={() => {
-                  let new_array = selectedStudents.filter(s => s.id != student.id);
-                  setSelectedStudents(new_array);
-                  students.filter(s => s.id == student.id)[0].isSelected = false;
-               }}>Delete</button>
-               </div>
-               </li>
-               ))
-           }
-    
-          </ul>
-          </div>
-          
-          </div>
-          </div>
-        
-          
-          
-     </Box>
+
+            <div className="frames">
+              <div className="ta">
+                <div className="btn-1"><Link to="/admin/SectionTable" style={{ textDecoration: "none", color: "beige" }} >Back</Link></div>
+                <div className="btn-2"><Link to="" style={{ textDecoration: "none", color: "beige" }} >Save</Link></div>
+              </div>
+            </div>
+
+            <div className="frame">
+              <div className="frame-1">
+                <div className="check">
+                  <input type="checkbox" id="ch" />
+
+                  <input type="text" placeholder="Starting Roll no...." id="S" />
+                  <input type="text" placeholder="Starting Roll no...." id="E" />
+
+
+                </div>
+                <div className="space">
+                  <ul>
+                    {
+                      students && students.map((student) => (
+                        <li> <input type="checkbox" id="ch" checked={student.isSelected} onChange={(e) => {
+                          if (e.target.checked) {
+                            // add this student to the selected list
+                            let new_array = [...selectedStudents, student];
+                            setSelectedStudents(new_array)
+                            student.isSelected = true;
+                          } else {
+                            // remove this studenet from the selected list
+                            let new_array = selectedStudents.filter(s => s.id != student.id);
+                            setSelectedStudents(new_array);
+                            student.isSelected = false;
+                          }
+                        }} />   <p>{student.name}</p></li>
+                      ))
+                    }
+
+                  </ul>
+
+                </div>
+              </div>
+              <div className="frame-2">
+                <div className="f">
+                  <br></br>
+                  <ul style={{ listStyle: "none" }}>
+                    {
+                      selectedStudents && selectedStudents.map((student) => (
+                        <li >
+                          <div style={{ display: "flex", flexDirection: "row" }} className="div">
+                            <p>{student.name}</p>
+
+                            <button onClick={() => {
+                              let new_array = selectedStudents.filter(s => s.id != student.id);
+                              setSelectedStudents(new_array);
+                              students.filter(s => s.id == student.id)[0].isSelected = false;
+                            }}>Delete</button>
+                          </div>
+                        </li>
+                      ))
+                    }
+
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+
+
+
+          </Box>
         </Box>
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}

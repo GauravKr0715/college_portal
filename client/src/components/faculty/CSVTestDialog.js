@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -85,7 +85,7 @@ function CSVTestDialog(props) {
           }}
         >
           <FormControlLabel value="1" control={<Radio />} label="All Students" />
-          <FormControlLabel value="2" control={<Radio  disabled={props.no_of_submissions == 0} />} label="Students with Submission" />
+          <FormControlLabel value="2" control={<Radio disabled={props.no_of_submissions == 0} />} label="Students with Submission" />
           <FormControlLabel value="3" control={<Radio />} label="Students without Submission" />
         </RadioGroup>
       </DialogContent>

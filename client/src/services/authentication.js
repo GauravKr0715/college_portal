@@ -11,6 +11,7 @@ const StudentLoginURL = '/student/login';
 const StudentLogoutURL = '/student/logout';
 const AdminSessionValidateURL = '/admin/validateSession';
 const AdminLoginURL = '/admin/login';
+const AdminLogoutURL = '/admin/logout';
 
 export const validateFacultySession = () => {
   return axios.get(environment.apiUrl + base_url + facultySessionValidateURL, {
@@ -58,6 +59,12 @@ export const logoutStudent = () => {
 
 export const loginAdmin = (userID, password) => {
   return axios.post(environment.apiUrl + base_url + AdminLoginURL, { uni_id: userID, password: password }, {
+    withCredentials: true
+  })
+}
+
+export const logoutAdmin = () => {
+  return axios.put(environment.apiUrl + base_url + AdminLogoutURL, {}, {
     withCredentials: true
   })
 }

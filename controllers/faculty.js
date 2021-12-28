@@ -1,6 +1,7 @@
 const faculty_repo = require('../models/faculty_repo');
 const student_repo = require('../models/student_repo');
 const attendance_repo = require('../models/attendance_repo');
+const department_repo = require('../models/department_repo');
 const section_repo = require('../models/section_repo');
 const logger = require('../helpers/logger');
 const util = require('../helpers/utils');
@@ -351,6 +352,39 @@ const removeLinkFromClass = async (class_id, uni_id) => {
   }
 }
 
+const getFacultyByID = async (uni_id) => {
+  try {
+    const data = await faculty_repo.fetchOneCertainFields("uni_id full_name email mobile dept yoj", {
+      uni_id
+    });
+    let faculty_data = {};
+    if (data) {
+      faculty_data.uni_id = data.uni_id;
+      faculty_data.full_name = data.full_name;
+      faculty_data.email = data.email;
+      faculty_data.mobile = data.mobile;
+      faculty_data.dept = data.dept;
+      faculty_data.yoj = data.yoj;
+      const dept_data = await department_repo.fetchOneCertainFields("name", {
+        code: faculty_data.dept
+      });
+      faculty_data.dept_name = dept_data.name;
+      return {
+        success: true,
+        message: 'Data retrived succeffully',
+        faculty_data
+      }
+    }
+    return {
+      success: false,
+      message: 'No Faculty found. Try again with different ID',
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+}
+
 module.exports = {
   addDetails,
   getBasicDetails,
@@ -361,5 +395,6 @@ module.exports = {
   getProfileDetails,
   addNewLink,
   applyLink,
-  removeLinkFromClass
+  removeLinkFromClass,
+  getFacultyByID
 }

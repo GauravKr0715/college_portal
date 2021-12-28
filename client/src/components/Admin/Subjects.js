@@ -18,10 +18,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
-import { faculty_sidebar_data } from "../../environments/sidebar_data";
-import "./attendance.css";
-import moment from "moment";
-import { getNotesSheet } from "../../services/faculty";
+import { admin_sidebar_data } from "../../environments/sidebar_data";
+// import "./attendance.css";
+// import './assignment.css';
+import { getSubjectsWithDepartmentID, getDepartments } from "../../services/admin";
 import { Link, useRouteMatch } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -31,8 +31,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import LoadingOverlay from "react-loading-overlay";
 import Paper from "@mui/material/Paper";
-import NewNotesDialog from "./NewNotesDialog";
-import FacultyAppBar from './FacultyAppBar';
+// import NewSubjectDialog from "./NewSubjectDialog";
+import AdminAppBar from './AdminAppBar';
+import { GlobalVariables } from '../../environments/global_data';
+import NewSubjectDialog from './NewSubjectDialog';
 
 const drawerWidth = 240;
 
@@ -110,7 +112,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Notes() {
+function Subject() {
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
@@ -118,6 +120,11 @@ function Notes() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const profileOpen = Boolean(anchorEl);
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -135,56 +142,72 @@ function Notes() {
   const [submitLoad, setSubmitLoad] = useState(false);
 
   const [select_label, setSelectLabel] = useState("");
+
+  const [selected_semester, setSelectedSemester] = useState(0);
+
+  const handleSemesterChange = (e) => {
+    setSelectedSemester(e.target.value);
+    if (e.target.value === 0) {
+      setFilteredSubjects(allSubjects)
+    } else {
+      setFilteredSubjects(allSubjects.filter(sub => sub.sem === e.target.value));
+    }
+  }
   // const [selected_class, setSelectedClass] = useState("");
   // const [selected_class_idx, setSelectedClassIdx] = useState(-1);
 
-  const handleChange = (event) => {
-    setFilteredNotes(allNotes.filter(note => note.class_id === event.target.value));
-    console.log(filteredNotes);
+  const handleDepartmentChange = (event) => {
+    setFilteredSubjects(allSubjects.filter(subject => subject.dept === event.target.value));
     setSelectLabel(event.target.value);
+    subjectsSheet(event.target.value);
   };
 
   const [snackbar, setSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
-  const [allNotes, setAllNotes] = useState([]);
-  const [filteredNotes, setFilteredNotes] = useState([]);
-  const [classes, setClasses] = useState([]);
+  const [allSubjects, setAllSubjects] = useState([]);
+  const [filteredSubjects, setFilteredSubjects] = useState([]);
+  const [departments, setDepartments] = useState([]);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const onDialogClose = () => {
     setDialogOpen(false);
-    notesSheet();
+    subjectsSheet();
   }
 
-  const activateLoading = () => {
-    setLoading(true);
-  }
-
-  const deactivateLoading = () => {
+  const getDepartmentList = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getDepartments();
+      setDepartments(data.data);
+    } catch (error) {
+      console.log(error);
+      openSnackBar("Some error occured");
+      setLoading(false);
+    }
     setLoading(false);
   }
 
-  const notesSheet = async () => {
+  const subjectsSheet = async (dept_id) => {
     try {
       setLoading(true);
-      const { data } = await getNotesSheet();
-      setAllNotes(data.final_result.notes_data);
-      setFilteredNotes(data.final_result.notes_data);
-      setClasses(data.final_result.faculty_data.classes);
+      const { data } = await getSubjectsWithDepartmentID(dept_id);
+      setAllSubjects(data.final_result.subjects_data);
+      setFilteredSubjects(data.final_result.subjects_data);
+      setSelectedSemester(0);
       console.log(data);
     } catch (error) {
       console.log(error);
       openSnackBar("Some error occured");
       setLoading(false);
     }
-
     setLoading(false);
   };
 
   useEffect(() => {
-    notesSheet();
+    getDepartmentList();
+    // subjectsSheet();
   }, []);
 
   const openSnackBar = (msg) => {
@@ -200,11 +223,11 @@ function Notes() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Notes Sheet..."
+        text="Loading Subjects Sheet..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <FacultyAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
+          <AdminAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -221,7 +244,7 @@ function Notes() {
             </DrawerHeader>
             {/* <Divider /> */}
             <List>
-              {faculty_sidebar_data.map((section, idx) => (
+              {admin_sidebar_data.map((section, idx) => (
                 <Link to={`${curr_url}${section.link}`}>
                   <ListItem button key={section.text}>
                     <ListItemIcon>
@@ -241,22 +264,25 @@ function Notes() {
             <div className="att-container">
               <div className="options-container">
                 <div className="selector">
-                  {classes.length > 0 && (
-                    <FormControl fullWidth>
+                  {departments.length > 0 && (
+                    <FormControl
+                      fullWidth
+                    >
                       <InputLabel id="class_select_label">
-                        Select Class
+                        Select Department
                       </InputLabel>
                       <Select
                         labelId="class_select_label"
                         id="class_select"
                         value={select_label}
-                        label="Select Class"
-                        onChange={handleChange}
+                        label="Select Department"
+                        onChange={handleDepartmentChange}
+                        placeholder="Select Department"
                       >
-                        {classes.map((c, idx) => (
+                        {departments.map((dept) => (
                           <MenuItem
-                            value={c.class_id}
-                          >{`${c.subject_name} [${c.section}]`}</MenuItem>
+                            value={dept.code}
+                          >{`${dept.name}`}</MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -273,84 +299,119 @@ function Notes() {
                       onClick={() => {
                         setDialogOpen(true);
                       }}
-                      sx={{
-                        fontWeight: "bolder",
-                      }}
                       height="auto"
+                      sx={{
+                        fontWeight: 'bolder'
+                      }}
                     >
-                      <span class="material-icons">add</span> New Notes
+                      <span class="material-icons">add</span> New Subject
                     </Button>
                   </StyledLoader>
                 </div>
               </div>
-              <div className="list-container">
-                {filteredNotes.length > 0 ? (
-                  <TableContainer
-                    sx={{
-                      backgroundColor: "#fff !important",
-                    }}
-                    component={Paper}
+              <div className="options-container">
+                <div className="selector">
+                  <FormControl
+                    fullWidth
                   >
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Title
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Section
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Subject
-                          </TableCell>
-                          <TableCell
-                            sx={{
-                              fontWeight: "bold !important",
-                              fontSize: "1rem !important",
-                            }}
-                          >
-                            Created At
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {filteredNotes.map((note) => (
-                          <TableRow key={note.uid}>
-                            <TableCell component="th" scope="row">
-                              <Link
-                                to={`${curr_url}/notes/${note.uid}`}
+                    <InputLabel id="class_select_label">
+                      Select Semester
+                    </InputLabel>
+                    <Select
+                      labelId="class_select_label"
+                      id="class_select"
+                      value={selected_semester}
+                      label="Select Department"
+                      onChange={handleSemesterChange}
+                      disabled={loading}
+                    >
+                      <MenuItem
+                        value={0}>
+                        All
+                      </MenuItem>
+                      {GlobalVariables.semesters.map((sem) => (
+                        <MenuItem
+                          value={sem.value}
+                        >{`${sem.key}`}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+
+              </div>
+              <div className="list-container">
+                {
+                  departments && select_label !== "" ?
+                    filteredSubjects.length > 0 ? (
+                      <TableContainer
+                        sx={{
+                          backgroundColor: "#fff !important",
+                        }}
+                        component={Paper}
+                      >
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold !important",
+                                  fontSize: "1rem !important",
+                                }}
                               >
-                                <div className={"clickable-title"}>
-                                  {note.title}
-                                </div>
-                              </Link>
-                            </TableCell>
-                            <TableCell>{note.section}</TableCell>
-                            <TableCell>{note.subject}</TableCell>
-                            <TableCell>{moment(note.createdAt * 1000).format('llll')}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                ) : (
-                  <div className="no-class">No Notes to show... </div>
-                )}
+                                Name
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold !important",
+                                  fontSize: "1rem !important",
+                                }}
+                              >
+                                Semester
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold !important",
+                                  fontSize: "1rem !important",
+                                }}
+                              >
+                                Department
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {filteredSubjects.map((subject) => (
+                              <TableRow key={subject.uid}>
+                                <TableCell component="th" scope="row">
+                                  <Link
+                                    to={`${curr_url}/subjects/${subject.uid}`}
+                                  >
+                                    <div
+                                      className={"clickable-title multiline-head"}
+                                    >
+                                      {subject.name}
+                                      <div className="small-data">
+                                        {subject.sem}{`${GlobalVariables.getProperSuffix(subject.sem)} sem`}
+                                      </div>
+                                    </div>
+                                  </Link>
+                                </TableCell>
+                                <TableCell>
+                                  {subject.code}
+
+                                </TableCell>
+                                <TableCell>
+                                  {GlobalVariables.subject_types[subject.type]}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    ) : (
+                      <div className="no-class">No Subjects to show... </div>
+                    ) : (
+                      <div className="no-class">Select a department first... </div>
+                    )}
               </div>
             </div>
           </Box>
@@ -368,11 +429,9 @@ function Notes() {
             </React.Fragment>
           }
         />
-        <NewNotesDialog
+        <NewSubjectDialog
           open={dialogOpen}
           onClose={onDialogClose}
-          activateLoading={activateLoading}
-          deactivateLoading={deactivateLoading}
           openSnackBar={openSnackBar}
         />
       </LoadingOverlay>
@@ -380,4 +439,4 @@ function Notes() {
   );
 }
 
-export default Notes;
+export default Subject;
