@@ -9,6 +9,20 @@ export const GlobalVariables = {
     link.click();
   },
 
+  batch_list: [
+    '2020',
+    '2021',
+    '2022',
+    '2023',
+    '2024',
+    '2025',
+    '2026',
+    '2027',
+    '2028',
+    '2029',
+    '2030',
+  ],
+
   subject_types: {
     1: 'Theory',
     2: 'Lab',

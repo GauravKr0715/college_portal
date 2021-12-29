@@ -5,6 +5,7 @@ const department_repo = require('../models/department_repo');
 const faculty_controller = require('../controllers/faculty');
 const logger = require('../helpers/logger');
 const { default_section_time_table } = require('../global/data');
+const student_repo = require('../models/student_repo');
 
 const addDetails = async (details) => {
   try {
@@ -73,7 +74,31 @@ const getFacultiesAndSubjectsList = async (uid) => {
     logger.error(error);
     throw error;
   }
-}
+};
+
+const getEligibleStudentsForSection = async (yop) => {
+  try {
+    const data = await student_repo.fetchAllByConditionCertainFields("roll_no full_name course", {
+      yop, section: null
+    });
+
+    let final_result = data.map(student => {
+      return {
+        ...student._doc,
+        id: student.roll_no
+      }
+    })
+
+    return {
+      success: true,
+      message: 'List retrieved Successfully',
+      eligible_students: final_result
+    };
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
 
 const addClasses = async (classes, uid) => {
   try {
@@ -106,12 +131,12 @@ const addClasses = async (classes, uid) => {
   }
 }
 
-const updateTimeTable = async (time_table, section) => {
+const updateTimeTable = async (time_table, uid) => {
 
   try {
 
     // for each changed slot, update that slot for prev teacher (if exists) and then update new value to new teacher
-    const data = await section_repo.fetchCertainFieldsByCondition("time_table", { name: section });
+    const data = await section_repo.fetchCertainFieldsByCondition("time_table name", { uid });
     let old_time_table = data.time_table;
     // console.log(data.time_table[0][0]);
     // console.log(time_table);
@@ -119,6 +144,7 @@ const updateTimeTable = async (time_table, section) => {
     let outer_array = time_table.map(async (day) => {
       let inner_array = day.map(async (slot) => {
         if (slot.is_changed) {
+          delete (slot.is_changed)
           // get old teacher for that slot and update their slot, if exists
           let slot_id = slot.slot_id;
           let day_idx = +slot_id.substring(1, 2) - 1;
@@ -135,7 +161,7 @@ const updateTimeTable = async (time_table, section) => {
               subject_id: "UND123",
               subject_name: "Unalloted",
               subject_type: 0,
-              section: `${section}`
+              section: "ABCXYZ"
             }
             await faculty_controller.updateSlot(old_faculty_id, free_slot, day_idx, slot_idx);
           }
@@ -148,7 +174,7 @@ const updateTimeTable = async (time_table, section) => {
               subject_id: slot.subject_id,
               subject_name: slot.subject_name,
               subject_type: slot.subject_type,
-              section: `${section}`
+              section: `${data.name}`
             }
             await faculty_controller.updateSlot(new_faculty_id, updated_slot, day_idx, slot_idx);
           }
@@ -162,7 +188,7 @@ const updateTimeTable = async (time_table, section) => {
 
     let outer_promise_resolve = await Promise.all(outer_array);
     // set time table for the section - last step
-    await section_repo.update({ time_table }, { name: section });
+    await section_repo.update({ time_table }, { uid });
 
     return {
       success: true,
@@ -198,13 +224,39 @@ const getAllForAdmin = async (dept) => {
     logger.error(error);
     throw error;
   }
+};
+
+const saveStudentsForSection = async (details, uid) => {
+  try {
+    const section_data = await section_repo.fetchCertainFieldsByCondition("name", { uid });
+
+    const inter_array = details.selected_students.map(async r_no => {
+      await student_repo.updateOne({
+        section: section_data.name
+      }, {
+        roll_no: r_no
+      });
+    });
+
+    await Promise.all(inter_array);
+
+    return {
+      success: true,
+      message: 'Students added succefully'
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
   getSectionDetails,
   getFacultiesAndSubjectsList,
+  getEligibleStudentsForSection,
   addDetails,
   addClasses,
   updateTimeTable,
-  getAllForAdmin
+  getAllForAdmin,
+  saveStudentsForSection
 }

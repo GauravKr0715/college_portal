@@ -12,11 +12,15 @@ const addSubjectURL = '/subject/add';
 const addSectionURL = '/section/addBasicDetails';
 const searchStudentURL = '/student/search';
 const addStudentURL = '/student/register';
+const bulkStudentRegisterURL = '/student/bulkRegister';
 const searchFacultyURL = '/faculty/search';
 const addFacultyURL = '/faculty/register';
 const sectionDataURL = '/section/details';
 const subjectsAndFacultiesURL = '/section/facandsubslist';
 const saveClassesForSectionURL = '/section/addClasses';
+const saveTimeTableForSectionURL = '/section/saveTimeTable';
+const getStudentsForSectionURL = '/section/getStudentsList';
+const saveStudentsListURL = '/section/saveStudents';
 
 export const getAdminBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
@@ -72,6 +76,12 @@ export const addNewStudent = (details) => {
   });
 }
 
+export const bulkStudents = (details) => {
+  return axios.post(environment.apiUrl + base_url + bulkStudentRegisterURL, details, {
+    withCredentials: true
+  });
+}
+
 export const searchFacultyByID = (faculty_id) => {
   return axios.get(environment.apiUrl + base_url + searchFacultyURL + '?id=' + faculty_id, {
     withCredentials: true
@@ -102,4 +112,22 @@ export const saveClassesForSection = (details, id) => {
   });
 }
 
+export const saveTimeTableForSection = (time_table, id) => {
+  return axios.put(environment.apiUrl + base_url + saveTimeTableForSectionURL + '?id=' + id, {
+    time_table
+  }, {
+    withCredentials: true
+  });
+}
 
+export const getStudentsList = (batch) => {
+  return axios.get(environment.apiUrl + base_url + getStudentsForSectionURL + '?batch=' + batch, {
+    withCredentials: true
+  })
+}
+
+export const saveStudentsList = (details, id) => {
+  return axios.put(environment.apiUrl + base_url + saveStudentsListURL + '?id=' + id, details, {
+    withCredentials: true
+  });
+}

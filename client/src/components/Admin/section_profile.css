@@ -52,3 +52,7 @@
   font-weight: bolder;
   margin-bottom: 10px;
 }
+
+.page3-content {
+  min-width: 90%;
+}

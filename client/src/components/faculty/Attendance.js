@@ -200,30 +200,27 @@ function Attendance() {
     setCheck(state);
     setClasses((c) => {
       return c.map((cl, idx) => {
-       /*  if (idx !== selected_class_idx) {
-          alert(state)
-          console.log(state)
+        if (idx != selected_class_idx) {
           return cl;
-         
+
         } else {
-           */
           return {
             ...cl,
             all_students: cl.all_students.map((student) => {
               return {
-               
+
                 ...student,
                 is_present: state,
               };
             }),
-            
+
           };
-        })
-        console.log(c)
-      }
-       
-      );
-    
+        }
+      })
+    }
+
+    );
+
   };
 
   const handleStudentIndCheck = (event, r_no) => {
@@ -283,6 +280,7 @@ function Attendance() {
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
   const handleChange = (event) => {
+    setCheck(classes[event.target.value.split(":")[1]].all_students.some(student => student.is_present));
     setSelectedClass(event.target.value.split(":")[0]);
     setSelectLabel(event.target.value);
     setSelectedClassIdx(event.target.value.split(":")[1]);

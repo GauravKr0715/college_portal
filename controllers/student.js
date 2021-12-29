@@ -70,6 +70,7 @@ const saveAllStudents = async (path) => {
       student.display_password = Math.random().toString(36).slice(-8);
       const salt = await bcrypt.genSalt(15);
       student.password = await bcrypt.hash(student.display_password, salt);
+      student.createdAt = Math.floor(Date.now() / 1000);
 
       const data = await student_repo.add(student);
 

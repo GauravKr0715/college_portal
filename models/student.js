@@ -31,7 +31,8 @@ const studentSchema = mongoose.Schema({
     type: String
   },
   section: {
-    type: String
+    type: String,
+    default: null
   },
   createdAt: {
     type: String,

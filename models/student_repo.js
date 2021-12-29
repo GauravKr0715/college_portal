@@ -42,5 +42,21 @@ module.exports = {
     } catch (error) {
       throw error;
     }
-  }
+  },
+
+  fetchAllByConditionCertainFields: async (field_string, condition) => {
+    try {
+      return await Student.find(condition).select(field_string);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  updateOne: async (details, condition) => {
+    try {
+      return await Student.findOneAndUpdate(condition, details);
+    } catch (error) {
+      throw error;
+    }
+  },
 }

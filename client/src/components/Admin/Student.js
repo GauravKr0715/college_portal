@@ -41,7 +41,7 @@ import { environment } from "../../environments/environment";
 import AdminAppBar from "./AdminAppBar";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
-import { searchStudentByID } from "../../services/admin";
+import { searchStudentByID, bulkStudents } from "../../services/admin";
 import NewStudentDialog from "./NewStudentDialog";
 
 const style = {
@@ -211,6 +211,27 @@ function Student() {
   const [submitLoad, setSubmitLoad] = useState(false);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  const [file, setFile] = useState(null);
+
+  const bulkRegisterStudents = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+      if (file === null || file === "") {
+        setError(true);
+      } else {
+        var formData = new FormData();
+        formData.append("file", document.getElementById('attachments').files[0]);
+        const { data } = await bulkStudents(formData);
+        openSnackBar(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+    setLoading(false);
+  }
 
   const onDialogClose = () => {
     setDialogOpen(false);
@@ -414,17 +435,47 @@ function Student() {
                 <br></br>
                 <p style={{ fontSize: "1.6rem", fontWeight: "bold" }}>OR</p>
                 <br />
-                <Button
-                  variant="contained"
-                  sx={{
-                    fontWeight: "bolder",
-                  }} /* onclick={{()=>{return <>
-                    <input id="csvFileInput" type="file" accept=".csv"/>
-                    </>
-                }} */
+                <div
+                  style={{
+                    position: "relative",
+                    margin: "0 15px",
+                    height: "50px",
+                  }}
                 >
-                  Bulk Import
-                </Button>
+                  <Button
+                    variant="contained"
+                    disabled={loading}
+                    sx={{
+                      fontWeight: "bolder",
+                    }}
+                  >
+                    Bulk Import
+                  </Button>
+
+                  <input
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      left: "0",
+                      height: "50px",
+                      width: "50%",
+                      opacity: "0",
+                      cursor: "pointer",
+                    }}
+                    sx={{
+                      margin: "15px",
+                    }}
+                    type="file"
+                    name="attachments"
+                    id="attachments"
+                    onChange={(e) => {
+                      setFile(e.target.files[0]);
+                      bulkRegisterStudents();
+                      console.log(e.target.files);
+                    }}
+                  />
+                </div>
+
               </div>
             </Box>
           </Box>
