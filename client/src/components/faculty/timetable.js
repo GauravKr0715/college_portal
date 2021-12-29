@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./timetable.css"
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -26,46 +25,25 @@ import Snackbar from "@mui/material/Snackbar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import "./attendance.css";
-// import moment from "moment";
-import {
-  getAttendanceSheet,
-  postAttendanceSheet,
-} from "../../services/faculty";
+import './assignment.css';
+import moment from "moment";
+import { getAssignmentSheet } from "../../services/faculty";
 import { Link, useRouteMatch } from "react-router-dom";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import Checkbox from "@mui/material/Checkbox";
 import LoadingOverlay from "react-loading-overlay";
+import Paper from "@mui/material/Paper";
+import NewAssignmentDialog from "./NewAssignmentDialog";
+import Menu from '@mui/material/Menu';
+import Logout from '@mui/icons-material/Logout';
 import FacultyAppBar from './FacultyAppBar';
-
-
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
-
-function createData(name, calories, fat, carbs, protein, six, seven, eight) {
-  return { name, calories, fat, carbs, protein, six, seven, eight };
-}
-
-const rows = [
-  createData('Monday', "ADBA", "ACN", "", "ST", "CNS", "GROUP B CNS", "GROUP A ST"),
-  createData('Tuesday', "", "", "", "", "", "", ""),
-  createData('Wednesday', "", "", "", "", "", "", ""),
-  createData('Thursday', "", "", "", "", "", "", ""),
-  createData('Friday', "", "", "", "", "", "", ""),
-  createData('Saturday', "", "", "", "", "", "", ""),
-
-];
-
+import { fontWeight } from "@mui/system";
 
 const drawerWidth = 240;
 
@@ -143,13 +121,19 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Attendance() {
+function Assignment() {
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
+
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const profileOpen = Boolean(anchorEl);
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -163,193 +147,42 @@ function Attendance() {
     setOpen(false);
   };
   const menuId = "primary-search-account-menu";
-
-  const [classes, setClasses] = useState([
-    {
-      class_id: "F901",
-      subject_name: "Subject 1",
-      section: "F9",
-      all_students: [
-        {
-          roll_no: "101",
-          name: "Gaurav Kumar",
-          is_present: false,
-        },
-        {
-          roll_no: "102",
-          name: "R. Akshaya",
-          is_present: false,
-        },
-        {
-          roll_no: "103",
-          name: "Akshay Jain",
-          is_present: false,
-        },
-        {
-          roll_no: "104",
-          name: "Pooja",
-          is_present: false,
-        },
-      ],
-    },
-    {
-      class_id: "F902",
-      subject_name: "Subject 2",
-      section: "F9",
-      all_students: [
-        {
-          roll_no: "101",
-          name: "Gaurav Kumar",
-          is_present: false,
-        },
-        {
-          roll_no: "102",
-          name: "R. Akshaya",
-          is_present: false,
-        },
-        {
-          roll_no: "103",
-          name: "Akshay Jain",
-          is_present: false,
-        },
-        {
-          roll_no: "104",
-          name: "Pooja",
-          is_present: false,
-        },
-      ],
-    },
-  ]);
-
   const [loading, setLoading] = useState(false);
   const [submitLoad, setSubmitLoad] = useState(false);
 
-  const postAttendance = async (details) => {
-    try {
-      setLoading(true);
-      setSubmitLoad(true);
-      const { data } = await postAttendanceSheet(details);
-      console.log(data);
-      openSnackBar(data.message);
-    } catch (error) {
-      console.log(error);
-      openSnackBar("Some error occured");
-      setLoading(false);
-      setSubmitLoad(false);
-    }
-
-    setLoading(false);
-    setSubmitLoad(false);
-  };
-
-  const attendanceSheet = async () => {
-    try {
-      setLoading(true);
-      const { data } = await getAttendanceSheet();
-      setClasses(data);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-      openSnackBar("Some error occured");
-      setLoading(false);
-    }
-
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    attendanceSheet();
-  }, []);
-
-  useEffect(() => { }, [classes]);
-
-  const [check, setCheck] = useState(false);
-
-  const handleStudentAllCheck = (e) => {
-    const state = e.target.checked;
-    alert(state);
-    setCheck(state);
-    setClasses((c) => {
-      return c.map((cl, idx) => {
-        if (idx !== selected_class_idx) {
-          return cl;
-        } else {
-          return {
-            ...cl,
-            all_students: cl.all_students.map((student) => {
-              return {
-                ...student,
-                is_present: state,
-              };
-            }),
-          };
-        }
-      });
-    });
-  };
-
-  const handleStudentIndCheck = (event, r_no) => {
-    const state = event.target.checked;
-    let idx = classes[selected_class_idx].all_students.findIndex(
-      (student) => student.roll_no === r_no
-    );
-    let new_array = classes[selected_class_idx].all_students;
-    new_array[idx] = { ...new_array[idx], is_present: state };
-
-    setClasses((c) => {
-      return c.map((cl, idx) => {
-        if (idx !== selected_class_idx) {
-          return cl;
-        } else {
-          return {
-            class_id: cl.class_id,
-            subject_name: cl.subject_name,
-            section: cl.section,
-            all_students: new_array,
-          };
-        }
-      });
-    });
-    // classes[selected_class_idx].all_students = new_array;
-
-    // classes[selected_class_idx].all_students = classes[
-    //   selected_class_idx
-    // ].all_students.map((student) => {
-    //   if (student.roll_no === r_no) {
-    //     return {
-    //       ...student,
-    //       is_present: state,
-    //     };
-    //   } else {
-    //     return student;
-    //   }
-    // });
-    // if (state) {
-    //   // added to list
-    //   classes[selected_class_idx].present_students.push(r_no);
-    // } else {
-    //   // removed from list
-    //   classes[selected_class_idx].present_students = classes[
-    //     selected_class_idx
-    //   ].present_students.filter((student) => student.roll_no !== r_no);
-    // }
-
-    // setClasses(classes);
-    console.log(classes[selected_class_idx]);
-  };
-
   const [select_label, setSelectLabel] = useState("");
-  const [selected_class, setSelectedClass] = useState("");
-  const [selected_class_idx, setSelectedClassIdx] = useState(-1);
+  // const [selected_class, setSelectedClass] = useState("");
+  // const [selected_class_idx, setSelectedClassIdx] = useState(-1);
+
+  const handleChange = (event) => {
+    setFilteredAssignments(allAssignments.filter(assignment => assignment.class_id === event.target.value));
+    console.log(filteredAssignments);
+    setSelectLabel(event.target.value);
+  };
+
   const [snackbar, setSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("Test Message");
 
-  const handleChange = (event) => {
-    setSelectedClass(event.target.value.split(":")[0]);
-    setSelectLabel(event.target.value);
-    setSelectedClassIdx(event.target.value.split(":")[1]);
-  };
+  const [allAssignments, setAllAssignments] = useState([]);
+  const [filteredAssignments, setFilteredAssignments] = useState([]);
+  const [classes, setClasses] = useState([]);
 
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
+  const onDialogClose = () => {
+    setDialogOpen(false);
+    
+  }
+
+  const activateLoading = () => {
+    setLoading(true);
+  }
+
+  const deactivateLoading = () => {
+    setLoading(false);
+  }
+
+  
   const openSnackBar = (msg) => {
     setSnackbarMessage(msg);
     setSnackbar(true);
@@ -358,12 +191,27 @@ function Attendance() {
   const closeSnackBar = () => {
     setSnackbar(false);
   };
+
+  function createData(one, two, three, four, five, six, seven, eight) {
+    return { one, two, three, four, five, six, seven, eight };
+  }
+  
+  const rows = [
+    createData('Monday', "ADBA", "ACN", "", "ST", "CNS", "GROUP B CNS", "GROUP A ST"),
+    createData('Tuesday', "", "", "", "", "", "", ""),
+    createData('Wednesday', "", "", "", "", "", "", ""),
+    createData('Thursday', "", "", "", "", "", "", ""),
+    createData('Friday', "", "", "", "", "", "", ""),
+    createData('Saturday', "", "", "", "", "", "", ""),
+  
+  ];
+
   return (
     <>
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Attendance Sheet..."
+        text="Loading Time Table..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -400,42 +248,39 @@ function Attendance() {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <DrawerHeader />
-            <TableContainer component={Paper} style={{ marginTop: 60 }}>
-              <Table className={classes.table} aria-label="simple table" style={{ backgroundColor: "white" }}>
-                <TableHead style={{ fontSize: 50, fontWeight: "bold" }}>
-                  <TableRow >
-                    <TableCell>   </TableCell>
-                    <TableCell align="right">09:10-10:05</TableCell>
-                    <TableCell align="right">10:05-11:00</TableCell>
-                    <TableCell align="right">Lunch-Time</TableCell>
-                    <TableCell align="right">11:30-12:25</TableCell>
-                    <TableCell align="right">12:25-01:20</TableCell>
-                    <TableCell align="right">01:20-02:15</TableCell>
-                    <TableCell align="right">02:15-03:10</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map((row) => (
-                    <TableRow key={row.name}>
-                      <TableCell component="th" scope="row" style={{ fontSize: 23, fontWeight: 60 }}>
-                        {row.name}
-                      </TableCell>
+          <DrawerHeader />
+          <Table >
+          <TableHead>
+            <TableRow>
+            <TableCell>   </TableCell>
+            <TableCell sx={{ fontWeight:'bold'}} >09:10-10:05</TableCell>
+            <TableCell sx={{ fontWeight:'bold'}} >10:05-11:00</TableCell>
+            <TableCell sx={{ fontWeight:'bold'}}>Lunch-Time</TableCell>
+            <TableCell sx={{ fontWeight:'bold'}}>11:30-12:25</TableCell>
+            <TableCell sx={{ fontWeight:'bold'}}>12:25-01:20</TableCell>
+            <TableCell sx={{ fontWeight:'bold'}}>01:20-02:15</TableCell>
+            <TableCell sx={{ fontWeight:'bold'}}>02:15-03:10</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {rows.map(row =>( 
+              <TableRow >
+              <TableCell component="th" scope="row" sx={{ fontWeight:'bold' }}>
+              {row.one}
+            </TableCell>
 
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
-                      <TableCell align="right">{row.six}</TableCell>
-                      <TableCell align="right">{row.seven}</TableCell>
-                      <TableCell align="right">{row.eight}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-
+            <TableCell >{row.two}</TableCell>
+            <TableCell  >{row.three}</TableCell>
+            <TableCell >{row.four}</TableCell>
+            <TableCell  >{row.five}</TableCell>
+            <TableCell >{row.six}</TableCell>
+            <TableCell >{row.seven}</TableCell>
+            <TableCell >{row.eight}</TableCell>
+                               </TableRow>
+            ))
+          }
+          </TableBody>
+        </Table>
           </Box>
         </Box>
         <Snackbar
@@ -451,9 +296,16 @@ function Attendance() {
             </React.Fragment>
           }
         />
+        <NewAssignmentDialog
+          open={dialogOpen}
+          onClose={onDialogClose}
+          activateLoading={activateLoading}
+          deactivateLoading={deactivateLoading}
+          openSnackBar={openSnackBar}
+        />
       </LoadingOverlay>
     </>
   );
 }
 
-export default Attendance;
+export default Assignment;

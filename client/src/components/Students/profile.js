@@ -431,11 +431,11 @@ function Attendance() {
       <LoadingOverlay
         active={loading}
         spinner
-        text="Loading Attendance Sheet..."
+        text="Loading Profile..."
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <StudentAppBar />
+          <StudentAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose}/>
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton

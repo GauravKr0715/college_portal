@@ -32,6 +32,11 @@ export const faculty_sidebar_data = [
     icon: 'question_answer',
     link: '/queries'
   },
+  {
+    text: 'Announcement',
+    icon: 'campaign',
+    link: '/announcement'
+  },
 ];
 
 export const admin_sidebar_data = [
