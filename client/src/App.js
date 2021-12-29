@@ -138,9 +138,9 @@ function App() {
                   <FacultyProfile />
                 </Route>
                 <Route path={`${url}/announcement`} exact >
-                {/* <Authorization /> */}
-                <FacultyAnnouncement />
-              </Route>
+                  {/* <Authorization /> */}
+                  <FacultyAnnouncement />
+                </Route>
               </>
             )}>
           </Route>

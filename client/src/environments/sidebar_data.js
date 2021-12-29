@@ -37,6 +37,14 @@ export const faculty_sidebar_data = [
     icon: 'campaign',
     link: '/announcement'
   },
+];
+
+export const admin_sidebar_data = [
+  {
+    text: 'Departments',
+    icon: 'corporate_fare',
+    link: '/departments'
+  },
   {
     text: 'Subjects',
     icon: 'menu_book',
