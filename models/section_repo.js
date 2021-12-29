@@ -37,6 +37,21 @@ module.exports = {
     }
   },
 
+  updateDetailsByPush: async (details, condition, field_name) => {
+    try {
+      let push_obj = {};
+      push_obj[`${field_name}`] = details;
+      return await Section.findOneAndUpdate(
+        condition,
+        {
+          $push: push_obj
+        }
+      )
+    } catch (error) {
+      throw error;
+    }
+  },
+
   fetchCertainFieldsByCondition: async (field_string, condition) => {
     try {
       return await Section.findOne(condition).select(field_string);

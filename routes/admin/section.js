@@ -55,6 +55,25 @@ router.post('/addBasicDetails', async (req, res) => {
   }
 });
 
+router.post('/addClasses', async (req, res) => {
+  try {
+    let classes = Object.assign([], req.body);
+    const uid = req.query.id;
+    classes = classes.map(c => {
+      return {
+        class_id: uuidv4(),
+        ...c
+      };
+    })
+    const data = await sectionController.addClasses(classes, uid);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 router.put('/updateTimeTable', async (req, res) => {
   const time_table = Object.assign([], req.body.time_table);
   const section = req.query.section || null;

@@ -96,8 +96,8 @@ export const getSubjectsAndFaculties = (section_id) => {
   })
 }
 
-export const saveClassesForSection = (details) => {
-  return axios.post(environment.apiUrl + base_url + saveClassesForSectionURL, details, {
+export const saveClassesForSection = (details, id) => {
+  return axios.post(environment.apiUrl + base_url + saveClassesForSectionURL + '?id=' + id, details, {
     withCredentials: true
   });
 }

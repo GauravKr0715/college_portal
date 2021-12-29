@@ -333,7 +333,7 @@ function SectionProfile() {
                                   <TableCell>
                                     {
                                       GlobalVariables.subject_types[
-                                        c.subject_type
+                                      c.subject_type
                                       ]
                                     }
                                   </TableCell>
@@ -368,10 +368,109 @@ function SectionProfile() {
                     </div>
                   </>
                 )}
-                {/* {
-                  activePage === 2 && ()
-                }
                 {
+                  activePage === 2 && (
+                    <>
+                      <div className="page-head">Section Time Table</div>
+                      <div className="page-content">
+                        {
+                          section_details && section_details.time_table && section_details.time_table.length && (
+                            <TableContainer
+                              sx={{
+                                backgroundColor: "#fff !important",
+                              }}
+                              component={Paper}
+                            >
+                              <Table
+                                sx={{ minWidth: 650 }}
+                                aria-label="simple table"
+                              >
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell
+                                      sx={{
+                                        fontWeight: "bold !important",
+                                        fontSize: "1rem !important",
+                                      }}
+                                    >
+                                      Day / Slot
+                                    </TableCell>
+                                    {
+                                      GlobalVariables.time_table_slots.map((slot, idx) => (
+                                        <TableCell
+                                          sx={{
+                                            fontWeight: "bold !important",
+                                            fontSize: "1rem !important",
+                                          }}
+                                        >
+                                          <div className={"clickable-title multiline-head"}>
+                                            <div className="small-data">
+                                              {`Slot ${idx + 1}`}
+                                            </div>
+                                            {slot}
+
+                                          </div>
+                                        </TableCell>
+                                      ))
+                                    }
+                                  </TableRow>
+                                </TableHead>
+
+                                <TableBody>
+                                  {
+                                    section_details.time_table.map((day, idx1) => (
+                                      <TableRow key={idx1}>
+                                        <TableCell component="th" scope="row">
+                                          {
+                                            GlobalVariables.week_days[idx1]
+                                          }
+                                        </TableCell>
+                                        {
+                                          day.map((slot, idx2) => (
+                                            <>
+                                              <TableCell
+                                                sx={{
+                                                  "&:hover": {
+                                                    backgroundColor: '#d6cdcd',
+                                                    cursor: "pointer",
+                                                  }
+                                                }}
+                                              >
+                                                <div className={"clickable-title multiline-head" + (slot.class_id === 'ABC123' ? 'back-grey' : null)}>
+                                                  {slot.subject_name}
+                                                  <div className="small-data">
+                                                    {slot.faculty_name}
+                                                  </div>
+                                                </div>
+                                              </TableCell>
+                                              {
+                                                idx2 === 1 ? (
+                                                  <TableCell>
+                                                    <div className={"clickable-title multiline-head"}>
+                                                      {`Lunch Break`}
+                                                      <div className="small-data">
+                                                        {`N/A`}
+                                                      </div>
+                                                    </div>
+                                                  </TableCell>
+                                                ) : null
+                                              }
+                                            </>
+                                          ))
+                                        }
+                                      </TableRow>
+                                    ))
+                                  }
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          )
+                        }
+                      </div>
+                    </>
+                  )
+                }
+                {/* {
                   activePage === 3 && ()
                 } */}
               </div>

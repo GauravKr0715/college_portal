@@ -37,6 +37,20 @@ function ClassesDialog(props) {
     try {
       setSubmitLoading(true);
       setError(null);
+      let err = false;
+      for (let i = 0; i < classes.length; i++) {
+        if (classes[i].subject_id === null || classes[i].subject_id === '' || classes[i].faculty_id === null || classes[i].faculty_id === '') {
+          err = true;
+          break;
+        }
+      }
+      if (err) {
+        setError("Select All fields first...")
+      } else {
+        const { data } = await saveClassesForSection(classes, props.section_id);
+        props.openSnackBar(data.message);
+        props.onClose();
+      }
     } catch (error) {
       console.log(error);
       props.openSnackBar('Some Error Occurred. Try Again.');
@@ -84,10 +98,8 @@ function ClassesDialog(props) {
     setClasses(values);
   }
 
-  const handleSubjectChange = (e, i) => {
-    alert(e.target.value);
+  const handleSubjectChange = (sub, i) => {
     const values = [...classes];
-    let sub = subject_list.filter(s => s.code === e.target.value)[0];
     values[i].subject_id = sub.code;
     values[i].subject_name = sub.name;
     values[i].subject_type = sub.type;
@@ -95,10 +107,8 @@ function ClassesDialog(props) {
     setClasses(values);
   }
 
-  const handleFacultyChange = (e, i) => {
-    alert(e.target.value);
+  const handleFacultyChange = (faculty, i) => {
     const values = [...classes];
-    let faculty = faculty_list.filter(f => f.uni_id === e.target.value)[0];
     values[i].faculty_id = faculty.uni_id;
     values[i].faculty_name = faculty.full_name;
     setClasses(values);
@@ -169,18 +179,20 @@ function ClassesDialog(props) {
               classes && classes.map((c, i) => (
                 <Box
                   sx={{
+                    margin: '0.5rem 0px',
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'center',
                     alignItems: 'center'
                   }}>
                   <Autocomplete
-                    id="country-select-demo"
-                    sx={{ width: 300 }}
+                    id="subject-select"
+                    sx={{ width: 300, marginRight: '7px' }}
                     options={subject_list}
                     autoHighlight
-                    onInputChange={(e) => {
-                      alert(e.target.value);
+                    onChange={(event, value) => {
+                      handleSubjectChange(value, i);
+                      console.log(value)
                     }}
                     getOptionLabel={(option) => `[${option.code}] ${option.name}`}
                     renderOption={(props, option) => (
@@ -220,7 +232,34 @@ function ClassesDialog(props) {
                       </MenuItem>
                     ))}
                   </TextField> */}
-                  <TextField
+                  <Autocomplete
+                    id="faculty-select"
+                    sx={{ width: 300, marginRight: '7px' }}
+                    disabled={classes[i].subject_dept === null}
+                    options={faculty_list.filter(faculty => faculty.dept === classes[i].subject_dept)}
+                    autoHighlight
+                    onChange={(event, value) => {
+                      handleFacultyChange(value, i);
+                      console.log(value)
+                    }}
+                    getOptionLabel={(option) => `${option.full_name}`}
+                    renderOption={(props, option) => (
+                      <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                        {option.full_name}
+                      </Box>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Select faculty"
+                        inputProps={{
+                          ...params.inputProps,
+                          autoComplete: 'new-password', // disable autocomplete and autofill
+                        }}
+                      />
+                    )}
+                  />
+                  {/* <TextField
                     id="name"
                     select
                     value={faculty_label}
@@ -241,7 +280,7 @@ function ClassesDialog(props) {
                         {faculty.full_name}
                       </MenuItem>
                     ))}
-                  </TextField>
+                  </TextField> */}
                   {
                     classes.length !== 1 ? (
                       <Button color="error"

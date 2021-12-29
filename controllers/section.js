@@ -4,9 +4,11 @@ const subject_repo = require('../models/subject_repo');
 const department_repo = require('../models/department_repo');
 const faculty_controller = require('../controllers/faculty');
 const logger = require('../helpers/logger');
+const { default_section_time_table } = require('../global/data');
 
 const addDetails = async (details) => {
   try {
+    details.time_table = default_section_time_table;
     const data = await section_repo.add(details);
 
     return {
@@ -73,26 +75,31 @@ const getFacultiesAndSubjectsList = async (uid) => {
   }
 }
 
-const addBasicDetails = async (details) => {
+const addClasses = async (classes, uid) => {
   try {
-    let intermediate_array = details.classes.map(async (c) => {
-      const inter_res = await faculty_repo.updateDetailsByPush({
+    const section_data = await section_repo.fetchCertainFieldsByCondition("name", { uid });
+    console.log(section_data);
+    console.log(classes);
+    let intermediate_array = classes.map(async (c) => {
+      await faculty_repo.updateDetailsByPush({
         class_id: c.class_id,
         subject_id: c.subject_id,
         subject_name: c.subject_name,
         subject_type: c.subject_type,
-        section: details.name,
+        section: section_data.name,
       }, {
         uni_id: c.faculty_id
       }, 'classes');
+      await section_repo.updateDetailsByPush(c, { uid }, "classes");
     });
 
 
-    let promise_resolve = await Promise.all(intermediate_array);
+    await Promise.all(intermediate_array);
 
-    const data = await section_repo.addBasicDetails(details);
-
-    return data;
+    return {
+      success: true,
+      message: 'Classes added successfully',
+    };
   } catch (error) {
     logger.error(error);
     throw error;
@@ -197,7 +204,7 @@ module.exports = {
   getSectionDetails,
   getFacultiesAndSubjectsList,
   addDetails,
-  addBasicDetails,
+  addClasses,
   updateTimeTable,
   getAllForAdmin
 }
