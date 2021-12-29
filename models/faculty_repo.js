@@ -26,6 +26,14 @@ module.exports = {
     }
   },
 
+  fetchAllCertainFields: async (field_string, condition) => {
+    try {
+      return await Faculty.find(condition).select(field_string);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   fetchOneOrConditions: async (condition) => {
     try {
       return await Faculty.find({

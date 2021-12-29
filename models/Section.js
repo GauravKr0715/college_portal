@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const sectionSchema = mongoose.Schema({
+  uid: {
+    type: String,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -9,6 +13,12 @@ const sectionSchema = mongoose.Schema({
     reuired: true
   },
   dept: {
+    type: String
+  },
+  year: {
+    type: String
+  },
+  coordinator_name: {
     type: String
   },
   classes: [{

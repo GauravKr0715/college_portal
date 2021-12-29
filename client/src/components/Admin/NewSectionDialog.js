@@ -11,11 +11,11 @@ import Box from "@mui/material/Box";
 import "./new_department.css";
 import { GlobalVariables } from '../../environments/global_data';
 import {
-  addNewSubject,
+  addNewSection,
   getDepartments
 } from "../../services/admin";
 
-function NewSubjectDialog(props) {
+function NewSectionDialog(props) {
 
   const getDepartmentList = async () => {
     try {
@@ -30,26 +30,22 @@ function NewSubjectDialog(props) {
     getDepartmentList();
   }, []);
 
-  const saveSubject = async () => {
+  const saveSection = async () => {
     try {
       setSubmitLoading(true);
       setError(null);
-      if (name === null || name === "" || code === null || code === "" || type === null || type === "" || sem === null || sem === "" || dept === null || dept === "" || dept === 0) {
+      if (name === null || name === "" || year === null || year === "" || dept === null || dept === "" || dept === 0) {
         setError("Please fill all mandatory fields first");
       } else {
         let details = {};
         details.name = name;
-        details.code = code;
-        details.type = type;
-        details.sem = sem;
+        details.year = year;
         details.dept = dept;
         console.log(details);
-        const { data } = await addNewSubject(details);
+        const { data } = await addNewSection(details);
         console.log(data);
         setName("");
-        setCode("");
-        setType("");
-        setSem("");
+        setYear("");
         setDept("");
         props.openSnackBar(data.message);
         props.onClose();
@@ -64,9 +60,7 @@ function NewSubjectDialog(props) {
 
   const [error, setError] = useState(null);
   const [name, setName] = useState("");
-  const [code, setCode] = useState("");
-  const [type, setType] = useState(1);
-  const [sem, setSem] = useState(1);
+  const [year, setYear] = useState(1);
   const [dept, setDept] = useState(0);
 
   const handleDepartmentChange = (e) => {
@@ -98,7 +92,7 @@ function NewSubjectDialog(props) {
           }}
           id="responsive-dialog-title"
         >
-          {"Add a New Subject"}
+          {"Add a New Section"}
         </DialogTitle>
         <DialogContent
           sx={{
@@ -168,74 +162,49 @@ function NewSubjectDialog(props) {
                 </TextField>
               )
             }
-            <TextField
+            <Box
               sx={{
-                margin: "15px",
-              }}
-              id="code"
-              label="*Subject Code"
-              value={code}
-              onChange={(e) => {
-                setCode(e.target.value);
-              }}
-              variant="outlined"
-            />
-            <TextField
-              sx={{
-                margin: "15px",
-              }}
-              id="name"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-              label="*Subject Name"
-              variant="outlined"
-            />
-            <TextField
-              sx={{
-                margin: "15px",
-                flex: "1",
-              }}
-              id="sem"
-              select
-              label="*Select Semester"
-              value={sem}
-              onChange={(e) => {
-                setSem(e.target.value);
-              }}
-            >
-              {GlobalVariables.semesters.map((sem) => (
-                <MenuItem
-                  key={sem.value}
-                  value={sem.value}
-                >
-                  {sem.key}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              sx={{
-                margin: "15px",
-                flex: "1",
-              }}
-              id="sem"
-              select
-              label="*Select Subject Type"
-              value={type}
-              onChange={(e) => {
-                setType(e.target.value);
-              }}
-            >
-              {GlobalVariables.subject_types_array.map((type) => (
-                <MenuItem
-                  key={type.value}
-                  value={type.value}
-                >
-                  {type.key}
-                </MenuItem>
-              ))}
-            </TextField>
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+              <TextField
+                sx={{
+                  margin: "15px",
+                }}
+                id="name"
+                value={name}
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+                label="*Section Name"
+                variant="outlined"
+              />
+              <TextField
+                sx={{
+                  margin: "15px",
+                  flex: "1",
+                }}
+                id="sem"
+                select
+                label="*Select Year"
+                value={year}
+                onChange={(e) => {
+                  setYear(e.target.value);
+                }}
+              >
+                {GlobalVariables.years.map((year) => (
+                  <MenuItem
+                    key={year.value}
+                    value={year.value}
+                  >
+                    {year.key}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+
           </Box>
         </DialogContent>
         <DialogActions
@@ -248,8 +217,8 @@ function NewSubjectDialog(props) {
             Cancel
           </Button>
           <Button
-            sx={{ fontWeight: "bolder" }} disabled={submitLoading} variant="contained" onClick={saveSubject} autoFocus>
-            Add Subject
+            sx={{ fontWeight: "bolder" }} disabled={submitLoading} variant="contained" onClick={saveSection} autoFocus>
+            Add Section
           </Button>
         </DialogActions>
       </Dialog>
@@ -257,4 +226,4 @@ function NewSubjectDialog(props) {
   );
 }
 
-export default NewSubjectDialog;
+export default NewSectionDialog;

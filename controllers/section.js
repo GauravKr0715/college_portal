@@ -1,28 +1,105 @@
 const section_repo = require('../models/section_repo');
 const faculty_repo = require('../models/faculty_repo');
+const subject_repo = require('../models/subject_repo');
+const department_repo = require('../models/department_repo');
 const faculty_controller = require('../controllers/faculty');
 const logger = require('../helpers/logger');
+const { default_section_time_table } = require('../global/data');
 
-const addBasicDetails = async (details) => {
+const addDetails = async (details) => {
   try {
-    let intermediate_array = details.classes.map(async (c) => {
-      const inter_res = await faculty_repo.updateDetailsByPush({
+    details.time_table = default_section_time_table;
+    const data = await section_repo.add(details);
+
+    return {
+      success: true,
+      message: 'Section Added Successfully',
+      data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
+
+const getSectionDetails = async (uid) => {
+  try {
+    const section_data = await section_repo.fetchOne({ uid });
+    const dept_data = await department_repo.fetchOneCertainFields("name", {
+      code: section_data.dept
+    });
+    let data = {};
+    data.name = section_data.name;
+    data.classes = section_data.classes;
+    data.time_table = section_data.time_table;
+    data.year = section_data.year;
+    data.dept_name = dept_data.name;
+    data.dept_code = section_data.dept;
+
+    return {
+      success: true,
+      message: 'Data retrived successfully',
+      data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+}
+
+const getFacultiesAndSubjectsList = async (uid) => {
+  try {
+    const section_data = await section_repo.fetchCertainFieldsByCondition("dept year", {
+      uid
+    });
+    console.log(section_data);
+    let sem1 = ((section_data.year - 1) * 2) + 1;
+    let sem2 = ((section_data.year - 1) * 2) + 2;
+    const faculty_data = await faculty_repo.fetchAllCertainFields("uni_id full_name dept", {});
+    console.log(faculty_data);
+    const subject_data = await subject_repo.fetchAllOrConditions(
+      [
+        { sem: sem1 },
+        { sem: sem2 }
+      ]);
+    console.log(subject_data);
+    return {
+      success: true,
+      message: 'Data retrived successfully',
+      faculty_data,
+      subject_data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+}
+
+const addClasses = async (classes, uid) => {
+  try {
+    const section_data = await section_repo.fetchCertainFieldsByCondition("name", { uid });
+    console.log(section_data);
+    console.log(classes);
+    let intermediate_array = classes.map(async (c) => {
+      await faculty_repo.updateDetailsByPush({
         class_id: c.class_id,
         subject_id: c.subject_id,
         subject_name: c.subject_name,
         subject_type: c.subject_type,
-        section: details.name,
+        section: section_data.name,
       }, {
         uni_id: c.faculty_id
       }, 'classes');
+      await section_repo.updateDetailsByPush(c, { uid }, "classes");
     });
 
 
-    let promise_resolve = await Promise.all(intermediate_array);
+    await Promise.all(intermediate_array);
 
-    const data = await section_repo.addBasicDetails(details);
-
-    return data;
+    return {
+      success: true,
+      message: 'Classes added successfully',
+    };
   } catch (error) {
     logger.error(error);
     throw error;
@@ -99,9 +176,35 @@ const updateTimeTable = async (time_table, section) => {
 
 
   return
+};
+
+const getAllForAdmin = async (dept) => {
+  try {
+    const sections_data = await section_repo.getAllWithCondition({
+      dept
+    });
+    sections_data.sort((a, b) => {
+      return a.year - b.year
+    })
+
+    return {
+      success: true,
+      message: 'Sections Retrived successfully',
+      final_result: {
+        sections_data,
+      }
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
-  addBasicDetails,
-  updateTimeTable
+  getSectionDetails,
+  getFacultiesAndSubjectsList,
+  addDetails,
+  addClasses,
+  updateTimeTable,
+  getAllForAdmin
 }

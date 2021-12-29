@@ -1,10 +1,71 @@
 const router = require('express').Router();
+const logger = require('../../helpers/logger');
+const auth = require('../../middlewares/auth');
 const sectionController = require('../../controllers/section');
+const uuidv4 = require('uuid').v4;
+
+router.use('/', auth.tokenValidate);
+
+router.get('/details', async (req, res) => {
+  try {
+    const uid = req.query.id;
+    const data = await sectionController.getSectionDetails(uid);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
+router.get('/facandsubslist', async (req, res) => {
+  try {
+    const uid = req.query.id;
+    const data = await sectionController.getFacultiesAndSubjectsList(uid);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
+router.get('/all', async (req, res) => {
+  try {
+    const dept_id = req.query.id;
+    const data = await sectionController.getAllForAdmin(dept_id);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
 
 router.post('/addBasicDetails', async (req, res) => {
-  const body = Object.assign({}, req.body);
   try {
-    const data = await sectionController.addBasicDetails(body);
+    let body = Object.assign({}, req.body);
+    body.uid = uuidv4();
+    const data = await sectionController.addDetails(body);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
+router.post('/addClasses', async (req, res) => {
+  try {
+    let classes = Object.assign([], req.body);
+    const uid = req.query.id;
+    classes = classes.map(c => {
+      return {
+        class_id: uuidv4(),
+        ...c
+      };
+    })
+    const data = await sectionController.addClasses(classes, uid);
 
     return res.send(data);
   } catch (error) {
@@ -26,6 +87,6 @@ router.put('/updateTimeTable', async (req, res) => {
       message: 'Some error occured.'
     });
   }
-})
+});
 
 module.exports = router;

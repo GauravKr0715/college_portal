@@ -37,4 +37,22 @@ export const faculty_sidebar_data = [
     icon: 'campaign',
     link: '/announcement'
   },
-]
+  {
+    text: 'Subjects',
+    icon: 'menu_book',
+    link: '/subjects'
+  }, {
+    text: 'Faculties',
+    icon: 'person',
+    link: '/faculties'
+  },
+  {
+    text: 'Students',
+    icon: 'groups',
+    link: '/students'
+  }, {
+    text: 'Sections',
+    icon: 'meeting_room',
+    link: '/sections'
+  }
+];

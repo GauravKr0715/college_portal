@@ -1,8 +1,11 @@
 const router = require('express').Router();
 const logger = require('../../helpers/logger');
+const auth = require('../../middlewares/auth');
 const multer = require('multer');
 const studentController = require('../../controllers/student');
 const { studentRegisterValidation, studentLoginValidation } = require("../../validators/studentValidator");
+
+router.use('/', auth.tokenValidate);
 
 router.get('/search', async (req, res) => {
   try {

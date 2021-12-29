@@ -26,6 +26,16 @@ module.exports = {
     }
   },
 
+  fetchAllOrConditions: async (condition) => {
+    try {
+      return await Subject.find({
+        $or: condition
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+
   update: async (details, condition) => {
     try {
       const updated_data = await Subject.updateOne(condition, {

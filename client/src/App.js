@@ -46,6 +46,8 @@ import AdminStudents from "./components/Admin/Student";
 import AdminFaculty from "./components/Admin/Faculty";
 import AdminDepartments from './components/Admin/Departments';
 import AdminSubjects from './components/Admin/Subjects';
+import AdminSection from './components/Admin/Section';
+import AdminSectionProfile from './components/Admin/SectionProfile';
 
 
 
@@ -216,6 +218,14 @@ function App() {
                 <Route path={`${url}/subjects`} exact >
                   {/* <Authorization /> */}
                   <AdminSubjects />
+                </Route>
+                <Route path={`${url}/sections`} exact >
+                  {/* <Authorization /> */}
+                  <AdminSection />
+                </Route>
+                <Route path={`${url}/sections/:id`} exact >
+                  {/* <Authorization /> */}
+                  <AdminSectionProfile />
                 </Route>
 
                 <Route path={`${url}/SectionCreate`} exact >
