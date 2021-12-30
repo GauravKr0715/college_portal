@@ -41,7 +41,7 @@ function NewAssignmentDialog(props) {
       setError(null);
       if (class_id === null || title === null || title === "") {
         setError("Please fill all mandatory fields first");
-      } else if (total_marks < 10 || total_marks > 100) {
+      } else if ((total_marks !== null && total_marks !== '') && (total_marks < 10 || total_marks > 100)) {
         setError("Please enter marks in the proper range (10 - 100)");
       } else {
         if (document.getElementById("attachments").files.length) {

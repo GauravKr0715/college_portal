@@ -23,13 +23,14 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
 import "./feed.css";
 import moment from "moment";
-import { getStudentBasicDetails } from "../../services/student";
+import { getStudentBasicDetails, getStudentFeed } from "../../services/student";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
-import Menu from '@mui/material/Menu';
+import Menu from "@mui/material/Menu";
 import Button from "@mui/material/Button";
-import MenuItem from '@mui/material/MenuItem';
-import Logout from '@mui/icons-material/Logout';
-import { logoutStudent } from '../../services/authentication';
+import MenuItem from "@mui/material/MenuItem";
+import Logout from "@mui/icons-material/Logout";
+import { logoutStudent } from "../../services/authentication";
+import { format } from "timeago.js";
 
 const drawerWidth = 240;
 
@@ -480,7 +481,20 @@ function Feed() {
     setTodaysTimeTable(data.todays_time_table);
   };
 
+  const [page_no, setPageNo] = useState(1);
+  const [feeds, setFeeds] = useState([]);
+
+  const studentFeed = async () => {
+    try {
+      const { data } = await getStudentFeed(page_no);
+      setFeeds(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
+    studentFeed();
     StudentBasicDetails();
   }, []);
 
@@ -496,11 +510,11 @@ function Feed() {
   const studentLogout = async () => {
     try {
       await logoutStudent();
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <>
@@ -528,8 +542,37 @@ function Feed() {
                 <div className="inner-container">
                   {moment().format("dddd") !== "Sunday"
                     ? todays_time_table.map((slot, idx) =>
-                      slot.slot_id[3] === "2" ? (
-                        <>
+                        slot.slot_id[3] === "2" ? (
+                          <>
+                            <div
+                              className="slot"
+                              onClick={() => {
+                                openSlotDrawer(slot, idx);
+                              }}
+                            >
+                              <div className="slot_time">{slot_times[idx]}</div>
+                              <div className="slot_sub">
+                                {slot.subject_name}
+                              </div>
+                              <div className="slot-sec">
+                                {slot.faculty_name !== "ABCXYZ"
+                                  ? slot.faculty_name
+                                  : "NA"}
+                              </div>
+                            </div>
+                            <div className="slot lunch">
+                              <div className="slot_time">
+                                {lunch_details.time}
+                              </div>
+                              <div className="slot_sub">
+                                {lunch_details.name}
+                              </div>
+                              <div className="slot-sec">
+                                {lunch_details.faculty_name}
+                              </div>
+                            </div>
+                          </>
+                        ) : (
                           <div
                             className="slot"
                             onClick={() => {
@@ -537,49 +580,22 @@ function Feed() {
                             }}
                           >
                             <div className="slot_time">{slot_times[idx]}</div>
-                            <div className="slot_sub">
-                              {slot.subject_name}
-                            </div>
+                            <div className="slot_sub">{slot.subject_name}</div>
                             <div className="slot-sec">
-                              {slot.faculty_name !== "ABCXYZ"
+                              {slot.section !== "ABCXYZ"
                                 ? slot.faculty_name
                                 : "NA"}
                             </div>
                           </div>
-                          <div className="slot lunch">
-                            <div className="slot_time">
-                              {lunch_details.time}
-                            </div>
-                            <div className="slot_sub">
-                              {lunch_details.name}
-                            </div>
-                            <div className="slot-sec">
-                              {lunch_details.faculty_name}
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div
-                          className="slot"
-                          onClick={() => {
-                            openSlotDrawer(slot, idx);
-                          }}
-                        >
+                        )
+                      )
+                    : holiday_time_table.map((slot, idx) => (
+                        <div className="slot">
                           <div className="slot_time">{slot_times[idx]}</div>
                           <div className="slot_sub">{slot.subject_name}</div>
-                          <div className="slot-sec">
-                            {slot.section !== "ABCXYZ" ? slot.faculty_name : "NA"}
-                          </div>
+                          <div className="slot-sec">{slot.section}</div>
                         </div>
-                      )
-                    )
-                    : holiday_time_table.map((slot, idx) => (
-                      <div className="slot">
-                        <div className="slot_time">{slot_times[idx]}</div>
-                        <div className="slot_sub">{slot.subject_name}</div>
-                        <div className="slot-sec">{slot.section}</div>
-                      </div>
-                    ))}
+                      ))}
                   {/* {moment().format("dddd") !== "Sunday"
                     ? time_table[days[moment().format("dddd")]].map(
                       (slot, idx) =>
@@ -716,21 +732,21 @@ function Feed() {
                 PaperProps={{
                   elevation: 0,
                   sx: {
-                    '& .MuiList-root': {
-                      color: '#000 !important',
-                      fontWeight: '700'
+                    "& .MuiList-root": {
+                      color: "#000 !important",
+                      fontWeight: "700",
                     },
-                    '& .MuiMenu-paper': {
-                      backgroundColor: '#fff'
+                    "& .MuiMenu-paper": {
+                      backgroundColor: "#fff",
                     },
-                    '& .MuiMenu-list': {
-                      backgroundColor: '#fff',
-                      color: '#000'
-                    }
-                  }
+                    "& .MuiMenu-list": {
+                      backgroundColor: "#fff",
+                      color: "#000",
+                    },
+                  },
                 }}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
                 <MenuItem onClick={studentLogout}>
                   <ListItemIcon>
@@ -791,15 +807,43 @@ function Feed() {
             ))}
           </List> */}
         </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <DrawerHeader />
-          <Typography paragraph style={{ textAlign: "center", marginTop: 150, fontSize: 90 }}>
-
-            Student Section
-          </Typography>
-          <Typography paragraph>
-
-          </Typography>
+          <div className="feed-wrapper">
+            {feeds && feeds.length ? (
+              feeds.map((feed) => (
+                  <div className="feed-container">
+                  <Link to={`${curr_url}${feed.link}`}>
+                    <div
+                      className="feed-content"
+                      dangerouslySetInnerHTML={{
+                        __html: feed.content,
+                      }}
+                    >
+                      {/* {feed.content.replace("%b%", "<b>").replace("%/b%", "</b>")} */}
+                    </div>
+                  </Link>
+                    <div className="feed-time">
+                      {format(feed.createdAt * 1000)}
+                    </div>
+                  </div>
+              ))
+            ) : (
+              <div className="feed-container">
+                <div className="feed-content">Nothing to see here</div>
+                <div className="feed-time"></div>
+              </div>
+            )}
+          </div>
         </Box>
       </Box>
       <MuiDrawer
@@ -843,7 +887,9 @@ function Feed() {
               <div className="slot-drawer">
                 <div className="drawer-key">
                   Faculty Name:&nbsp;&nbsp;&nbsp;
-                  <div className="drawer-value">{selectedSlot.faculty_name}</div>
+                  <div className="drawer-value">
+                    {selectedSlot.faculty_name}
+                  </div>
                 </div>
               </div>
             </ListItem>
@@ -852,32 +898,32 @@ function Feed() {
                 <div className="drawer-key">
                   Class Link:&nbsp;&nbsp;&nbsp;
                   <div className="drawer-value">
-                    {selectedSlot.link
-                      ? (
-                        <a
-                          href={`https://${selectedSlot.link.url}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                    {selectedSlot.link ? (
+                      <a
+                        href={`https://${selectedSlot.link.url}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            backgroundColor: "#fff",
+                            borderColor: "#fff",
+                            fontWeight: "bolder",
+                            color: "#000",
+                            "&:hover": {
+                              backgroundColor: "#c2bbbb",
+                              borderColor: "#000",
+                            },
+                          }}
+                          height="auto"
                         >
-                          <Button
-                            variant="outlined"
-                            sx={{
-                              backgroundColor: "#fff",
-                              borderColor: "#fff",
-                              fontWeight: "bolder",
-                              color: "#000",
-                              "&:hover": {
-                                backgroundColor: "#c2bbbb",
-                                borderColor: "#000",
-                              },
-                            }}
-                            height="auto"
-                          >
-                            {selectedSlot.link.title}
-                          </Button>
-                        </a>
-                      )
-                      : "Link Not available"}
+                          {selectedSlot.link.title}
+                        </Button>
+                      </a>
+                    ) : (
+                      "Link Not available"
+                    )}
                   </div>
                 </div>
               </div>

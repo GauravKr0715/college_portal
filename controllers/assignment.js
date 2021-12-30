@@ -2,10 +2,12 @@ const assignment_repo = require('../models/assignment_repo');
 const faculty_repo = require('../models/faculty_repo');
 const section_repo = require('../models/section_repo');
 const student_repo = require('../models/student_repo');
+const feed_repo = require('../models/feed_repo');
 const assignment_submission_repo = require('../models/assignment_submission_repo');
 const logger = require('../helpers/logger');
 const moment = require('moment');
 const jsonexport = require('jsonexport');
+const uuidv4 = require('uuid').v4;
 
 const getAllByFaculty = async (faculty_id) => {
   try {
@@ -37,7 +39,16 @@ const addAssignment = async (details, uni_id) => {
     details.faculty_id = uni_id;
     details.faculty_name = faculty_details.full_name;
 
+    let feed_obj = {};
+    feed_obj.uid = uuidv4();
+    feed_obj.from = faculty_details.full_name;
+    feed_obj.to = details.section;
+    feed_obj.content = `<b>${faculty_details.full_name}</b> added a new assignment <b>${details.title}</b> for your <b>${details.subject}</b> class`;
+    feed_obj.link = `/assignments/${details.uid}`;
+    feed_obj.createdAt = Math.floor(Date.now() / 1000);
+
     await assignment_repo.add(details);
+    await feed_repo.add(feed_obj);
     return {
       success: true,
       message: 'Assignment added successfully'
@@ -382,7 +393,25 @@ const deleteOneSubmissionByUID = async (uid) => {
 
 const scoreAssignmentSubmission = async (uid, details) => {
   try {
+
+    const assignment_submission_details = await assignment_submission_repo.fetchOneCertainFields("assignment_id student_id", {
+      uid
+    });
+    const assignment_details = await assignment_repo.getOneCertainFields("title faculty_id faculty_name", {
+      uid: assignment_submission_details.assignment_id
+    })
+
+    let feed_obj = {};
+    feed_obj.uid = uuidv4();
+    feed_obj.from = assignment_details.faculty_id;
+    feed_obj.to = assignment_submission_details.student_id;
+    feed_obj.content = `Your submission for the assignment titled <b>${assignment_details.title}</b> was marked by <b>${assignment_details.faculty_name}</b>`;
+    feed_obj.link = `/assignments/${assignment_submission_details.assignment_id}`;
+    feed_obj.createdAt = Math.floor(Date.now() / 1000);
+
     await assignment_submission_repo.updateOne(details, { uid });
+
+    await feed_repo.add(feed_obj);
     return {
       success: true,
       message: 'Assignment Scored successfully'

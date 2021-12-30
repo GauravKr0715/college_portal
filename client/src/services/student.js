@@ -30,6 +30,8 @@ const getFacultySimplifiedDataURL = '/faculty/getSimplified';
 const getMessagesURL = '/chat/messages';
 const sendMessageURL = '/chat/newMessage';
 
+const getFeedURL = '/feed/';
+
 export const getStudentBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
     withCredentials: true
@@ -179,6 +181,12 @@ export const getMessagesForConversation = (id) => {
 export const sendMessage = (details) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + sendMessageURL, details, {
+    withCredentials: true
+  });
+}
+
+export const getStudentFeed = (page_no) => {
+  return axios.get(environment.apiUrl + base_url + getFeedURL + "?page_no=" + page_no, {
     withCredentials: true
   });
 }

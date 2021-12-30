@@ -3,9 +3,12 @@ const test_submission_repo = require('../models/test_submission_repo');
 const faculty_repo = require('../models/faculty_repo');
 const section_repo = require('../models/section_repo');
 const student_repo = require('../models/student_repo');
+const feed_repo = require('../models/feed_repo');
 const logger = require('../helpers/logger');
 const moment = require('moment');
 const jsonexport = require('jsonexport');
+const uuidv4 = require('uuid').v4;
+
 const getAllByFaculty = async (faculty_id) => {
   try {
     let data = await test_repo.getAll("-id", { faculty_id });
@@ -36,7 +39,16 @@ const addTest = async (details, uni_id) => {
     details.faculty_id = uni_id;
     details.faculty_name = faculty_details.full_name;
 
+    let feed_obj = {};
+    feed_obj.uid = uuidv4();
+    feed_obj.from = faculty_details.full_name;
+    feed_obj.to = details.section;
+    feed_obj.content = `<b>${faculty_details.full_name}</b> added a new test <b>${details.title}</b> for your <b>${details.subject}</b> class`;
+    feed_obj.link = `/tests/${details.uid}`;
+    feed_obj.createdAt = Math.floor(Date.now() / 1000);
+
     await test_repo.add(details);
+    await feed_repo.add(feed_obj);
     return {
       success: true,
       message: 'Test added successfully'
@@ -374,7 +386,25 @@ const deleteOneSubmissionByUID = async (uid) => {
 
 const scoreTestSubmission = async (uid, details) => {
   try {
+
+    const test_submission_details = await test_submission_repo.fetchOneCertainFields("test_id student_id", {
+      uid
+    });
+    const test_details = await test_repo.getOneCertainFields("title faculty_id faculty_name", {
+      uid: test_submission_details.test_id
+    })
+
+    let feed_obj = {};
+    feed_obj.uid = uuidv4();
+    feed_obj.from = test_details.faculty_id;
+    feed_obj.to = test_submission_details.student_id;
+    feed_obj.content = `Your submission for the test titled <b>${test_details.title}</b> was marked by <b>${test_details.faculty_name}</b>`;
+    feed_obj.link = `/tests/${test_submission_details.test_id}`;
+    feed_obj.createdAt = Math.floor(Date.now() / 1000);
+
     await test_submission_repo.updateOne(details, { uid });
+
+    await feed_repo.add(feed_obj);
     return {
       success: true,
       message: 'Test Scored successfully'

@@ -26,7 +26,7 @@ function ScoreTestDialog(props) {
       setError(null);
       if (marks_scored === null || marks_scored === "") {
         setError("Please fill all mandatory fields first");
-      } else if (marks_scored < 0 || marks_scored > props.test.total_marks) {
+      } else if (+marks_scored < 0 || +marks_scored > props.test.total_marks) {
         setError(`Please enter marks in the proper range (0 - ${props.test.total_marks})`);
       } else {
         let details = {};
@@ -55,7 +55,7 @@ function ScoreTestDialog(props) {
 
   const [error, setError] = useState(null);
   const [marks_scored, setMarksScored] = useState(
-    props.submission.marks_scored ? props.submission.marks_scored : null
+    props.submission.marks_scored ? +props.submission.marks_scored : null
   );
 
   const [submitLoading, setSubmitLoading] = useState(false);

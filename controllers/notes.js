@@ -2,8 +2,10 @@ const notes_repo = require('../models/notes_repo');
 const faculty_repo = require('../models/faculty_repo');
 const student_repo = require('../models/student_repo');
 const section_repo = require('../models/section_repo');
+const feed_repo = require('../models/feed_repo');
 const logger = require('../helpers/logger');
 const moment = require('moment');
+const uuidv4 = require('uuid').v4;
 
 const getAllByFaculty = async (faculty_id) => {
   try {
@@ -35,7 +37,16 @@ const addNotes = async (details, uni_id) => {
     details.faculty_id = uni_id;
     details.faculty_name = faculty_details.full_name;
 
+    let feed_obj = {};
+    feed_obj.uid = uuidv4();
+    feed_obj.from = faculty_details.full_name;
+    feed_obj.to = details.section;
+    feed_obj.content = `<b>${faculty_details.full_name}</b> added new notes <b>${details.title}</b> for your <b>${details.subject}</b> class`;
+    feed_obj.link = `/notes/${details.uid}`;
+    feed_obj.createdAt = Math.floor(Date.now() / 1000);
+
     await notes_repo.add(details);
+    await feed_repo.add(feed_obj);
     return {
       success: true,
       message: 'Notes added successfully'
