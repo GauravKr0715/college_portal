@@ -383,6 +383,27 @@ const getFacultyByID = async (uni_id) => {
     logger.error(error);
     throw error;
   }
+};
+
+const getSimplifiedUser = async (uni_id) => {
+  try {
+    const data = await faculty_repo.fetchOneCertainFields("full_name", { uni_id });
+    // console.log(data);
+    if (data) {
+      return {
+        id: uni_id,
+        name: data._doc.full_name
+      }
+    } else {
+      return {
+        id: null,
+        name: null
+      }
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -396,5 +417,6 @@ module.exports = {
   addNewLink,
   applyLink,
   removeLinkFromClass,
-  getFacultyByID
+  getFacultyByID,
+  getSimplifiedUser
 }

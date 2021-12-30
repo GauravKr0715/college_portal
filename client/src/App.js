@@ -26,6 +26,7 @@ import FacultyTestSubmissionProfile from './components/Faculty/TestSubmissionPro
 import FacultyNotes from './components/Faculty/Notes';
 import FacultyNotesProfile from './components/Faculty/NotesProfile';
 import FacultyAnnouncement from './components/Faculty/Announcement'
+import FacultyQueries from './components/Faculty/Queries';
 
 import StudentHome from './components/Students/Home';
 import StudentFeed from './components/Students/Feed';
@@ -37,6 +38,7 @@ import StudentTestProfile from './components/Students/TestProfile';
 import StudentNotes from './components/Students/Notes';
 import StudentNotesProfile from './components/Students/NotesProfile';
 import StudentTT from "./components/Students/Timetable"
+import StudentQueries from './components/Students/Queries';
 
 import AdminHome from './components/Admin/Home';
 import SectionCreate from './components/Admin/Section/SectionCreate';
@@ -138,9 +140,13 @@ function App() {
                   <FacultyProfile />
                 </Route>
                 <Route path={`${url}/announcement`} exact >
-                {/* <Authorization /> */}
-                <FacultyAnnouncement />
-              </Route>
+                  {/* <Authorization /> */}
+                  <FacultyAnnouncement />
+                </Route>
+                <Route path={`${url}/queries`} exact >
+                  {/* <Authorization /> */}
+                  <FacultyQueries />
+                </Route>
               </>
             )}>
           </Route>
@@ -195,6 +201,10 @@ function App() {
                 <Route path={`${url}/profile`} exact >
                   {/* <Authorization /> */}
                   <StudentProfile />
+                </Route>
+                <Route path={`${url}/queries`} exact >
+                  {/* <Authorization /> */}
+                  <StudentQueries />
                 </Route>
               </>
             )}>

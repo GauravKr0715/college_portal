@@ -602,7 +602,7 @@ function Feed() {
                               {slot.subject_name}
                             </div>
                             <div className="slot-sec">
-                              {slot.section !== "ABCXYZ"
+                              {slot.section && slot.section !== "ABCXYZ"
                                 ? slot.section
                                 : "NA"}
                             </div>
@@ -629,7 +629,7 @@ function Feed() {
                           <div className="slot_time">{slot_times[idx]}</div>
                           <div className="slot_sub">{slot.subject_name}</div>
                           <div className="slot-sec">
-                            {slot.section !== "ABCXYZ" ? slot.section : "NA"}
+                            {slot.section && slot.section !== "ABCXYZ" ? slot.section : "NA"}
                           </div>
                         </div>
                       )

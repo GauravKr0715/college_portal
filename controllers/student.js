@@ -261,6 +261,26 @@ const getStudentByID = async (roll_no) => {
     logger.error(error);
     throw error;
   }
+};
+
+const getSimplifiedUser = async (roll_no) => {
+  try {
+    const data = await student_repo.fetchOneCertainFields("full_name", { roll_no });
+    if (data) {
+      return {
+        id: roll_no,
+        name: data._doc.full_name
+      }
+    } else {
+      return {
+        id: null,
+        name: null
+      }
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -272,5 +292,6 @@ module.exports = {
   getBasicDetails,
   getClasses,
   getProfileDetails,
-  getStudentByID
+  getStudentByID,
+  getSimplifiedUser
 }

@@ -4,10 +4,12 @@ const logger = require('../../helpers/logger');
 const StudentController = require('../../controllers/student');
 const Cookies = require('cookies');
 
+router.use('/faculty', require('./faculty'));
 router.use('/attendance', require('./attendance'));
 router.use('/assignment', require('./assignment'));
 router.use('/test', require('./test'));
 router.use('/notes', require('./notes'));
+router.use('/chat', require('./chat'));
 
 router.post('/login', async (req, res) => {
   const data = Object.assign({}, req.body);

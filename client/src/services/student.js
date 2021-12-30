@@ -25,6 +25,11 @@ const editAssignmentSubmissionWithoutAttachURL = '/assignment/editWithoutAttach'
 const editTestSubmissionWithAttachURL = '/test/editWithAttach';
 const editTestSubmissionWithoutAttachURL = '/test/editWithoutAttach';
 
+const getConversationsURL = '/chat/conversations';
+const getFacultySimplifiedDataURL = '/faculty/getSimplified';
+const getMessagesURL = '/chat/messages';
+const sendMessageURL = '/chat/newMessage';
+
 export const getStudentBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
     withCredentials: true
@@ -149,6 +154,31 @@ export const editTestSubmissionWithoutAttach = (details, uid) => {
 export const editTestSubmissionWithAttach = (details, uid) => {
   console.log(details);
   return axios.put(environment.apiUrl + base_url + editTestSubmissionWithAttachURL + '?uid=' + uid, details, {
+    withCredentials: true
+  });
+}
+
+export const getConversationsForStudent = () => {
+  return axios.get(environment.apiUrl + base_url + getConversationsURL, {
+    withCredentials: true
+  });
+}
+
+export const getFacultySimplifiedData = (id) => {
+  return axios.get(environment.apiUrl + base_url + getFacultySimplifiedDataURL + '?id=' + id, {
+    withCredentials: true
+  });
+}
+
+export const getMessagesForConversation = (id) => {
+  return axios.get(environment.apiUrl + base_url + getMessagesURL + "?conv_id=" + id, {
+    withCredentials: true
+  });
+}
+
+export const sendMessage = (details) => {
+  console.log(details);
+  return axios.post(environment.apiUrl + base_url + sendMessageURL, details, {
     withCredentials: true
   });
 }

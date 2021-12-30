@@ -36,6 +36,8 @@
     "react-scripts": "4.0.3",
     "react-select": "^5.2.1",
     "recharts": "^2.1.6",
+    "socket.io-client": "^4.4.0",
+    "timeago.js": "^4.0.2",
     "uuid": "^8.3.2",
     "web-vitals": "^1.1.2"
   },

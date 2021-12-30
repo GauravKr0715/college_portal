@@ -5,10 +5,12 @@ const facultyController = require('../../controllers/faculty');
 const Cookies = require('cookies');
 const uuidv4 = require('uuid').v4;
 
+router.use('/student', require('./student'));
 router.use('/attendance', require('./attendance'));
 router.use('/assignment', require('./assignment'));
 router.use('/test', require('./test'));
 router.use('/notes', require('./notes'));
+router.use('/chat', require('./chat'));
 
 router.post('/login', async (req, res) => {
   const data = Object.assign({}, req.body);
