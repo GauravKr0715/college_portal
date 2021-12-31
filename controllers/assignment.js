@@ -256,6 +256,20 @@ const addAssignmentSubmission = async (details, roll_no) => {
     details.student_id = roll_no;
     details.student_name = student_details.full_name;
 
+    const assignment_data = await assignment_repo.getOneCertainFields("title faculty_id", {
+      uid: details.assignment_id
+    });
+
+    let feed_obj = {};
+    feed_obj.uid = uuidv4();
+    feed_obj.from = roll_no;
+    feed_obj.to = assignment_data.faculty_id;
+    feed_obj.content = `<b>${student_details.full_name}</b> added a new submission for the assignment titled <b>${assignment_data.title}</b> for your <b>${assignment_data.subject}</b> class`;
+    feed_obj.link = `/assignments/${details.assignment_id}/${details.uid}`;
+    feed_obj.createdAt = Math.floor(Date.now() / 1000);
+
+    await feed_repo.add(feed_obj);
+
     await assignment_submission_repo.add(details);
     return {
       success: true,
