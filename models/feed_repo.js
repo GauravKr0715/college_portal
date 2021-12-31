@@ -34,6 +34,15 @@ module.exports = {
     }
   },
 
+  fetchAllWithPagination: async (condition, offset) => {
+    console.log(offset)
+    try {
+      return await Feed.find(condition).sort({ "createdAt": - 1 }).skip(offset).limit(10);
+    } catch (error) {
+      throw error;
+    }
+  },
+
   fetchAllCertainFields: async (field_string, condition) => {
     try {
       return await Feed.find(condition).select(field_string);

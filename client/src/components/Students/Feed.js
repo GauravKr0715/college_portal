@@ -440,9 +440,24 @@ function Feed() {
     ],
   ]);
 
+  const scrollEvent = (e) => {
+    //console.log(e);
+    var bottom =
+      e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight < 50;
+    if (bottom) {
+      setIsLoading(true);
+      // alert("we need more data");
+      studentFeed();
+      // let pg = pageNo + 1;
+      // setPageNo(pg);
+      // getData();
+    }
+  };
+
   const [slot_details_anchor, setSlotDetailsAnchor] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleSlotDrawer = () => {
     if (slot_details_anchor === true) {
@@ -483,14 +498,22 @@ function Feed() {
 
   const [page_no, setPageNo] = useState(1);
   const [feeds, setFeeds] = useState([]);
+  const [end_of_feed, setEndOfFeed] = useState(false);
 
   const studentFeed = async () => {
     try {
       const { data } = await getStudentFeed(page_no);
-      setFeeds(data.data);
+      if (data.data.length) {
+        setFeeds((prev) => [...prev, ...data.data]);
+        setPageNo(page_no + 1);
+      } else {
+        setEndOfFeed(true);
+      }
+      // setFeeds(data.data);
     } catch (error) {
       console.log(error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -518,7 +541,10 @@ function Feed() {
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
+      <Box
+        onScroll={!isLoading && !end_of_feed ? scrollEvent : null}
+        sx={{ display: "flex", overflowY: "auto" }}
+      >
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar>
@@ -808,6 +834,7 @@ function Feed() {
           </List> */}
         </Drawer>
         <Box
+          id="scroll"
           component="main"
           sx={{
             flexGrow: 1,
@@ -815,27 +842,36 @@ function Feed() {
             alignItems: "center",
             display: "flex",
             flexDirection: "column",
+            height: "100vh",
           }}
         >
           <DrawerHeader />
           <div className="feed-wrapper">
             {feeds && feeds.length ? (
-              feeds.map((feed) => (
+              feeds.map((feed, idx, arr) => (
+                <>
                   <div className="feed-container">
-                  <Link to={`${curr_url}${feed.link}`}>
-                    <div
-                      className="feed-content"
-                      dangerouslySetInnerHTML={{
-                        __html: feed.content,
-                      }}
-                    >
-                      {/* {feed.content.replace("%b%", "<b>").replace("%/b%", "</b>")} */}
-                    </div>
-                  </Link>
+                    <Link to={`${curr_url}${feed.link}`}>
+                      <div
+                        className="feed-content"
+                        dangerouslySetInnerHTML={{
+                          __html: feed.content,
+                        }}
+                      >
+                        {/* {feed.content.replace("%b%", "<b>").replace("%/b%", "</b>")} */}
+                      </div>
+                    </Link>
                     <div className="feed-time">
                       {format(feed.createdAt * 1000)}
                     </div>
                   </div>
+                  {end_of_feed && idx === arr.length - 1 && (
+                    <div className="feed-container">
+                      <div className="feed-content">Nothing more to see </div>
+                      <div className="feed-time"></div>
+                    </div>
+                  )}
+                </>
               ))
             ) : (
               <div className="feed-container">

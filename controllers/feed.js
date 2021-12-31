@@ -8,12 +8,12 @@ const getFeedForStudent = async (roll_no, page_no) => {
       roll_no
     });
 
-    const data = await feed_repo.fetchAll({
+    const data = await feed_repo.fetchAllWithPagination({
       $or: [
         { to: roll_no },
         { to: student_details.section }
       ]
-    });
+    }, (page_no - 1) * 5);
 
     console.log(data);
 
