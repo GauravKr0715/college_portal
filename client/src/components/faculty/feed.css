@@ -77,34 +77,37 @@ a:hover {
   align-items: center;
 }
 
-.floating-container .inner-container .slot {
+.floating-container .inner-container .fac_slot {
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
   margin: 1rem 0.25rem -1rem;
   padding: 10px 25px;
   border: 1px solid;
   border-radius: 12px;
   background-color: #f1f4f5;
+  max-width: max-content;
 }
 
-.floating-container .inner-container .slot:hover {
+.floating-container .inner-container .fac_slot:hover {
   background-color: #c7ccce;
 }
 
-.floating-container .inner-container .slot .slot_time {
+.floating-container .inner-container .fac_slot .slot_time {
   font-size: 12px;
   font-weight: lighter;
 }
 
-.floating-container .inner-container .slot .slot_sub {
-  font-size: 20px;
+.floating-container .inner-container .fac_slot .fac_slot_sub {
+  font-size: 13px;
   font-weight: bolder;
+  text-align: center;
 }
 
-.floating-container .inner-container .slot .slot_sec {
+.floating-container .inner-container .fac_slot .slot_sec {
   font-size: 13px;
   font-weight: bold;
 }

@@ -97,8 +97,9 @@ a:hover {
 }
 
 .floating-container .inner-container .slot .slot_sub {
-  font-size: 20px;
+  font-size: 13px;
   font-weight: bolder;
+  text-align: center;
 }
 
 .floating-container .inner-container .slot .slot_sec {
