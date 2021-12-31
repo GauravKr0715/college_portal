@@ -26,9 +26,11 @@ const editTestSubmissionWithAttachURL = '/test/editWithAttach';
 const editTestSubmissionWithoutAttachURL = '/test/editWithoutAttach';
 
 const getConversationsURL = '/chat/conversations';
+const getFacultiesForChatURL = '/chat/facultiesList';
 const getFacultySimplifiedDataURL = '/faculty/getSimplified';
 const getMessagesURL = '/chat/messages';
 const sendMessageURL = '/chat/newMessage';
+const addConversationURL = '/chat/newConversation';
 
 const getFeedURL = '/feed/';
 
@@ -166,6 +168,12 @@ export const getConversationsForStudent = () => {
   });
 }
 
+export const getFacultiesForStudents = () => {
+  return axios.get(environment.apiUrl + base_url + getFacultiesForChatURL, {
+    withCredentials: true
+  });
+}
+
 export const getFacultySimplifiedData = (id) => {
   return axios.get(environment.apiUrl + base_url + getFacultySimplifiedDataURL + '?id=' + id, {
     withCredentials: true
@@ -181,6 +189,13 @@ export const getMessagesForConversation = (id) => {
 export const sendMessage = (details) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + sendMessageURL, details, {
+    withCredentials: true
+  });
+}
+
+export const addConversation = (details) => {
+  console.log(details);
+  return axios.post(environment.apiUrl + base_url + addConversationURL, details, {
     withCredentials: true
   });
 }

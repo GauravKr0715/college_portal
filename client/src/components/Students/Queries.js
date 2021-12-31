@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
+import Autocomplete from '@mui/material/Autocomplete';
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
@@ -21,8 +22,10 @@ import { Link, useRouteMatch } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
 import {
   getConversationsForStudent,
+  getFacultiesForStudents,
   getMessagesForConversation,
   sendMessage,
+  addConversation
 } from "../../services/student";
 import StudentAppBar from "./StudentAppBar";
 import Conversation from "./chat/Conversation";
@@ -130,7 +133,36 @@ function Queries() {
   const [arrival_message, setArrivalMessage] = useState(null);
   const socket = useRef();
   const [user, setUser] = useState(null);
+  const [faculties_list, setFacultiesList] = useState([]);
   const scrollRef = useRef();
+
+  const addAndOrSelectConversation = async (faculty) => {
+    let idx = -1;
+    if (faculty !== null) {
+      if (conversations.some((conv, i) => {
+        if (conv.members.includes(faculty.uni_id)) {
+          idx = i;
+          return true;
+        } else {
+          return false;
+        }
+      })) {
+        // select that conversation
+        setCurrentChat(conversations[idx]);
+      } else {
+        // add and select that conversation
+        let new_conv = {
+          sender_id: user.id,
+          receiver_id: faculty.uni_id
+        };
+        console.log(new_conv)
+        const { data } = await addConversation(new_conv);
+        console.log(data)
+        setCurrentChat(data.data);
+        setConversations(prev => [...prev, data.data]);
+      }
+    }
+  }
 
   useEffect(() => {
     socket.current = io("ws://localhost:5000");
@@ -170,7 +202,15 @@ function Queries() {
     } catch (error) { }
   };
 
+  const getFacultiesForChat = async () => {
+    try {
+      const { data } = await getFacultiesForStudents();
+      setFacultiesList(data.faculties_list);
+    } catch (error) { }
+  }
+
   useEffect(() => {
+    getFacultiesForChat();
     getConversations();
   }, []);
 
@@ -279,10 +319,40 @@ function Queries() {
             <div className="messenger">
               <div className="chatMenu">
                 <div className="chatMenuWrapper">
-                  <input
-                    placeholder="Search for Faculty"
-                    className="chatMenuInput"
-                  />
+                  {
+                    conversations && user && (
+                      <Autocomplete
+                        id="select-faculty"
+                        sx={{ width: 300, marginRight: '7px' }}
+                        options={faculties_list}
+                        autoHighlight
+                        onChange={(event, value) => {
+                          // add conversation with this person and select it
+                          console.log(value);
+                          addAndOrSelectConversation(value);
+                        }}
+                        getOptionLabel={(option) => `${option.full_name}`}
+                        renderOption={(props, option) => (
+                          <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                            {option.full_name}
+                          </Box>
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Select Faculty"
+                            inputProps={{
+                              ...params.inputProps,
+                              autocomplete: 'off',
+                              form: {
+                                autocomplete: 'off',
+                              }, // disable autocomplete and autofill
+                            }}
+                          />
+                        )}
+                      />
+                    )
+                  }
                   {conversations &&
                     user &&
                     conversations.map((conversation) => (

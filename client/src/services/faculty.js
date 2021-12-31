@@ -44,9 +44,13 @@ const applyLinkURL = '/applyLink';
 const removeLinkURL = '/removeLink';
 
 const getConversationsURL = '/chat/conversations';
+const getStudentsForChatURL = '/chat/studentsList';
 const getStudentSimplifiedDataURL = '/student/getSimplified';
 const getMessagesURL = '/chat/messages';
 const sendMessageURL = '/chat/newMessage';
+const addConversationURL = '/chat/newConversation';
+
+const getFeedURL = '/feed/';
 
 export const getFacultyBasicDetails = () => {
   return axios.get(environment.apiUrl + base_url + basicDetailsURL, {
@@ -283,6 +287,12 @@ export const getConversationsForFaculty = () => {
   });
 }
 
+export const getStudentsForFaculty = () => {
+  return axios.get(environment.apiUrl + base_url + getStudentsForChatURL, {
+    withCredentials: true
+  });
+}
+
 export const getStudentSimplifiedData = (id) => {
   return axios.get(environment.apiUrl + base_url + getStudentSimplifiedDataURL + '?id=' + id, {
     withCredentials: true
@@ -298,6 +308,19 @@ export const getMessagesForConversation = (id) => {
 export const sendMessage = (details) => {
   console.log(details);
   return axios.post(environment.apiUrl + base_url + sendMessageURL, details, {
+    withCredentials: true
+  });
+}
+
+export const addConversation = (details) => {
+  console.log(details);
+  return axios.post(environment.apiUrl + base_url + addConversationURL, details, {
+    withCredentials: true
+  });
+}
+
+export const getFacultyFeed = (page_no) => {
+  return axios.get(environment.apiUrl + base_url + getFeedURL + "?page_no=" + page_no, {
     withCredentials: true
   });
 }

@@ -31,6 +31,19 @@ router.get('/conversations', async (req, res) => {
   }
 });
 
+router.get('/studentsList', async (req, res) => {
+  try {
+    const uni_id = req.token_data.data.user_id;
+
+    const data = await chat_controller.getStudentsForFaculty(uni_id);
+
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+});
+
 router.post('/newMessage', async (req, res) => {
   try {
     const details = Object.assign({}, req.body);

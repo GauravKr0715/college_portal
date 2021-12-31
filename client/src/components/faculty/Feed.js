@@ -22,7 +22,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import { faculty_sidebar_data } from "../../environments/sidebar_data";
 import "./feed.css";
 import moment from "moment";
-import { getFacultyBasicDetails, removeLink } from "../../services/faculty";
+import { getFacultyBasicDetails, removeLink, getFacultyFeed } from "../../services/faculty";
 import { Link, useRouteMatch } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -31,6 +31,7 @@ import Logout from "@mui/icons-material/Logout";
 import Icon from "@mui/material/Icon";
 import ClassLinksDialog from "./ClassLinksDialog";
 import { logoutFaculty } from "../../services/authentication";
+import { format } from "timeago.js";
 
 const drawerWidth = 240;
 
@@ -432,6 +433,15 @@ function Feed() {
     ],
   ]);
 
+  const scrollEvent = (e) => {
+    var bottom =
+      e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight < 50;
+    if (bottom) {
+      setIsLoading(true);
+      facultyFeed();
+    }
+  };
+
   const [slot_details_anchor, setSlotDetailsAnchor] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedSlotIndex, setSelectedSlotIndex] = useState(null);
@@ -482,7 +492,29 @@ function Feed() {
     setTodaysTimeTable(data.final_result.todays_time_table);
   };
 
+  const [page_no, setPageNo] = useState(1);
+  const [feeds, setFeeds] = useState([]);
+  const [end_of_feed, setEndOfFeed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const facultyFeed = async () => {
+    try {
+      const { data } = await getFacultyFeed(page_no);
+      if (data.data.length) {
+        setFeeds((prev) => [...prev, ...data.data]);
+        setPageNo(page_no + 1);
+      } else {
+        setEndOfFeed(true);
+      }
+      // setFeeds(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
+    facultyFeed();
     facultyBasicDetails();
   }, []);
 
@@ -531,7 +563,9 @@ function Feed() {
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
+      <Box
+        onScroll={!isLoading && !end_of_feed ? scrollEvent : null}
+        sx={{ display: "flex", overflowY: "auto" }}>
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar>
@@ -853,15 +887,50 @@ function Feed() {
             ))}
           </List> */}
         </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Box component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+          }}>
           <DrawerHeader />
-          <Typography
-            paragraph
-            style={{ textAlign: "center", marginTop: 150, fontSize: 90 }}
-          >
-            Faculty Section
-          </Typography>
-          <Typography paragraph></Typography>
+          <div className="feed-wrapper">
+            {feeds && feeds.length ? (
+              feeds.map((feed, idx, arr) => (
+                <>
+                  <div className="feed-container">
+                    <Link to={`${curr_url}${feed.link}`}>
+                      <div
+                        className="feed-content"
+                        dangerouslySetInnerHTML={{
+                          __html: feed.content,
+                        }}
+                      >
+                        {/* {feed.content.replace("%b%", "<b>").replace("%/b%", "</b>")} */}
+                      </div>
+                    </Link>
+                    <div className="feed-time">
+                      {format(feed.createdAt * 1000)}
+                    </div>
+                  </div>
+                  {end_of_feed && idx === arr.length - 1 && (
+                    <div className="feed-container">
+                      <div className="feed-content">Nothing more to see </div>
+                      <div className="feed-time"></div>
+                    </div>
+                  )}
+                </>
+              ))
+            ) : (
+              <div className="feed-container">
+                <div className="feed-content">Nothing to see here</div>
+                <div className="feed-time"></div>
+              </div>
+            )}
+          </div>
         </Box>
       </Box>
       <MuiDrawer
