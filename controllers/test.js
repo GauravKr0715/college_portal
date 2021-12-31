@@ -246,7 +246,7 @@ const getTestDetailsForStudent = async (roll_no, uid) => {
 
 const addTestSubmission = async (details, roll_no) => {
   try {
-    const test_data = await test_repo.getOneCertainFields("due_date", {
+    const test_data = await test_repo.getOneCertainFields("title faculty_id subject due_date", {
       uid: details.test_id
     });
     if (Math.floor(Date.now() / 1000) > +test_data.due_date + 600) {
@@ -259,9 +259,9 @@ const addTestSubmission = async (details, roll_no) => {
     details.student_id = roll_no;
     details.student_name = student_details.full_name;
 
-    const test_data = await test_repo.getOneCertainFields("title faculty_id", {
-      uid: details.test_id
-    });
+    // const test_data = await test_repo.getOneCertainFields("title faculty_id", {
+    //   uid: details.test_id
+    // });
 
     let feed_obj = {};
     feed_obj.uid = uuidv4();
