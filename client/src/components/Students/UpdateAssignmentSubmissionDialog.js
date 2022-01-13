@@ -10,7 +10,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import LoadingOverlay from "react-loading-overlay";
 import Box from "@mui/material/Box";
-import "../Faculty/update-assignment.css";
+import "../faculty/update-assignment.css";
 import {
   editAssignmentSubmissionWithoutAttach,
   editAssignmentSubmissionWithAttach,

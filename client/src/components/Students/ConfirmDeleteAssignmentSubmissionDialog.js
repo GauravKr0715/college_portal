@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
 import LoadingOverlay from "react-loading-overlay";
-import "../Faculty/new_assignment.css";
+import "../faculty/new_assignment.css";
 import {
   deleteAssignmentSubmissionDetails
 } from "../../services/student";

@@ -19,7 +19,7 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import LoadingOverlay from "react-loading-overlay";
 import Box from "@mui/material/Box";
-import "../Faculty/new_assignment.css";
+import "../faculty/new_assignment.css";
 import {
   uploadNewTestSubmissionWithoutAttach,
   uploadNewTestSubmissionWithAttach,
