@@ -26,6 +26,7 @@ import FacultyTestSubmissionProfile from './components/faculty/TestSubmissionPro
 import FacultyNotes from './components/faculty/Notes';
 import FacultyNotesProfile from './components/faculty/NotesProfile';
 import FacultyAnnouncement from './components/faculty/Announcement'
+
 import FacultyQueries from './components/faculty/Queries';
 
 import StudentHome from './components/Students/Home';
