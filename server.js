@@ -17,6 +17,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const logger = require('./helpers/logger');
 
