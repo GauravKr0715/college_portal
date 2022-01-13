@@ -9,24 +9,24 @@ import FacultyLogin from './components/Login/F_Login';
 import AdminLogin from './components/Login/A_Login';
 
 
-import FacultyHome from './components/Faculty/Home';
-import FacultyFeed from './components/Faculty/Feed';
-import FacultyAttendance from './components/Faculty/Attendance';
-import FacultyTT from "./components/Faculty/timetable"
-import FacultyProfile from "./components/Faculty/profile"
+import FacultyHome from './components/faculty/Home';
+import FacultyFeed from './components/faculty/Feed';
+import FacultyAttendance from './components/faculty/Attendance';
+import FacultyTT from "./components/faculty/timetable"
+import FacultyProfile from "./components/faculty/profile"
 
 
 import StudentProfile from "./components/Students/profile"
-import FacultyAssignment from './components/Faculty/Assignment';
-import FacultyAssignmentProfile from './components/Faculty/AssignmentProfile';
-import FacultyAssignmentSubmissionProfile from './components/Faculty/AssignmentSubmissionProfile';
-import FacultyTest from './components/Faculty/Test';
-import FacultyTestProfile from './components/Faculty/TestProfile';
-import FacultyTestSubmissionProfile from './components/Faculty/TestSubmissionProfile';
-import FacultyNotes from './components/Faculty/Notes';
-import FacultyNotesProfile from './components/Faculty/NotesProfile';
-import FacultyAnnouncement from './components/Faculty/Announcement'
-import FacultyQueries from './components/Faculty/Queries';
+import FacultyAssignment from './components/faculty/Assignment';
+import FacultyAssignmentProfile from './components/faculty/AssignmentProfile';
+import FacultyAssignmentSubmissionProfile from './components/faculty/AssignmentSubmissionProfile';
+import FacultyTest from './components/faculty/Test';
+import FacultyTestProfile from './components/faculty/TestProfile';
+import FacultyTestSubmissionProfile from './components/faculty/TestSubmissionProfile';
+import FacultyNotes from './components/faculty/Notes';
+import FacultyNotesProfile from './components/faculty/NotesProfile';
+import FacultyAnnouncement from './components/faculty/Announcement'
+import FacultyQueries from './components/faculty/Queries';
 
 import StudentHome from './components/Students/Home';
 import StudentFeed from './components/Students/Feed';
