@@ -31,12 +31,12 @@ export const faculty_sidebar_data = [
     text: 'Queries',
     icon: 'question_answer',
     link: '/queries'
-  },
-  {
-    text: 'Announcement',
-    icon: 'campaign',
-    link: '/announcement'
-  },
+  }
+  // {
+  //   text: 'Announcement',
+  //   icon: 'campaign',
+  //   link: '/announcement'
+  // },
 ];
 
 export const admin_sidebar_data = [

@@ -19,7 +19,7 @@ export default function FacultyLogin() {
       const { data } = await loginFaculty(userId, password);
       console.log(data);
       if (data.success) {
-        alert(`we're in`);
+        // alert(`we're in`);
         window.location.href = '/faculty/feed';
       } else {
         setError(data.message);

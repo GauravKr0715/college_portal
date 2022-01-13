@@ -21,6 +21,7 @@ import {
   saveClassesForSection,
   getSubjectsAndFaculties
 } from "../../services/admin";
+import { GlobalVariables } from '../../environments/global_data';
 
 function ClassesDialog(props) {
 
@@ -157,7 +158,7 @@ function ClassesDialog(props) {
                             cursor: 'pointer'
                           }}>
                           <div className={"clickable-title multiline-head"}>
-                            {`[${c.subject_id}] ${c.subject_name} - ${c.faculty_name}`}
+                            {`[${c.subject_id}] ${c.subject_name} - ${c.faculty_name} (${GlobalVariables.subject_types[c.subject_type]})`}
                           </div>
                           {
                             props.getOrigCLassID() === c.class_id && (

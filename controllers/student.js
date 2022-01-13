@@ -170,7 +170,7 @@ const getBasicDetails = async (roll_no) => {
     result.classes = section_data.classes
     let todays_time_table = [];
     let class_ids = section_data.classes.map(c => c.class_id);
-    let day_idx = days_map[moment().subtract(1, 'days').format("dddd")];
+    let day_idx = days_map[moment().format("dddd")];
 
     if (moment().format('dddd') !== 'Sunday') {
       for (let i = 0; i < section_data.time_table[day_idx].length; i++) {

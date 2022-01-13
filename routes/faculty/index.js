@@ -11,6 +11,7 @@ router.use('/assignment', require('./assignment'));
 router.use('/test', require('./test'));
 router.use('/notes', require('./notes'));
 router.use('/chat', require('./chat'));
+router.use('/feed', require('./feed'));
 
 router.post('/login', async (req, res) => {
   const data = Object.assign({}, req.body);

@@ -19,7 +19,7 @@ export default function StudentLogin() {
       const { data } = await loginStudent(userId, password);
       console.log(data);
       if (data.success) {
-        alert(`we're in`);
+        // alert(`we're in`);
         window.location.href = '/student/feed';
       } else {
         setError(data.message);

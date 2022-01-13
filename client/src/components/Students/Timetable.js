@@ -117,7 +117,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-function Assignment() {
+function TimeTable() {
   let { url, path } = useRouteMatch();
   const curr_url = "/" + url.split("/")[1];
 
@@ -167,7 +167,7 @@ function Assignment() {
 
   const onDialogClose = () => {
     setDialogOpen(false);
-    
+
   }
 
   const activateLoading = () => {
@@ -178,7 +178,7 @@ function Assignment() {
     setLoading(false);
   }
 
-  
+
   const openSnackBar = (msg) => {
     setSnackbarMessage(msg);
     setSnackbar(true);
@@ -191,7 +191,7 @@ function Assignment() {
   function createData(one, two, three, four, five, six, seven, eight) {
     return { one, two, three, four, five, six, seven, eight };
   }
-  
+
   const rows = [
     createData('Monday', "ADBA", "ACN", "", "ST", "CNS", "GROUP B CNS", "GROUP A ST"),
     createData('Tuesday', "", "", "", "", "", "", ""),
@@ -199,7 +199,7 @@ function Assignment() {
     createData('Thursday', "", "", "", "", "", "", ""),
     createData('Friday', "", "", "", "", "", "", ""),
     createData('Saturday', "", "", "", "", "", "", ""),
-  
+
   ];
 
   return (
@@ -211,7 +211,7 @@ function Assignment() {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <StudentAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose}/>
+          <StudentAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -244,39 +244,39 @@ function Assignment() {
             <Divider />
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <DrawerHeader />
-          <Table >
-          <TableHead>
-            <TableRow>
-            <TableCell>   </TableCell>
-            <TableCell sx={{ fontWeight:'bold'}} >09:10-10:05</TableCell>
-            <TableCell sx={{ fontWeight:'bold'}} >10:05-11:00</TableCell>
-            <TableCell sx={{ fontWeight:'bold'}}>Lunch-Time</TableCell>
-            <TableCell sx={{ fontWeight:'bold'}}>11:30-12:25</TableCell>
-            <TableCell sx={{ fontWeight:'bold'}}>12:25-01:20</TableCell>
-            <TableCell sx={{ fontWeight:'bold'}}>01:20-02:15</TableCell>
-            <TableCell sx={{ fontWeight:'bold'}}>02:15-03:10</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {rows.map(row =>( 
-              <TableRow >
-              <TableCell component="th" scope="row" sx={{ fontWeight:'bold' }}>
-              {row.one}
-            </TableCell>
+            <DrawerHeader />
+            <Table >
+              <TableHead>
+                <TableRow>
+                  <TableCell>   </TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }} >09:10-10:05</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }} >10:05-11:00</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>Lunch-Time</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>11:30-12:25</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>12:25-01:20</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>01:20-02:15</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold' }}>02:15-03:10</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map(row => (
+                  <TableRow >
+                    <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                      {row.one}
+                    </TableCell>
 
-            <TableCell >{row.two}</TableCell>
-            <TableCell  >{row.three}</TableCell>
-            <TableCell >{row.four}</TableCell>
-            <TableCell  >{row.five}</TableCell>
-            <TableCell >{row.six}</TableCell>
-            <TableCell >{row.seven}</TableCell>
-            <TableCell >{row.eight}</TableCell>
-                               </TableRow>
-            ))
-          }
-          </TableBody>
-        </Table>
+                    <TableCell >{row.two}</TableCell>
+                    <TableCell  >{row.three}</TableCell>
+                    <TableCell >{row.four}</TableCell>
+                    <TableCell  >{row.five}</TableCell>
+                    <TableCell >{row.six}</TableCell>
+                    <TableCell >{row.seven}</TableCell>
+                    <TableCell >{row.eight}</TableCell>
+                  </TableRow>
+                ))
+                }
+              </TableBody>
+            </Table>
           </Box>
         </Box>
         <Snackbar
@@ -292,10 +292,10 @@ function Assignment() {
             </React.Fragment>
           }
         />
-      
+
       </LoadingOverlay>
     </>
   );
 }
 
-export default Assignment;
+export default TimeTable;

@@ -38,6 +38,11 @@ router.get('/validateSession', (req, res) => {
   });
 });
 
+router.put('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.send({ success: true });
+});
+
 router.get('/basicDetails', async (req, res) => {
   try {
     const uni_id = req.token_data.data.user_id;
