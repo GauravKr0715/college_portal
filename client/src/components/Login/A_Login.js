@@ -19,8 +19,8 @@ export default function FacultyLogin() {
       const { data } = await loginAdmin(userId, password);
       console.log(data);
       if (data.success) {
-        alert(`we're in`);
-        window.location.href = '/admin/studentnew';
+        // alert(`we're in`);
+        window.location.href = '/admin/students';
       } else {
         setError(data.message);
       }

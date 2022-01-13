@@ -721,7 +721,7 @@ function Feed() {
               </div>
             </Box>
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <IconButton
+              {/* <IconButton
                 size="large"
                 aria-label="show 4 new mails"
                 color="inherit"
@@ -729,8 +729,8 @@ function Feed() {
                 <Badge badgeContent={4} color="error">
                   <MailIcon />
                 </Badge>
-              </IconButton>
-              <IconButton
+              </IconButton> */}
+              {/* <IconButton
                 size="large"
                 aria-label="show 17 new notifications"
                 color="inherit"
@@ -738,7 +738,7 @@ function Feed() {
                 <Badge badgeContent={17} color="error">
                   <NotificationsIcon />
                 </Badge>
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 size="large"
                 edge="end"

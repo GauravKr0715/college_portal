@@ -238,7 +238,7 @@ function AssignmentProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <StudentAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose}/>
+          <StudentAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -294,6 +294,8 @@ function AssignmentProfile(props) {
                         {assignment.subject}
                         {" • "}
                         {assignment.faculty_name}
+                        {assignment.total_marks &&
+                          ` • ${assignment.total_marks} marks`}
                       </div>
                       {result && (
                         <div className="details-tab ">
@@ -387,7 +389,7 @@ function AssignmentProfile(props) {
                     >
                       <MenuItem
                         key={"edit"}
-                        onClick={() => { 
+                        onClick={() => {
                           setEditDialog(true);
                           setMoreMenuAnchorEl(null);
                         }}
@@ -408,6 +410,16 @@ function AssignmentProfile(props) {
                   {submission ? (
                     <div className="stu-ass-details-container">
                       <div className="response-header">Your Response</div>
+                      {
+                        assignment && assignment.total_marks ? (
+                          <div className="details-tab right-aligned">
+                            <div className="details-bold ass-head-head total-marks-container">
+                              {submission.marks_scored ? submission.marks_scored : '--'}
+                            </div>
+                            {`/ ${assignment.total_marks} scored`}
+                          </div>
+                        ) : null
+                      }
                       {submission.response && (
                         <div className="details-tab ">
                           Response:{" "}

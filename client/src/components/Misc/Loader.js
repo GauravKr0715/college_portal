@@ -3,7 +3,9 @@ import loadingGIF from '../../Animated.gif';
 
 const Loader = () => {
 
-  return <img src={loadingGIF} className="loader" alt="Loading..." />
+  return <img src={loadingGIF} style={{
+    width: 'auto',
+  }} className="loader" alt="Loading..." />
 
 }
 

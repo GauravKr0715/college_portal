@@ -26,7 +26,7 @@ const AppBar = styled(MuiAppBar, {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  
+
 }));
 
 function StudentAppBar(props) {
@@ -59,46 +59,46 @@ function StudentAppBar(props) {
   return (
     <AppBar position="fixed" open={open}>
       <Toolbar>
-      {
-        !open ? (
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => {
-              props.handleDrawerOpen();
-              setOpen(true);
-            }}
-            edge="start"
-            sx={{
-              marginRight: "36px",
-              ...(open && { display: "none" }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-        ) : (
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={() => {
-              props.handleDrawerClose();
-              setOpen(false);
-            }}
-            edge="start"
-            sx={{
-              marginRight: "36px",
-              ...(!open && { display: "none" }),
-            }}
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-        )
-      }
-     
-       
+        {
+          !open ? (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={() => {
+                props.handleDrawerOpen();
+                setOpen(true);
+              }}
+              edge="start"
+              sx={{
+                marginRight: "36px",
+                ...(open && { display: "none" }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+          ) : (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={() => {
+                props.handleDrawerClose();
+                setOpen(false);
+              }}
+              edge="start"
+              sx={{
+                marginRight: "36px",
+                ...(!open && { display: "none" }),
+              }}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+          )
+        }
+
+
         <Box sx={{ flexGrow: 1 }}></Box>
         <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          <IconButton
+          {/* <IconButton
             size="large"
             aria-label="show 4 new mails"
             color="inherit"
@@ -106,8 +106,8 @@ function StudentAppBar(props) {
             <Badge badgeContent={4} color="error">
               <MailIcon />
             </Badge>
-          </IconButton>
-          <IconButton
+          </IconButton> */}
+          {/* <IconButton
             size="large"
             aria-label="show 17 new notifications"
             color="inherit"
@@ -115,7 +115,7 @@ function StudentAppBar(props) {
             <Badge badgeContent={17} color="error">
               <NotificationsIcon />
             </Badge>
-          </IconButton>
+          </IconButton> */}
           <IconButton
             size="large"
             edge="end"

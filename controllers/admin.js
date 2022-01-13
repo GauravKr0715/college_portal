@@ -45,7 +45,7 @@ const getBasicDetails = async (uni_id) => {
     final_result.links = data.links;
     let todays_time_table = [];
     let class_ids = data.classes.map(c => c.class_id);
-    let day_idx = days_map[moment().subtract(5, 'days').format("dddd")];
+    let day_idx = days_map[moment().format("dddd")];
 
     if (moment().format('dddd') !== 'Sunday') {
       for (let i = 0; i < data.time_table[day_idx].length; i++) {
@@ -177,6 +177,6 @@ const getProfileDetails = async (uni_id) => {
 module.exports = {
   addDetails,
   getBasicDetails,
-   validateUser,
-    getProfileDetails
+  validateUser,
+  getProfileDetails
 }

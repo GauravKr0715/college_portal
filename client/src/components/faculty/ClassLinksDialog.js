@@ -173,7 +173,13 @@ function ClassLinksDialog(props) {
                         }}
                         value={link_url}
                         onChange={(e) => {
-                          setLinkURL(e.target.value);
+                          if (e.target.value.startsWith(`https://`)) {
+                            setLinkURL(e.target.value.substring(8));
+                          } else if (e.target.value.startsWith(`http://`)) {
+                            setLinkURL(e.target.value.substring(7));
+                          } else {
+                            setLinkURL(e.target.value);
+                          }
                         }}
                         InputLabelProps={{
                           shrink: true,

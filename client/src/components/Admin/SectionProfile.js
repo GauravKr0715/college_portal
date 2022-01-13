@@ -286,7 +286,7 @@ function SectionProfile() {
     setSubmitLoading(false);
   };
 
-  useEffect(() => {}, [slotEditorOpen]);
+  useEffect(() => { }, [slotEditorOpen]);
 
   const [classesDialogOpen, setClassesDialogOpen] = useState(false);
 
@@ -461,7 +461,7 @@ function SectionProfile() {
                                       <TableCell>
                                         {
                                           GlobalVariables.subject_types[
-                                            c.subject_type
+                                          c.subject_type
                                           ]
                                         }
                                       </TableCell>
@@ -585,6 +585,13 @@ function SectionProfile() {
                                                   <div className="small-data">
                                                     {slot.faculty_name}
                                                   </div>
+                                                  {
+                                                    slot.subject_type !== 0 && (
+                                                      <div className="small-data">
+                                                        {`${GlobalVariables.subject_types[slot.subject_type]}`}
+                                                      </div>
+                                                    )
+                                                  }
                                                 </div>
                                               </TableCell>
                                               {idx2 === 1 ? (
@@ -639,7 +646,7 @@ function SectionProfile() {
                               ))}
                             </TextField>
                             {eligible_students_list &&
-                            eligible_students_list.length ? (
+                              eligible_students_list.length ? (
                               <div style={{ height: 400, width: "100%" }}>
                                 <DataGrid
                                   sx={{

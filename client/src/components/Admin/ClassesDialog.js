@@ -14,6 +14,7 @@ import {
   saveClassesForSection,
   getSubjectsAndFaculties
 } from "../../services/admin";
+import { GlobalVariables } from '../../environments/global_data';
 
 function ClassesDialog(props) {
 
@@ -194,10 +195,10 @@ function ClassesDialog(props) {
                       handleSubjectChange(value, i);
                       console.log(value)
                     }}
-                    getOptionLabel={(option) => `[${option.code}] ${option.name}`}
+                    getOptionLabel={(option) => `[${option.code}] ${option.name} (${GlobalVariables.subject_types[option.type]})`}
                     renderOption={(props, option) => (
                       <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                        {option.name} ({option.code})
+                        {option.name} ({option.code}) ({`${GlobalVariables.subject_types[option.type]}`})
                       </Box>
                     )}
                     renderInput={(params) => (
