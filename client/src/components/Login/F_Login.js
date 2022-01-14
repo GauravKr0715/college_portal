@@ -12,8 +12,10 @@ export default function FacultyLogin() {
   const [userId, setUserID] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const LoginFaculty = async () => {
+    setLoading(true);
     try {
       setError(null);
       const { data } = await loginFaculty(userId, password);
@@ -27,6 +29,7 @@ export default function FacultyLogin() {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
   }
 
   return (
@@ -103,9 +106,21 @@ export default function FacultyLogin() {
               <span id="email-error">{error}</span>
             )
           }
-          <button class="button" type="button" onClick={LoginFaculty}>
-            LOGIN
-          </button>
+          {
+            loading ? (
+              <button disabled={loading} style={{
+                backgroundColor: '#555',
+                cursor: 'pointer'
+              }} class="button" type="button" >
+                Loading...
+              </button>
+            ) : (
+              <button disabled={loading} class="button" type="button" onClick={LoginFaculty}>
+                LOGIN
+              </button>
+
+            )
+          }
         </form>
       </div>
     </div>

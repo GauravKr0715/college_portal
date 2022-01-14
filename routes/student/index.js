@@ -69,4 +69,19 @@ router.get('/profileDetails', async (req, res) => {
     res.status(400).send({ error });
   }
 });
+
+router.get('/timetable', async (req, res) => {
+  try {
+    const roll_no = req.token_data.data.user_id;
+    const data = await StudentController.getTimeTable(roll_no);
+
+    // console.log(data);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).send({ error });
+  }
+  console.log(req.token_data);
+})
+
 module.exports = router;

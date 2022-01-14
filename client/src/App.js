@@ -15,8 +15,8 @@ import AdminLogin from './components/Login/A_Login';
 import FacultyHome from './components/Faculty/Home';
 import FacultyFeed from './components/Faculty/Feed';
 import FacultyAttendance from './components/Faculty/Attendance';
-import FacultyTT from "./components/Faculty/timetable";
-// import FacultyTT from "./components/Faculty/timetable_new";
+// import FacultyTT from "./components/Faculty/timetable";
+import FacultyTT from "./components/Faculty/timetable_new";
 import FacultyProfile from "./components/Faculty/profile"
 
 
@@ -41,8 +41,8 @@ import StudentTest from './components/Students/Test';
 import StudentTestProfile from './components/Students/TestProfile';
 import StudentNotes from './components/Students/Notes';
 import StudentNotesProfile from './components/Students/NotesProfile';
-import StudentTT from "./components/Students/Timetable";
-// import StudentTT from "./components/Students/Timetable_new_student";
+// import StudentTT from "./components/Students/Timetable";
+import StudentTT from "./components/Students/Timetable_new_student";
 import StudentQueries from './components/Students/Queries';
 
 import AdminHome from './components/Admin/Home';

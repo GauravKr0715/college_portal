@@ -281,6 +281,23 @@ const getSimplifiedUser = async (roll_no) => {
     logger.error(error);
     throw error;
   }
+};
+
+const getTimeTable = async (roll_no) => {
+  try {
+    const details = await student_repo.fetchOneCertainFields("section", { roll_no });
+    const data = await section_repo.fetchCertainFieldsByCondition("time_table", { name: details.section });
+    console.log(roll_no);
+    console.log(data);
+    return {
+      success: true,
+      message: 'Student time-table retrieved successfully',
+      data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
 }
 
 module.exports = {
@@ -293,5 +310,6 @@ module.exports = {
   getClasses,
   getProfileDetails,
   getStudentByID,
-  getSimplifiedUser
+  getSimplifiedUser,
+  getTimeTable
 }

@@ -404,7 +404,24 @@ const getSimplifiedUser = async (uni_id) => {
     logger.error(error);
     throw error;
   }
-}
+};
+
+const getTimeTable = async (uni_id) => {
+  try {
+    const data = await faculty_repo.fetchOneCertainFields("time_table", { uni_id });
+    console.log(uni_id);
+    console.log(data);
+
+    return {
+      success: true,
+      message: 'Faculty timetable retrieved successfully',
+      data
+    }
+  } catch (error) {
+    logger.error(error);
+    throw error;
+  }
+};
 
 module.exports = {
   addDetails,
@@ -418,5 +435,6 @@ module.exports = {
   applyLink,
   removeLinkFromClass,
   getFacultyByID,
-  getSimplifiedUser
+  getSimplifiedUser,
+  getTimeTable
 }
