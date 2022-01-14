@@ -29,7 +29,6 @@ import FacultyTestProfile from './components/faculty/TestProfile';
 import FacultyTestSubmissionProfile from './components/faculty/TestSubmissionProfile';
 import FacultyNotes from './components/faculty/Notes';
 import FacultyNotesProfile from './components/faculty/NotesProfile';
-import FacultyAnnouncement from './components/faculty/Announcement'
 
 import FacultyQueries from './components/faculty/Queries';
 
@@ -144,10 +143,6 @@ function App() {
                 <Route path={`${url}/profile`} exact >
                   {/* <Authorization /> */}
                   <FacultyProfile />
-                </Route>
-                <Route path={`${url}/announcement`} exact >
-                  {/* <Authorization /> */}
-                  <FacultyAnnouncement />
                 </Route>
                 <Route path={`${url}/queries`} exact >
                   {/* <Authorization /> */}
