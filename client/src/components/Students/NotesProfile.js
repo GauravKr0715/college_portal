@@ -163,7 +163,7 @@ function NotesProfile(props) {
       >
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <StudentAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose}/>
+          <StudentAppBar open={open} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
           <Drawer variant="permanent" open={open}>
             <DrawerHeader>
               <IconButton
@@ -232,7 +232,7 @@ function NotesProfile(props) {
                             {notes.files.map((file, idx) => (
                               <div className="file-tab">
                                 <a
-                                  href={`http://localhost:5000/notes/${file}`}
+                                  href={`/notes/${file}`}
                                   target="_blank"
                                   rel="noreferrer"
                                 >

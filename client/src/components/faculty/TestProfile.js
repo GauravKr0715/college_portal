@@ -379,7 +379,7 @@ function TestProfile(props) {
                               {test.files.map((file, idx) => (
                                 <div className="file-tab">
                                   <a
-                                    href={`http://localhost:5000/tests/${file}`}
+                                    href={`/tests/${file}`}
                                     target="_blank"
                                     rel="noreferrer"
                                   >

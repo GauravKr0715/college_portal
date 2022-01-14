@@ -201,7 +201,7 @@ function UpdateTestSubmissionDialog(props) {
                       style={{
                         textDecoration: "none",
                       }}
-                      href={`http://localhost:5000/test_submissions/${file}`}
+                      href={`/test_submissions/${file}`}
                       target="_blank"
                       rel="noreferrer"
                     >

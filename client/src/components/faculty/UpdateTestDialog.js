@@ -364,7 +364,7 @@ function UpdateTestDialog(props) {
                       style={{
                         textDecoration: "none",
                       }}
-                      href={`http://localhost:5000/tests/${file}`}
+                      href={`/tests/${file}`}
                       target="_blank"
                       rel="noreferrer"
                     >

@@ -237,7 +237,7 @@ function UpdateNotesDialog(props) {
                       style={{
                         textDecoration: "none",
                       }}
-                      href={`http://localhost:5000/notes/${file}`}
+                      href={`/notes/${file}`}
                       target="_blank"
                       rel="noreferrer"
                     >

@@ -338,7 +338,7 @@ function NotesProfile(props) {
                               {notes.files.map((file, idx) => (
                                 <div className="file-tab">
                                   <a
-                                    href={`http://localhost:5000/notes/${file}`}
+                                    href={`/notes/${file}`}
                                     target="_blank"
                                     rel="noreferrer"
                                   >

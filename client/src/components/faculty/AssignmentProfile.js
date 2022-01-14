@@ -376,7 +376,7 @@ function AssignmentProfile(props) {
                               {assignment.files.map((file, idx) => (
                                 <div className="file-tab">
                                   <a
-                                    href={`http://localhost:5000/assignments/${file}`}
+                                    href={`/assignments/${file}`}
                                     target="_blank"
                                     rel="noreferrer"
                                   >

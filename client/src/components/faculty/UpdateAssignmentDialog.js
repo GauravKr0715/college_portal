@@ -371,7 +371,7 @@ function UpdateAssignmentDialog(props) {
                       style={{
                         textDecoration: "none",
                       }}
-                      href={`http://localhost:5000/assignments/${file}`}
+                      href={`/assignments/${file}`}
                       target="_blank"
                       rel="noreferrer"
                     >
