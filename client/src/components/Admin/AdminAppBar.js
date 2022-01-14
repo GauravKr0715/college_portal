@@ -112,14 +112,14 @@ function AdminAppBar(props) {
             </Typography> */}
         <Box sx={{ flexGrow: 1 }}></Box>
         <Box sx={{ display: { xs: "none", md: "flex" } }}>
-          {
+          {/* {
             props.button && (
               <Stack spacing={2} direction="row">
                 <Button variant="outlined" style={{ backgroundColor: "white", fontWeight: "bold" }} onClick={saveFile} className="filebtn">{props.button.title}</Button>
 
               </Stack>
             )
-          }
+          } */}
           <IconButton
             size="large"
             edge="end"

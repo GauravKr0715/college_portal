@@ -402,19 +402,16 @@ function Faculty() {
                   New
                 </Button>
                 <br></br>
-                <p style={{ fontSize: "1.6rem", fontWeight: "bold" }}>OR</p>
+                {/* <p style={{ fontSize: "1.6rem", fontWeight: "bold" }}>OR</p>
                 <br />
                 <Button
                   variant="contained"
                   sx={{
                     fontWeight: "bolder",
-                  }} /* onclick={{()=>{return <>
-                    <input id="csvFileInput" type="file" accept=".csv"/>
-                    </>
-                }} */
+                  }}
                 >
                   Bulk Import
-                </Button>
+                </Button> */}
               </div>
             </Box>
           </Box>
