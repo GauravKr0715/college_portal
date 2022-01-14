@@ -49,6 +49,7 @@ const getStudentSimplifiedDataURL = '/student/getSimplified';
 const getMessagesURL = '/chat/messages';
 const sendMessageURL = '/chat/newMessage';
 const addConversationURL = '/chat/newConversation';
+const TimeTableURL = '/timetable';
 
 const getFeedURL = '/feed/';
 
@@ -323,4 +324,10 @@ export const getFacultyFeed = (page_no) => {
   return axios.get(environment.apiUrl + base_url + getFeedURL + "?page_no=" + page_no, {
     withCredentials: true
   });
+}
+
+export const getTimeTable = () => {
+  return axios.get(environment.apiUrl + base_url + TimeTableURL, {
+    withCredentials: true
+  })
 }

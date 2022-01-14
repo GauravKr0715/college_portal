@@ -5,15 +5,19 @@ import "./App.css"
 import Slide from "./components/Slide"
 
 import StudentLogin from './components/Login/S_Login';
+// import StudentLogin from './components/Login/StudentLogin';
 import FacultyLogin from './components/Login/F_Login';
+// import FacultyLogin from './components/Login/FacultyLogin';
 import AdminLogin from './components/Login/A_Login';
+// import AdminLogin from './components/Login/AdminLogin';
 
 
-import FacultyHome from './components/faculty/Home';
-import FacultyFeed from './components/faculty/Feed';
-import FacultyAttendance from './components/faculty/Attendance';
-import FacultyTT from "./components/faculty/timetable"
-import FacultyProfile from "./components/faculty/profile"
+import FacultyHome from './components/Faculty/Home';
+import FacultyFeed from './components/Faculty/Feed';
+import FacultyAttendance from './components/Faculty/Attendance';
+// import FacultyTT from "./components/Faculty/timetable";
+import FacultyTT from "./components/Faculty/timetable_new";
+import FacultyProfile from "./components/Faculty/profile"
 
 
 import StudentProfile from "./components/Students/profile"
@@ -38,7 +42,8 @@ import StudentTest from './components/Students/Test';
 import StudentTestProfile from './components/Students/TestProfile';
 import StudentNotes from './components/Students/Notes';
 import StudentNotesProfile from './components/Students/NotesProfile';
-import StudentTT from "./components/Students/Timetable"
+// import StudentTT from "./components/Students/Timetable";
+import StudentTT from "./components/Students/Timetable_new_student";
 import StudentQueries from './components/Students/Queries';
 
 import AdminHome from './components/Admin/Home';

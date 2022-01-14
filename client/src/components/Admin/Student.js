@@ -433,9 +433,9 @@ function Student() {
                   New
                 </Button>
                 <br></br>
-                <p style={{ fontSize: "1.6rem", fontWeight: "bold" }}>OR</p>
-                <br />
-                <div
+                {/* <p style={{ fontSize: "1.6rem", fontWeight: "bold" }}>OR</p>
+                <br /> */}
+                {/* <div
                   style={{
                     position: "relative",
                     margin: "0 15px",
@@ -474,7 +474,7 @@ function Student() {
                       console.log(e.target.files);
                     }}
                   />
-                </div>
+                </div> */}
 
               </div>
             </Box>
