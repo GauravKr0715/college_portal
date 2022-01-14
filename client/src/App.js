@@ -12,12 +12,12 @@ import AdminLogin from './components/Login/A_Login';
 // import AdminLogin from './components/Login/AdminLogin';
 
 
-import FacultyHome from './components/Faculty/Home';
-import FacultyFeed from './components/Faculty/Feed';
-import FacultyAttendance from './components/Faculty/Attendance';
-// import FacultyTT from "./components/Faculty/timetable";
-import FacultyTT from "./components/Faculty/timetable_new";
-import FacultyProfile from "./components/Faculty/profile"
+import FacultyHome from './components/faculty/Home';
+import FacultyFeed from './components/faculty/Feed';
+import FacultyAttendance from './components/faculty/Attendance';
+// import FacultyTT from "./components/faculty/timetable";
+import FacultyTT from "./components/faculty/timetable_new";
+import FacultyProfile from "./components/faculty/profile"
 
 
 import StudentProfile from "./components/Students/profile"
